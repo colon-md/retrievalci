@@ -1,0 +1,57 @@
+[project]
+name = "searchtrace"
+version = "0.1.0"
+description = "Diagnose retrieval failures and RAG architecture regressions before they ship"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+]
+dependencies = [
+  "pydantic>=2.7",
+  "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+providers = [
+  "anthropic>=0.39,<1.0",
+  "google-genai>=2.0,<3.0",
+  "groq>=0.13,<1.0",
+  "openai>=1.54,<2.0",
+  "sentence-transformers>=3.0,<4.0",
+]
+dev = [
+  "pytest>=8.0",
+  "ruff>=0.6",
+]
+
+[project.scripts]
+searchtrace = "searchtrace.cli:main"
+st-rag-eval = "searchtrace.cli:rag_eval"
+st-rag-compare = "searchtrace.cli:rag_compare"
+st-report-build = "searchtrace.cli:report_build"
+st-runs-create = "searchtrace.cli:runs_create"
+st-runs-list = "searchtrace.cli:runs_list"
+st-project-run = "searchtrace.cli:project_run"
+st-eval-traces = "searchtrace.cli:eval_traces"
+st-normalize-traces = "searchtrace.cli:normalize_traces"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["searchtrace"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra -q --strict-markers"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["searchtrace", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "RUF"]

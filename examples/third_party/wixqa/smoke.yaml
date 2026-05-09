@@ -1,0 +1,25 @@
+repo_root: .
+questions: examples/third_party/wixqa/questions.jsonl
+
+corpus:
+  globs:
+    - examples/third_party/wixqa/corpus/*.md
+
+systems:
+  - rag
+  - bm25
+  - hybrid_rag
+
+run:
+  backend: mock
+  judge: mock
+  max_chunks: 500
+
+reports:
+  json: /tmp/searchtrace-wixqa-wixqa_expertwritten.json
+  markdown: /tmp/searchtrace-wixqa-wixqa_expertwritten.md
+
+diagnostics:
+  primary_metric: retrieval_source_recall
+  min_meaningful_delta: 0.03
+  min_questions_for_confidence: 20

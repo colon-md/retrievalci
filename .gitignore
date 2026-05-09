@@ -1,0 +1,28 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+.env
+.env.local
+data/rag_eval/cache/
+data/rag_eval/datasets/
+data/rag_eval/studies/
+data/third_party/
+.searchtrace/
+
+# Personal planning notes, kept local only.
+goal.md
+roadmap.md
+ROADMAP.md
+docs/ROADMAP.md
+
+# Local research archive, kept out of the public repo.
+docs/rag_eval/GOAL.md
+docs/rag_eval/STATUS.md
+docs/rag_eval/pre_registrations/
+docs/rag_eval/results/
+results/rag_eval/

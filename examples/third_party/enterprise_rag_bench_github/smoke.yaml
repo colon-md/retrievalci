@@ -1,0 +1,25 @@
+repo_root: .
+questions: examples/third_party/enterprise_rag_bench_github/questions.jsonl
+
+corpus:
+  globs:
+    - examples/third_party/enterprise_rag_bench_github/corpus/*.md
+
+systems:
+  - rag
+  - bm25
+  - hybrid_rag
+
+run:
+  backend: mock
+  judge: mock
+  max_chunks: 500
+
+reports:
+  json: /tmp/searchtrace-enterprise-rag-bench.json
+  markdown: /tmp/searchtrace-enterprise-rag-bench.md
+
+diagnostics:
+  primary_metric: retrieval_source_recall
+  min_meaningful_delta: 0.03
+  min_questions_for_confidence: 20

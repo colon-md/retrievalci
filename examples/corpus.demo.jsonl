@@ -1,0 +1,13 @@
+{"doc_id":"doc_target","text":"Ada Lab headquarters are in Paris. Ada Lab location is Paris. The lab maintains the archive for Widget research."}
+{"doc_id":"doc_prev","text":"The Widget inventor worked at the research institute before publishing the Widget design. This note does not name headquarters."}
+{"doc_id":"doc_false","text":"Beta Corp headquarters are in Rome. Beta Corp is unrelated to Widget research."}
+{"doc_id":"doc_starter_logs","text":"Starter plan audit logs are retained for 30 days. Starter audit retention is shorter than team retention."}
+{"doc_id":"doc_team_logs","text":"Team plan audit logs are retained for 180 days and exported nightly to the customer storage bucket."}
+{"doc_id":"doc_retrieval_health","text":"Severity 1 retrieval incidents start in the Retrieval Health dashboard. The on-call checks recall, queue depth, and the deploy marker."}
+{"doc_id":"doc_queue_depth","text":"The queue-depth chart helps diagnose ingestion lag after the Retrieval Health dashboard is opened."}
+{"doc_id":"doc_sso","text":"SAML SSO disables local password login for managed enterprise users after identity provider metadata is verified."}
+{"doc_id":"doc_api_tokens","text":"API tokens must be stored in a secret manager and rotated every 90 days. Tokens must not be placed in trace artifacts."}
+{"doc_id":"doc_refund_human","text":"Refunds above 100 USD require approval from a human billing reviewer. The assistant may draft the response only."}
+{"doc_id":"doc_refund_draft","text":"The refund assistant drafts customer responses and collects invoice context before billing review."}
+{"doc_id":"doc_scim","text":"SCIM provisioning starts after the customer domain is verified and a test user sync succeeds."}
+{"doc_id":"doc_training","text":"The onboarding training plan covers support channels, audit-log retention, and sandbox limits for new teams."}
