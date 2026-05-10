@@ -12,6 +12,8 @@ checks:
 Every run can produce a versioned manifest, machine-readable metrics, and a
 static HTML report that works as a CI artifact.
 
+![Inputs, project CLI, checks, and run artifact pipeline](docs/assets/searchtrace-overview.png)
+
 ## Install
 
 SearchTrace requires Python 3.12 or newer.
@@ -90,6 +92,10 @@ It runs lint, tests, `searchtrace ci run --config examples/searchtrace.ci.yaml`,
 and uploads `.searchtrace/runs` as the review artifact. See
 [docs/CI.md](docs/CI.md) for baseline and artifact conventions.
 
+The two checks below share the same project file and run artifact.
+
+![Project file branching into RAG eval and trace-state eval, then merging into one run artifact](docs/assets/searchtrace-evaluation-modes.png)
+
 ## RAG architecture eval
 
 Run a config-driven mock eval:
@@ -121,6 +127,11 @@ Compare a candidate report against a baseline:
 `rag compare` exits `2` on regression, so it can be used directly in CI.
 
 ## Trace-state eval
+
+Trace-state policies control what each replayed retrieval call can see, such as
+the recorded prompt, only the current query, or compacted recent answer state.
+
+![Agent trace, state policy, retriever, and trace metrics flow](docs/assets/searchtrace-trace-state-eval.png)
 
 Normalize a span export:
 
