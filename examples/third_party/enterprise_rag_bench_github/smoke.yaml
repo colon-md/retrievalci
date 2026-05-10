@@ -16,8 +16,8 @@ run:
   max_chunks: 500
 
 reports:
-  json: /tmp/searchtrace-enterprise-rag-bench.json
-  markdown: /tmp/searchtrace-enterprise-rag-bench.md
+  json: /tmp/retrievalci-enterprise-rag-bench.json
+  markdown: /tmp/retrievalci-enterprise-rag-bench.md
 
 diagnostics:
   primary_metric: retrieval_source_recall

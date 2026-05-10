@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Import third-party RAG benchmarks into SearchTrace example format."""
+"""Import third-party RAG benchmarks into RetrievalCI example format."""
 
 from __future__ import annotations
 
@@ -22,7 +22,7 @@ ENTERPRISE_QUESTIONS_URL = (
     "https://raw.githubusercontent.com/onyx-dot-app/EnterpriseRAG-Bench/main/questions.jsonl"
 )
 ENTERPRISE_CARD_URL = "https://huggingface.co/datasets/onyx-dot-app/EnterpriseRAG-Bench"
-USER_AGENT = "searchtrace-third-party-importer"
+USER_AGENT = "retrievalci-third-party-importer"
 MIT_LICENSE_TEXT = """\
 MIT License
 
@@ -75,7 +75,7 @@ carry the license terms.
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Import third-party RAG benchmarks into SearchTrace format."
+        description="Import third-party RAG benchmarks into RetrievalCI format."
     )
     parser.add_argument(
         "--repo-root",
@@ -184,7 +184,7 @@ def import_wixqa(
         repo_root=repo_root,
         config_name=config_name,
     )
-    print(f"Wrote WixQA SearchTrace fixture: {out_dir.resolve()}")
+    print(f"Wrote WixQA RetrievalCI fixture: {out_dir.resolve()}")
     return 0
 
 
@@ -246,7 +246,7 @@ def import_enterprise_rag_bench(
         release_tag=release_tag,
         source_types=tuple(sorted(wanted_source_types)),
     )
-    print(f"Wrote EnterpriseRAG-Bench SearchTrace fixture: {out_dir.resolve()}")
+    print(f"Wrote EnterpriseRAG-Bench RetrievalCI fixture: {out_dir.resolve()}")
     return 0
 
 
@@ -318,7 +318,7 @@ def write_wixqa_dataset(
             See `LICENSE` for the upstream notice and MIT license text carried
             with this fixture.
 
-            SearchTrace conversion:
+            RetrievalCI conversion:
 
             - Imported rows: {len(question_rows)}
             - Imported corpus documents: {len(doc_paths)}
@@ -409,10 +409,10 @@ def write_enterprise_dataset(
 
             Note: EnterpriseRAG-Bench is synthetic benchmark content.
             Internal-sounding issue IDs, rollout notes, or engineering documents
-            in this fixture are upstream test data, not SearchTrace or customer
+            in this fixture are upstream test data, not RetrievalCI or customer
             data.
 
-            SearchTrace conversion:
+            RetrievalCI conversion:
 
             - Imported rows: {len(question_rows)}
             - Imported corpus documents: {len(doc_paths)}
@@ -443,7 +443,7 @@ def download_enterprise_docs(
     ]
     if max_slices is not None:
         slices = slices[:max_slices]
-    with tempfile.TemporaryDirectory(prefix="searchtrace-enterprise-rag-bench-") as tmp:
+    with tempfile.TemporaryDirectory(prefix="retrievalci-enterprise-rag-bench-") as tmp:
         tmp_dir = Path(tmp)
         for asset in slices:
             remaining = wanted_doc_ids - set(docs)
@@ -537,8 +537,8 @@ def write_smoke_config(*, out_dir: Path, repo_root: Path, report_stem: str) -> N
           max_chunks: 500
 
         reports:
-          json: /tmp/searchtrace-{report_stem}.json
-          markdown: /tmp/searchtrace-{report_stem}.md
+          json: /tmp/retrievalci-{report_stem}.json
+          markdown: /tmp/retrievalci-{report_stem}.md
 
         diagnostics:
           primary_metric: retrieval_source_recall

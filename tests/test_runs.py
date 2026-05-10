@@ -4,11 +4,11 @@ import json
 from pathlib import Path
 
 import pytest
-import searchtrace.runs.execute as runs_execute
+import retrievalci.runs.execute as runs_execute
 import yaml
-from searchtrace.runs import create_run, list_runs, load_manifest
-from searchtrace.runs.types import RUN_MANIFEST_SCHEMA_VERSION, ArtifactPolicy, RunSpec
-from searchtrace.trace_retrievers import RetrieverCall
+from retrievalci.runs import create_run, list_runs, load_manifest
+from retrievalci.runs.types import RUN_MANIFEST_SCHEMA_VERSION, ArtifactPolicy, RunSpec
+from retrievalci.trace_retrievers import RetrieverCall
 
 
 def _write_project(root: Path) -> None:
@@ -257,7 +257,7 @@ def test_create_run_can_normalize_trace_source_inside_run(tmp_path) -> None:
                                                 },
                                             },
                                             {
-                                                "key": "searchtrace.gold_doc_ids",
+                                                "key": "retrievalci.gold_doc_ids",
                                                 "value": {
                                                     "arrayValue": {
                                                         "values": [

@@ -1,12 +1,12 @@
-# SearchTrace CI
+# RetrievalCI CI
 
-SearchTrace can run as a local CI gate without a hosted service. The repository
-workflow in `.github/workflows/searchtrace-ci.yml` does four things:
+RetrievalCI can run as a local CI gate without a hosted service. The repository
+workflow in `.github/workflows/retrievalci-ci.yml` does four things:
 
 1. installs the package with dev extras;
 2. runs `ruff` and `pytest`;
-3. runs `searchtrace ci run --config examples/searchtrace.ci.yaml`;
-4. uploads `.searchtrace/runs` as the review artifact.
+3. runs `retrievalci ci run --config examples/retrievalci.ci.yaml`;
+4. uploads `.retrievalci/runs` as the review artifact.
 
 The CI project file combines the two product checks:
 
@@ -21,7 +21,7 @@ Provider SDKs are intentionally not installed in the default CI workflow. The
 bundled examples use mock/provider-free backends, so the standard gate stays
 fast and does not pull large optional dependencies. Install `.[providers]` only
 in jobs that call real LLM or embedding providers. Provider extras are bounded
-to the SDK major versions SearchTrace currently supports; update those bounds
+to the SDK major versions RetrievalCI currently supports; update those bounds
 only after validating the backend adapters against the new SDK APIs.
 
 ## Failure Rules
@@ -51,11 +51,11 @@ Update a baseline only after the new behavior is accepted. Regenerate the smoke
 baseline with:
 
 ```bash
-.venv/bin/searchtrace rag run \
+.venv/bin/retrievalci rag run \
   --config examples/rag_eval/smoke.yaml \
   --repo-root "$PWD" \
   --report-json baselines/rag/smoke.json \
-  --report-md /tmp/searchtrace-rag-baseline.md \
+  --report-md /tmp/retrievalci-rag-baseline.md \
   --primary-metric retrieval_source_recall
 ```
 
@@ -66,7 +66,7 @@ and point the project config at the downloaded path during CI.
 
 ## Artifact Policy
 
-`.searchtrace/` is ignored locally. CI uploads `.searchtrace/runs` after each
+`.retrievalci/` is ignored locally. CI uploads `.retrievalci/runs` after each
 run. The default CI example keeps debug artifacts disabled so uploaded artifacts
 stay compact and avoid per-turn retrieved text.
 
@@ -78,5 +78,5 @@ stay compact and avoid per-turn retrieved text.
 
 `.github/workflows/publish.yml` builds source and wheel distributions and
 publishes them to PyPI through trusted publishing. Configure a PyPI project for
-`searchtrace`, then map its trusted publisher to this repository and the `pypi`
+`retrievalci`, then map its trusted publisher to this repository and the `pypi`
 GitHub environment before publishing a release.

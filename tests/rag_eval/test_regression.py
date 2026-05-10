@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import pytest
-from searchtrace.rag_eval.regression import compare_reports
-from searchtrace.rag_eval.types import ComparisonReport
+from retrievalci.rag_eval.regression import compare_reports
+from retrievalci.rag_eval.types import ComparisonReport
 
 
 def _report(metrics: dict[str, dict[str, float]]) -> ComparisonReport:

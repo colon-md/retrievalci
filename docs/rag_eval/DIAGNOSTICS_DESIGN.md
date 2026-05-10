@@ -1,13 +1,13 @@
 # RAG Diagnostics Design
 
-Status: implemented in `searchtrace/rag_eval/diagnostics.py` and wired into
-`searchtrace rag run` Markdown reports.
+Status: implemented in `retrievalci/rag_eval/diagnostics.py` and wired into
+`retrievalci rag run` Markdown reports.
 
 ## Purpose
 
-The next SearchTrace power-up is a diagnosis layer for RAG architecture eval.
+The next RetrievalCI power-up is a diagnosis layer for RAG architecture eval.
 
-Today, `searchtrace rag run` produces reliable metrics and pairwise
+Today, `retrievalci rag run` produces reliable metrics and pairwise
 comparisons, but the report still asks the reader to infer the decision. The
 diagnostics layer should turn those metrics into a product answer:
 
@@ -16,7 +16,7 @@ diagnostics layer should turn those metrics into a product answer:
 
 ## Product Promise
 
-Given a `ComparisonReport`, SearchTrace should produce a short recommendation:
+Given a `ComparisonReport`, RetrievalCI should produce a short recommendation:
 
 > `hybrid_rag` is the strongest candidate by retrieval source recall. The
 > current run is retrieval-limited: answer quality tracks source recall, and
@@ -50,7 +50,7 @@ Out of scope for the first implementation:
 Add:
 
 ```text
-searchtrace/rag_eval/diagnostics.py
+retrievalci/rag_eval/diagnostics.py
 ```
 
 The module should not call systems, providers, or the filesystem. It should
@@ -269,10 +269,10 @@ without scraping Markdown.
 
 ## CLI Design
 
-Add optional flags to `searchtrace rag run`:
+Add optional flags to `retrievalci rag run`:
 
 ```bash
-searchtrace rag run \
+retrievalci rag run \
   ... \
   --primary-metric retrieval_source_recall \
   --min-meaningful-delta 0.03 \
@@ -325,7 +325,7 @@ than running full systems.
 
 ## Implementation Sequence
 
-1. Add `searchtrace/rag_eval/diagnostics.py` with model + pure functions.
+1. Add `retrievalci/rag_eval/diagnostics.py` with model + pure functions.
 2. Add tests for the pure functions.
 3. Update `report_to_markdown(report, diagnostics=None)` or call
    `diagnose_report()` internally with defaults.
@@ -345,7 +345,7 @@ than running full systems.
 
 ## Definition Of Done
 
-- `searchtrace rag run` report includes `## Diagnosis`.
+- `retrievalci rag run` report includes `## Diagnosis`.
 - Diagnostics are deterministic and unit-tested.
 - Existing reports still render aggregate tables and pairwise comparisons.
 - `make check` and `make smoke` pass.

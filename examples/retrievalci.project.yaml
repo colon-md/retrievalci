@@ -1,0 +1,31 @@
+name: project-smoke
+registry: /tmp/retrievalci-project-smoke
+repo_root: ..
+
+rag:
+  config: examples/rag_eval/smoke.yaml
+  primary_metric: retrieval_source_recall
+
+trace:
+  source:
+    input: examples/otel.spans.demo.json
+    format: otel
+    require_gold: true
+  corpus: examples/corpus.demo.jsonl
+  policies:
+    - recorded
+    - query_only
+    - last_answer_x3
+    - compact_state
+    - public_trace
+  k: 1
+  gate:
+    policy: last_answer_x3
+    min_recall_at_5: 0.90
+    max_zero_recall_at_k: 0.05
+    max_stale_at_1: 0.05
+    max_false_lead_at_k: 0.05
+
+artifacts:
+  debug_artifacts: false
+  snapshot_inputs: false

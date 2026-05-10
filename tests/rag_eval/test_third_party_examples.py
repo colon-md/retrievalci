@@ -6,8 +6,8 @@ import importlib.util
 from pathlib import Path
 from types import ModuleType
 
-from searchtrace.rag_eval.corpus import load_documents
-from searchtrace.rag_eval.runner import load_questions, load_run_config
+from retrievalci.rag_eval.corpus import load_documents
+from retrievalci.rag_eval.runner import load_questions, load_run_config
 
 
 def repo_root() -> Path:

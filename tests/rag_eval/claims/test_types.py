@@ -6,7 +6,7 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 from pydantic import ValidationError
-from searchtrace.rag_eval.claims import Claim, Evidence, ProofSet, derive_proof_set_id
+from retrievalci.rag_eval.claims import Claim, Evidence, ProofSet, derive_proof_set_id
 
 
 class TestEvidence:

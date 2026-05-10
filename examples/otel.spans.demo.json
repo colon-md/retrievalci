@@ -16,11 +16,11 @@
               "attributes": [
                 {"key": "input.value", "value": {"stringValue": "Where are the headquarters of the place where the Widget inventor worked?"}},
                 {"key": "session.id", "value": {"stringValue": "demo-widget"}},
-                {"key": "searchtrace.gold_doc_ids", "value": {"arrayValue": {"values": [{"stringValue": "doc_target"}]}}},
-                {"key": "searchtrace.agent_state.previous_answers", "value": {"arrayValue": {"values": [{"stringValue": "Ada Lab"}]}}},
-                {"key": "searchtrace.agent_state.previous_doc_ids", "value": {"arrayValue": {"values": [{"stringValue": "doc_prev"}]}}},
-                {"key": "searchtrace.agent_state.false_lead_doc_ids", "value": {"arrayValue": {"values": [{"stringValue": "doc_false"}]}}},
-                {"key": "searchtrace.agent_state.public_trace", "value": {"arrayValue": {"values": [{"stringValue": "Asked who employed the Widget inventor. Answer found: Ada Lab."}]}}}
+                {"key": "retrievalci.gold_doc_ids", "value": {"arrayValue": {"values": [{"stringValue": "doc_target"}]}}},
+                {"key": "retrievalci.agent_state.previous_answers", "value": {"arrayValue": {"values": [{"stringValue": "Ada Lab"}]}}},
+                {"key": "retrievalci.agent_state.previous_doc_ids", "value": {"arrayValue": {"values": [{"stringValue": "doc_prev"}]}}},
+                {"key": "retrievalci.agent_state.false_lead_doc_ids", "value": {"arrayValue": {"values": [{"stringValue": "doc_false"}]}}},
+                {"key": "retrievalci.agent_state.public_trace", "value": {"arrayValue": {"values": [{"stringValue": "Asked who employed the Widget inventor. Answer found: Ada Lab."}]}}}
               ]
             },
             {
@@ -42,11 +42,11 @@
               "attributes": [
                 {"key": "input.value", "value": {"stringValue": "How long are those audit logs retained?"}},
                 {"key": "session.id", "value": {"stringValue": "demo-billing"}},
-                {"key": "searchtrace.gold_doc_ids", "value": {"arrayValue": {"values": [{"stringValue": "doc_starter_logs"}]}}},
-                {"key": "searchtrace.current_need", "value": {"stringValue": "starter plan audit log retention"}},
-                {"key": "searchtrace.agent_state.previous_answers", "value": {"arrayValue": {"values": [{"stringValue": "starter plan"}]}}},
-                {"key": "searchtrace.agent_state.previous_doc_ids", "value": {"arrayValue": {"values": [{"stringValue": "doc_team_logs"}]}}},
-                {"key": "searchtrace.agent_state.public_trace", "value": {"arrayValue": {"values": [{"stringValue": "Customer asked about the starter plan. Need starter audit retention."}]}}}
+                {"key": "retrievalci.gold_doc_ids", "value": {"arrayValue": {"values": [{"stringValue": "doc_starter_logs"}]}}},
+                {"key": "retrievalci.current_need", "value": {"stringValue": "starter plan audit log retention"}},
+                {"key": "retrievalci.agent_state.previous_answers", "value": {"arrayValue": {"values": [{"stringValue": "starter plan"}]}}},
+                {"key": "retrievalci.agent_state.previous_doc_ids", "value": {"arrayValue": {"values": [{"stringValue": "doc_team_logs"}]}}},
+                {"key": "retrievalci.agent_state.public_trace", "value": {"arrayValue": {"values": [{"stringValue": "Customer asked about the starter plan. Need starter audit retention."}]}}}
               ]
             },
             {
@@ -68,11 +68,11 @@
               "attributes": [
                 {"key": "input.value", "value": {"stringValue": "Which dashboard do I open first for that incident?"}},
                 {"key": "session.id", "value": {"stringValue": "demo-incident"}},
-                {"key": "searchtrace.gold_doc_ids", "value": {"arrayValue": {"values": [{"stringValue": "doc_retrieval_health"}]}}},
-                {"key": "searchtrace.current_need", "value": {"stringValue": "Severity 1 retrieval incident first dashboard"}},
-                {"key": "searchtrace.agent_state.previous_answers", "value": {"arrayValue": {"values": [{"stringValue": "Severity 1 retrieval incident"}]}}},
-                {"key": "searchtrace.agent_state.previous_doc_ids", "value": {"arrayValue": {"values": [{"stringValue": "doc_queue_depth"}]}}},
-                {"key": "searchtrace.agent_state.public_trace", "value": {"arrayValue": {"values": [{"stringValue": "Incident classified as Severity 1 retrieval incident."}]}}}
+                {"key": "retrievalci.gold_doc_ids", "value": {"arrayValue": {"values": [{"stringValue": "doc_retrieval_health"}]}}},
+                {"key": "retrievalci.current_need", "value": {"stringValue": "Severity 1 retrieval incident first dashboard"}},
+                {"key": "retrievalci.agent_state.previous_answers", "value": {"arrayValue": {"values": [{"stringValue": "Severity 1 retrieval incident"}]}}},
+                {"key": "retrievalci.agent_state.previous_doc_ids", "value": {"arrayValue": {"values": [{"stringValue": "doc_queue_depth"}]}}},
+                {"key": "retrievalci.agent_state.public_trace", "value": {"arrayValue": {"values": [{"stringValue": "Incident classified as Severity 1 retrieval incident."}]}}}
               ]
             },
             {
@@ -94,11 +94,11 @@
               "attributes": [
                 {"key": "input.value", "value": {"stringValue": "Is that login control required for managed enterprise users?"}},
                 {"key": "session.id", "value": {"stringValue": "demo-sso"}},
-                {"key": "searchtrace.gold_doc_ids", "value": {"arrayValue": {"values": [{"stringValue": "doc_sso"}]}}},
-                {"key": "searchtrace.current_need", "value": {"stringValue": "SAML SSO managed enterprise users local password login"}},
-                {"key": "searchtrace.agent_state.previous_answers", "value": {"arrayValue": {"values": [{"stringValue": "SAML SSO"}]}}},
-                {"key": "searchtrace.agent_state.false_lead_doc_ids", "value": {"arrayValue": {"values": [{"stringValue": "doc_api_tokens"}]}}},
-                {"key": "searchtrace.agent_state.public_trace", "value": {"arrayValue": {"values": [{"stringValue": "Customer enabled SAML SSO for managed enterprise users."}]}}}
+                {"key": "retrievalci.gold_doc_ids", "value": {"arrayValue": {"values": [{"stringValue": "doc_sso"}]}}},
+                {"key": "retrievalci.current_need", "value": {"stringValue": "SAML SSO managed enterprise users local password login"}},
+                {"key": "retrievalci.agent_state.previous_answers", "value": {"arrayValue": {"values": [{"stringValue": "SAML SSO"}]}}},
+                {"key": "retrievalci.agent_state.false_lead_doc_ids", "value": {"arrayValue": {"values": [{"stringValue": "doc_api_tokens"}]}}},
+                {"key": "retrievalci.agent_state.public_trace", "value": {"arrayValue": {"values": [{"stringValue": "Customer enabled SAML SSO for managed enterprise users."}]}}}
               ]
             },
             {
@@ -120,11 +120,11 @@
               "attributes": [
                 {"key": "input.value", "value": {"stringValue": "Can it approve the exception alone?"}},
                 {"key": "session.id", "value": {"stringValue": "demo-refund"}},
-                {"key": "searchtrace.gold_doc_ids", "value": {"arrayValue": {"values": [{"stringValue": "doc_refund_human"}]}}},
-                {"key": "searchtrace.current_need", "value": {"stringValue": "refund above 100 USD approval authority"}},
-                {"key": "searchtrace.agent_state.previous_answers", "value": {"arrayValue": {"values": [{"stringValue": "refund assistant over 100 USD"}]}}},
-                {"key": "searchtrace.agent_state.previous_doc_ids", "value": {"arrayValue": {"values": [{"stringValue": "doc_refund_draft"}]}}},
-                {"key": "searchtrace.agent_state.public_trace", "value": {"arrayValue": {"values": [{"stringValue": "Customer asked about a refund above 100 USD."}]}}}
+                {"key": "retrievalci.gold_doc_ids", "value": {"arrayValue": {"values": [{"stringValue": "doc_refund_human"}]}}},
+                {"key": "retrievalci.current_need", "value": {"stringValue": "refund above 100 USD approval authority"}},
+                {"key": "retrievalci.agent_state.previous_answers", "value": {"arrayValue": {"values": [{"stringValue": "refund assistant over 100 USD"}]}}},
+                {"key": "retrievalci.agent_state.previous_doc_ids", "value": {"arrayValue": {"values": [{"stringValue": "doc_refund_draft"}]}}},
+                {"key": "retrievalci.agent_state.public_trace", "value": {"arrayValue": {"values": [{"stringValue": "Customer asked about a refund above 100 USD."}]}}}
               ]
             },
             {
@@ -146,11 +146,11 @@
               "attributes": [
                 {"key": "input.value", "value": {"stringValue": "What has to be ready before invites sync?"}},
                 {"key": "session.id", "value": {"stringValue": "demo-scim"}},
-                {"key": "searchtrace.gold_doc_ids", "value": {"arrayValue": {"values": [{"stringValue": "doc_scim"}]}}},
-                {"key": "searchtrace.current_need", "value": {"stringValue": "SCIM provisioning domain verification test user sync"}},
-                {"key": "searchtrace.agent_state.previous_answers", "value": {"arrayValue": {"values": [{"stringValue": "SCIM provisioning"}]}}},
-                {"key": "searchtrace.agent_state.previous_doc_ids", "value": {"arrayValue": {"values": [{"stringValue": "doc_training"}]}}},
-                {"key": "searchtrace.agent_state.public_trace", "value": {"arrayValue": {"values": [{"stringValue": "Admin is setting up SCIM provisioning."}]}}}
+                {"key": "retrievalci.gold_doc_ids", "value": {"arrayValue": {"values": [{"stringValue": "doc_scim"}]}}},
+                {"key": "retrievalci.current_need", "value": {"stringValue": "SCIM provisioning domain verification test user sync"}},
+                {"key": "retrievalci.agent_state.previous_answers", "value": {"arrayValue": {"values": [{"stringValue": "SCIM provisioning"}]}}},
+                {"key": "retrievalci.agent_state.previous_doc_ids", "value": {"arrayValue": {"values": [{"stringValue": "doc_training"}]}}},
+                {"key": "retrievalci.agent_state.public_trace", "value": {"arrayValue": {"values": [{"stringValue": "Admin is setting up SCIM provisioning."}]}}}
               ]
             },
             {

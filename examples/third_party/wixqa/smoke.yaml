@@ -16,8 +16,8 @@ run:
   max_chunks: 500
 
 reports:
-  json: /tmp/searchtrace-wixqa-wixqa_expertwritten.json
-  markdown: /tmp/searchtrace-wixqa-wixqa_expertwritten.md
+  json: /tmp/retrievalci-wixqa-wixqa_expertwritten.json
+  markdown: /tmp/retrievalci-wixqa-wixqa_expertwritten.md
 
 diagnostics:
   primary_metric: retrieval_source_recall

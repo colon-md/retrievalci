@@ -4,7 +4,7 @@ The support retriever uses hybrid search: BM25 candidates are fused with dense
 embedding candidates using reciprocal rank fusion. The production top-k is 8,
 while the CI smoke fixture uses a smaller top-k to keep reports compact.
 
-Prompt bundle changes must pass a SearchTrace CI run before deployment. The
+Prompt bundle changes must pass a RetrievalCI CI run before deployment. The
 release manager compares the candidate RAG report to the accepted baseline on
 retrieval_source_recall and blocks the change when the drop is greater than
 0.02.

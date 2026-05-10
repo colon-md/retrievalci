@@ -5,7 +5,7 @@ import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import ClassVar
 
-from searchtrace.trace_retrievers import (
+from retrievalci.trace_retrievers import (
     HTTPTraceRetriever,
     parse_http_headers,
     parse_retriever_response,

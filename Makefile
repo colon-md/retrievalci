@@ -21,14 +21,14 @@ test:
 	$(BIN)/python -m pytest -q
 
 lint:
-	$(BIN)/python -m ruff check searchtrace tests scripts
+	$(BIN)/python -m ruff check retrievalci tests scripts
 
 check: lint test
 
 smoke: smoke-rag smoke-rag-config smoke-rag-compare smoke-traces smoke-report smoke-runs smoke-project
 
 smoke-rag:
-	$(BIN)/searchtrace rag run \
+	$(BIN)/retrievalci rag run \
 	  --repo-root $(CURDIR) \
 	  --questions examples/rag_eval/questions.jsonl \
 	  --corpus-glob 'examples/rag_eval/corpus/*.md' \
@@ -39,60 +39,60 @@ smoke-rag:
 	  --system hybrid_rag \
 	  --max-chunks 20 \
 	  --primary-metric retrieval_source_recall \
-	  --report-json /tmp/searchtrace-rag-smoke.json \
-	  --report-md /tmp/searchtrace-rag-smoke.md
+	  --report-json /tmp/retrievalci-rag-smoke.json \
+	  --report-md /tmp/retrievalci-rag-smoke.md
 
 smoke-rag-config:
-	$(BIN)/searchtrace rag run \
+	$(BIN)/retrievalci rag run \
 	  --config examples/rag_eval/smoke.yaml \
 	  --repo-root $(CURDIR)
 
 smoke-rag-compare: smoke-rag
-	$(BIN)/searchtrace rag compare \
-	  --baseline /tmp/searchtrace-rag-smoke.json \
-	  --candidate /tmp/searchtrace-rag-smoke.json \
+	$(BIN)/retrievalci rag compare \
+	  --baseline /tmp/retrievalci-rag-smoke.json \
+	  --candidate /tmp/retrievalci-rag-smoke.json \
 	  --metric retrieval_source_recall \
 	  --max-drop 0
 
 smoke-report: smoke-rag smoke-traces
-	$(BIN)/searchtrace report build \
-	  --rag-report /tmp/searchtrace-rag-smoke.json \
-	  --baseline-rag-report /tmp/searchtrace-rag-smoke.json \
-	  --trace-metrics /tmp/searchtrace-trace-report/metrics.json \
-	  --trace-per-turn /tmp/searchtrace-trace-report/per_turn.jsonl \
-	  --out /tmp/searchtrace-report.html
+	$(BIN)/retrievalci report build \
+	  --rag-report /tmp/retrievalci-rag-smoke.json \
+	  --baseline-rag-report /tmp/retrievalci-rag-smoke.json \
+	  --trace-metrics /tmp/retrievalci-trace-report/metrics.json \
+	  --trace-per-turn /tmp/retrievalci-trace-report/per_turn.jsonl \
+	  --out /tmp/retrievalci-report.html
 
 smoke-runs:
-	rm -rf /tmp/searchtrace-runs-smoke
-	$(BIN)/searchtrace runs create \
-	  --registry /tmp/searchtrace-runs-smoke \
+	rm -rf /tmp/retrievalci-runs-smoke
+	$(BIN)/retrievalci runs create \
+	  --registry /tmp/retrievalci-runs-smoke \
 	  --repo-root $(CURDIR) \
 	  --name smoke \
 	  --rag-config examples/rag_eval/smoke.yaml \
 	  --trace-input examples/traces.demo.jsonl \
 	  --trace-corpus examples/corpus.demo.jsonl \
 	  --trace-k 1
-	$(BIN)/searchtrace runs list --registry /tmp/searchtrace-runs-smoke
+	$(BIN)/retrievalci runs list --registry /tmp/retrievalci-runs-smoke
 
 smoke-project:
-	rm -rf /tmp/searchtrace-project-smoke
-	$(BIN)/searchtrace project run --config examples/searchtrace.project.yaml
-	$(BIN)/searchtrace runs list --registry /tmp/searchtrace-project-smoke
+	rm -rf /tmp/retrievalci-project-smoke
+	$(BIN)/retrievalci project run --config examples/retrievalci.project.yaml
+	$(BIN)/retrievalci runs list --registry /tmp/retrievalci-project-smoke
 
 smoke-traces:
-	$(BIN)/searchtrace traces normalize \
+	$(BIN)/retrievalci traces normalize \
 	  --input examples/spans.demo.jsonl \
-	  --out /tmp/searchtrace-traces.demo.jsonl \
+	  --out /tmp/retrievalci-traces.demo.jsonl \
 	  --require-gold
-	$(BIN)/searchtrace traces normalize \
+	$(BIN)/retrievalci traces normalize \
 	  --source otel \
 	  --input examples/otel.spans.demo.json \
-	  --out /tmp/searchtrace-otel-traces.demo.jsonl \
+	  --out /tmp/retrievalci-otel-traces.demo.jsonl \
 	  --require-gold
-	$(BIN)/searchtrace traces eval \
-	  --traces /tmp/searchtrace-traces.demo.jsonl \
+	$(BIN)/retrievalci traces eval \
+	  --traces /tmp/retrievalci-traces.demo.jsonl \
 	  --corpus examples/corpus.demo.jsonl \
-	  --out /tmp/searchtrace-trace-report \
+	  --out /tmp/retrievalci-trace-report \
 	  --k 1 \
 	  --policies recorded,query_only,last_answer_x3,compact_state,public_trace \
 	  --gate-policy last_answer_x3 \
@@ -100,5 +100,5 @@ smoke-traces:
 	  --max-stale-at-1 0.05
 
 clean:
-	find searchtrace tests scripts -type d -name __pycache__ -prune -exec rm -rf {} +
+	find retrievalci tests scripts -type d -name __pycache__ -prune -exec rm -rf {} +
 	rm -rf .pytest_cache .ruff_cache .mypy_cache

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from searchtrace.rag_eval.diagnostics import diagnose_report, diagnostics_to_markdown
-from searchtrace.rag_eval.types import ComparisonReport, PairwiseDelta
+from retrievalci.rag_eval.diagnostics import diagnose_report, diagnostics_to_markdown
+from retrievalci.rag_eval.types import ComparisonReport, PairwiseDelta
 
 
 def _report(

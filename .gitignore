@@ -12,7 +12,7 @@ data/rag_eval/cache/
 data/rag_eval/datasets/
 data/rag_eval/studies/
 data/third_party/
-.searchtrace/
+.retrievalci/
 
 # Personal planning notes, kept local only.
 goal.md

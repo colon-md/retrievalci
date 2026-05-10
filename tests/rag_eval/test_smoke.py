@@ -17,24 +17,24 @@ import re
 from pathlib import Path
 
 import pytest
-from searchtrace.cli import _runner_argv
-from searchtrace.rag_eval.backends.mock import MockEmbedder, MockGenerator
-from searchtrace.rag_eval.corpus import (
+from retrievalci.cli import _runner_argv
+from retrievalci.rag_eval.backends.mock import MockEmbedder, MockGenerator
+from retrievalci.rag_eval.corpus import (
     Chunk,
     Document,
     chunk_by_paragraph,
     chunk_corpus,
     load_documents,
 )
-from searchtrace.rag_eval.metrics import compute_row, must_include_match
-from searchtrace.rag_eval.runner import report_to_markdown, run_eval
-from searchtrace.rag_eval.systems import ClaimRAGSystem, RAGSystem
-from searchtrace.rag_eval.types import QAItem
+from retrievalci.rag_eval.metrics import compute_row, must_include_match
+from retrievalci.rag_eval.runner import report_to_markdown, run_eval
+from retrievalci.rag_eval.systems import ClaimRAGSystem, RAGSystem
+from retrievalci.rag_eval.types import QAItem
 
 
 @pytest.fixture
 def repo_root() -> Path:
-    # Tests run with the searchtrace package installed, so use this file's
+    # Tests run with the retrievalci package installed, so use this file's
     # location to walk back to the repo root.
     here = Path(__file__).resolve()
     # tests/rag_eval/test_smoke.py -> rag_eval -> tests -> repo root
@@ -95,13 +95,13 @@ def sample_questions() -> list[QAItem]:
 
 
 def test_corpus_loader_finds_repo_files(repo_root: Path) -> None:
-    docs = load_documents(repo_root, ["README.md", "searchtrace/rag_eval/schemas/predicates.yml"])
+    docs = load_documents(repo_root, ["README.md", "retrievalci/rag_eval/schemas/predicates.yml"])
     paths = {d.source_path for d in docs}
     assert "README.md" in paths
-    assert "searchtrace/rag_eval/schemas/predicates.yml" in paths
+    assert "retrievalci/rag_eval/schemas/predicates.yml" in paths
 
 
-def test_searchtrace_cli_accepts_rag_subcommand() -> None:
+def test_retrievalci_cli_accepts_rag_subcommand() -> None:
     assert _runner_argv(["run", "--backend", "mock"]) == ["--backend", "mock"]
     assert _runner_argv(["rag", "--backend", "mock"]) == ["--backend", "mock"]
     assert _runner_argv(["--backend", "mock"]) == ["--backend", "mock"]
@@ -131,7 +131,7 @@ def test_bm25_system_answers_all_questions(
     synthetic_chunks: list[Chunk], sample_questions: list[QAItem]
 ) -> None:
     """BM25 baseline returns well-shaped answers and is order-deterministic."""
-    from searchtrace.rag_eval.systems.bm25 import BM25System
+    from retrievalci.rag_eval.systems.bm25 import BM25System
 
     bm25 = BM25System(MockGenerator(), synthetic_chunks, top_k=3)
     for q in sample_questions:
@@ -145,7 +145,7 @@ def test_bm25_system_answers_all_questions(
 
 def test_bm25_rank_returns_descending_scores(synthetic_chunks: list[Chunk]) -> None:
     """rank() returns (score, idx) tuples sorted descending — used by HybridRAG fusion."""
-    from searchtrace.rag_eval.systems.bm25 import BM25System
+    from retrievalci.rag_eval.systems.bm25 import BM25System
 
     bm25 = BM25System(MockGenerator(), synthetic_chunks)
     ranked = bm25.rank("postgres database")
@@ -158,7 +158,7 @@ def test_hybrid_rag_system_answers_all_questions(
     synthetic_chunks: list[Chunk], sample_questions: list[QAItem]
 ) -> None:
     """HybridRAG fuses BM25 + dense retrieval via RRF and answers all questions."""
-    from searchtrace.rag_eval.systems.hybrid_rag import HybridRAGSystem
+    from retrievalci.rag_eval.systems.hybrid_rag import HybridRAGSystem
 
     hybrid = HybridRAGSystem(MockEmbedder(), MockGenerator(), synthetic_chunks, top_k=3)
     for q in sample_questions:
@@ -172,7 +172,7 @@ def test_chunk_summary_rag_system_answers_all_questions(
     synthetic_chunks: list[Chunk], sample_questions: list[QAItem]
 ) -> None:
     """Chunk-summary RAG builds summaries once and answers from retrieved raw chunks."""
-    from searchtrace.rag_eval.systems.chunk_summary_rag import ChunkSummaryRAGSystem
+    from retrievalci.rag_eval.systems.chunk_summary_rag import ChunkSummaryRAGSystem
 
     system = ChunkSummaryRAGSystem(MockEmbedder(), MockGenerator(), synthetic_chunks, top_k=3)
     assert system.summary_count == len(synthetic_chunks)
@@ -244,7 +244,7 @@ def test_report_to_markdown_renders(
 
 
 def test_metrics_compute_row_handles_empty_terms() -> None:
-    from searchtrace.rag_eval.types import SystemAnswer
+    from retrievalci.rag_eval.types import SystemAnswer
 
     q = QAItem(
         id="q",
@@ -269,7 +269,7 @@ def test_metrics_compute_row_handles_empty_terms() -> None:
 def test_judge_wired_into_runner_populates_faithfulness_relevance(
     synthetic_chunks: list[Chunk], sample_questions: list[QAItem]
 ) -> None:
-    from searchtrace.rag_eval.backends.mock import MockJudge
+    from retrievalci.rag_eval.backends.mock import MockJudge
 
     rag = RAGSystem(MockEmbedder(), MockGenerator(), synthetic_chunks)
     cr = ClaimRAGSystem(MockEmbedder(), MockGenerator(), synthetic_chunks)
@@ -301,7 +301,7 @@ def test_run_eval_without_judge_leaves_judge_metrics_none(
 
 
 def test_mock_judge_scores_in_range() -> None:
-    from searchtrace.rag_eval.backends.mock import MockJudge
+    from retrievalci.rag_eval.backends.mock import MockJudge
 
     j = MockJudge()
     f = j.faithfulness("What DB?", "postgres is the database", "doc says postgres", "postgres")
@@ -315,7 +315,7 @@ def test_claude_judge_protocol_and_no_api_key() -> None:
     ANTHROPIC_API_KEY is unset. Doesn't make any real API calls."""
     import os
 
-    from searchtrace.rag_eval.backends.claude import ClaudeJudge
+    from retrievalci.rag_eval.backends.claude import ClaudeJudge
 
     saved = os.environ.pop("ANTHROPIC_API_KEY", None)
     try:
@@ -328,7 +328,7 @@ def test_claude_judge_protocol_and_no_api_key() -> None:
 
 def test_claude_judge_default_model_id() -> None:
     """Smoke-check the default model selection without instantiating a client."""
-    from searchtrace.rag_eval.backends.claude import ClaudeJudge
+    from retrievalci.rag_eval.backends.claude import ClaudeJudge
 
     # Bypass the constructor's client init — we're only checking the model_id default.
     j = ClaudeJudge.__new__(ClaudeJudge)
@@ -340,7 +340,7 @@ def test_claude_generator_protocol_and_no_api_key() -> None:
     """ClaudeGenerator surfaces a clear error when ANTHROPIC_API_KEY is unset."""
     import os
 
-    from searchtrace.rag_eval.backends.claude import ClaudeGenerator
+    from retrievalci.rag_eval.backends.claude import ClaudeGenerator
 
     saved = os.environ.pop("ANTHROPIC_API_KEY", None)
     try:
@@ -353,7 +353,7 @@ def test_claude_generator_protocol_and_no_api_key() -> None:
 
 def test_claude_generator_default_model_id() -> None:
     """Default generator model is claude-sonnet-4-6, matching ClaudeJudge."""
-    from searchtrace.rag_eval.backends.claude import ClaudeGenerator
+    from retrievalci.rag_eval.backends.claude import ClaudeGenerator
 
     g = ClaudeGenerator.__new__(ClaudeGenerator)
     g._model_id = "claude-sonnet-4-6"
@@ -365,7 +365,7 @@ def test_openai_judge_protocol_and_no_api_key() -> None:
     OPENAI_API_KEY is unset. Doesn't make any real API calls."""
     import os
 
-    from searchtrace.rag_eval.backends.openai import OpenAIJudge
+    from retrievalci.rag_eval.backends.openai import OpenAIJudge
 
     saved = os.environ.pop("OPENAI_API_KEY", None)
     try:
@@ -380,7 +380,7 @@ def test_groq_generator_protocol_and_no_api_key() -> None:
     """GroqGenerator surfaces a clear error when GROQ_API_KEY is unset."""
     import os
 
-    from searchtrace.rag_eval.backends.groq import GroqGenerator
+    from retrievalci.rag_eval.backends.groq import GroqGenerator
 
     saved = os.environ.pop("GROQ_API_KEY", None)
     try:
@@ -393,7 +393,7 @@ def test_groq_generator_protocol_and_no_api_key() -> None:
 
 def test_groq_generator_default_model_id() -> None:
     """Default generator model is llama-3.3-70b-versatile."""
-    from searchtrace.rag_eval.backends.groq import GroqGenerator
+    from retrievalci.rag_eval.backends.groq import GroqGenerator
 
     g = GroqGenerator.__new__(GroqGenerator)
     g._model_id = "llama-3.3-70b-versatile"
@@ -404,7 +404,7 @@ def test_groq_judge_protocol_and_no_api_key() -> None:
     """GroqJudge wraps GroqGenerator and inherits its no-key error."""
     import os
 
-    from searchtrace.rag_eval.backends.groq import GroqJudge
+    from retrievalci.rag_eval.backends.groq import GroqJudge
 
     saved = os.environ.pop("GROQ_API_KEY", None)
     try:
@@ -417,7 +417,7 @@ def test_groq_judge_protocol_and_no_api_key() -> None:
 
 def test_openai_judge_default_model_id() -> None:
     """Default model is gpt-5.4-mini (the lighter mini-tier in the gpt-5 family)."""
-    from searchtrace.rag_eval.backends.openai import OpenAIJudge
+    from retrievalci.rag_eval.backends.openai import OpenAIJudge
 
     j = OpenAIJudge.__new__(OpenAIJudge)
     j._model_id = "gpt-5.4-mini"
@@ -426,7 +426,7 @@ def test_openai_judge_default_model_id() -> None:
 
 class TestPairedBootstrap:
     def test_strictly_higher_a_excludes_zero_below(self) -> None:
-        from searchtrace.rag_eval.metrics import paired_bootstrap_ci
+        from retrievalci.rag_eval.metrics import paired_bootstrap_ci
 
         # A is uniformly +0.5 above B at every paired index. CI on mean(a)-mean(b)
         # should sit safely above 0 with no resampling that drops it to 0.
@@ -438,7 +438,7 @@ class TestPairedBootstrap:
         assert abs((lo + hi) / 2 - 0.5) < 0.01
 
     def test_equal_distributions_straddle_zero(self) -> None:
-        from searchtrace.rag_eval.metrics import paired_bootstrap_ci
+        from retrievalci.rag_eval.metrics import paired_bootstrap_ci
 
         a = [0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0]
         b = [0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0]
@@ -446,19 +446,19 @@ class TestPairedBootstrap:
         assert lo <= 0.0 <= hi
 
     def test_length_mismatch_raises(self) -> None:
-        from searchtrace.rag_eval.metrics import paired_bootstrap_ci
+        from retrievalci.rag_eval.metrics import paired_bootstrap_ci
 
         with pytest.raises(ValueError, match="length mismatch"):
             paired_bootstrap_ci([1.0, 2.0], [1.0])
 
     def test_empty_input_raises(self) -> None:
-        from searchtrace.rag_eval.metrics import paired_bootstrap_ci
+        from retrievalci.rag_eval.metrics import paired_bootstrap_ci
 
         with pytest.raises(ValueError, match="empty input"):
             paired_bootstrap_ci([], [])
 
     def test_seed_makes_runs_deterministic(self) -> None:
-        from searchtrace.rag_eval.metrics import paired_bootstrap_ci
+        from retrievalci.rag_eval.metrics import paired_bootstrap_ci
 
         a = [1.0, 2.0, 3.0, 4.0, 5.0]
         b = [0.5, 1.0, 2.0, 3.0, 4.5]
@@ -521,7 +521,7 @@ class _CannedTripleGenerator:
         return self._model_id
 
     def generate(self, req):  # type: ignore[no-untyped-def]
-        from searchtrace.rag_eval.backends.base import GenerationResponse
+        from retrievalci.rag_eval.backends.base import GenerationResponse
 
         # Distinguish extraction from query by sniffing the prompt template.
         if "Extract factual triples" in req.prompt:
@@ -541,7 +541,7 @@ class TestClaimRAGUsesProductionSubstrate:
     def test_internal_claims_are_production_claim_instances(
         self, synthetic_chunks: list[Chunk]
     ) -> None:
-        from searchtrace.rag_eval.claims import Claim, Evidence, ProofSet
+        from retrievalci.rag_eval.claims import Claim, Evidence, ProofSet
 
         cr = ClaimRAGSystem(MockEmbedder(), _CannedTripleGenerator(), synthetic_chunks)
         assert cr.claim_count >= 1, "canned generator should yield at least one claim"
@@ -553,7 +553,7 @@ class TestClaimRAGUsesProductionSubstrate:
                     assert isinstance(ev, Evidence)
 
     def test_claim_id_is_content_hash(self, synthetic_chunks: list[Chunk]) -> None:
-        from searchtrace.rag_eval.claims import derive_claim_id
+        from retrievalci.rag_eval.claims import derive_claim_id
 
         cr = ClaimRAGSystem(MockEmbedder(), _CannedTripleGenerator(), synthetic_chunks)
         assert cr._claims
@@ -598,7 +598,7 @@ class TestClaimRAGUsesProductionSubstrate:
         # When two chunks would yield the same claim_id (same subject, predicate,
         # object, prompt_id, evidence_uri set), the second is dropped. Production
         # would supersede; the eval just dedupes since builds are atomic.
-        from searchtrace.rag_eval.corpus import Chunk
+        from retrievalci.rag_eval.corpus import Chunk
 
         # Same source_path → same evidence_uri → same proof_set → same claim_id.
         chunks = [
@@ -610,16 +610,16 @@ class TestClaimRAGUsesProductionSubstrate:
 
 
 def test_parse_answer_citations() -> None:
-    from searchtrace.rag_eval.metrics import parse_answer_citations
+    from retrievalci.rag_eval.metrics import parse_answer_citations
 
     # Empty answer → empty set.
     assert parse_answer_citations("nothing here") == set()
 
     # Single citation, normalize chunk_id to file path.
     cited = parse_answer_citations(
-        "Postgres is the DB [doc:searchtrace/rag_eval/schemas/predicates.yml]."
+        "Postgres is the DB [doc:retrievalci/rag_eval/schemas/predicates.yml]."
     )
-    assert cited == {"searchtrace/rag_eval/schemas/predicates.yml"}
+    assert cited == {"retrievalci/rag_eval/schemas/predicates.yml"}
 
     # Chunk ID format with #chunk-N suffix is normalized to the file path.
     cited = parse_answer_citations("X [doc:README.md#chunk-2].")
@@ -652,7 +652,7 @@ def _make_claim(
     import hashlib
     from datetime import UTC, datetime
 
-    from searchtrace.rag_eval.claims import (
+    from retrievalci.rag_eval.claims import (
         Claim,
         Evidence,
         ProofSet,
@@ -703,7 +703,7 @@ def _make_claim(
 
 
 def test_project_pages_aggregates_by_subject() -> None:
-    from searchtrace.rag_eval.systems.wiki_pages import project_pages
+    from retrievalci.rag_eval.systems.wiki_pages import project_pages
 
     claims = [
         _make_claim("payments_service", "depends_on", "postgres",
@@ -728,7 +728,7 @@ def test_project_pages_aggregates_by_subject() -> None:
 def test_project_pages_dedupes_values_within_section() -> None:
     """Same (subject, predicate, object) re-asserted across 2 chunks → 1 value
     with 2 evidence_uris and 2 claim_ids."""
-    from searchtrace.rag_eval.systems.wiki_pages import project_pages
+    from retrievalci.rag_eval.systems.wiki_pages import project_pages
 
     claims = [
         _make_claim("payments_service", "depends_on", "postgres",
@@ -750,7 +750,7 @@ def test_project_pages_dedupes_values_within_section() -> None:
 
 def test_project_pages_detects_contradiction() -> None:
     """Same (subject, predicate) with two distinct objects → is_contradicted=True."""
-    from searchtrace.rag_eval.systems.wiki_pages import project_pages
+    from retrievalci.rag_eval.systems.wiki_pages import project_pages
 
     claims = [
         _make_claim("auth_service", "max_replicas", "10",
@@ -770,7 +770,7 @@ def test_project_pages_detects_contradiction() -> None:
 def test_project_pages_resolves_cross_reference() -> None:
     """If page A has a value 'B' and a page for entity B exists, A's cross_references
     contains a CrossRef pointing at B's page."""
-    from searchtrace.rag_eval.systems.wiki_pages import project_pages
+    from retrievalci.rag_eval.systems.wiki_pages import project_pages
 
     claims = [
         _make_claim("payments_service", "depends_on", "postgres",
@@ -798,7 +798,7 @@ def test_project_pages_page_id_is_content_hash() -> None:
     """page_id is sha256("{subject_type}|{subject}"), deterministic across runs."""
     import hashlib
 
-    from searchtrace.rag_eval.systems.wiki_pages import project_pages
+    from retrievalci.rag_eval.systems.wiki_pages import project_pages
 
     claims = [_make_claim("payments_service", "depends_on", "postgres")]
     pages = project_pages(claims)
@@ -810,7 +810,7 @@ def test_project_pages_page_id_is_content_hash() -> None:
 def test_entity_page_render_markdown_shape() -> None:
     """Rendered Markdown contains the entity header, predicate sections, doc
     citations, the contradiction warning, and the See also block."""
-    from searchtrace.rag_eval.systems.wiki_pages import project_pages
+    from retrievalci.rag_eval.systems.wiki_pages import project_pages
 
     claims = [
         _make_claim("payments_service", "depends_on", "postgres",
@@ -839,7 +839,7 @@ def test_entity_page_render_markdown_shape() -> None:
 
 def test_wiki_pages_system_embeds_pages_not_claims(synthetic_chunks: list[Chunk]) -> None:
     """Index size = page count, not claim count. Pages aggregate claims."""
-    from searchtrace.rag_eval.systems.wiki_pages import WikiPagesSystem
+    from retrievalci.rag_eval.systems.wiki_pages import WikiPagesSystem
 
     cr = ClaimRAGSystem(MockEmbedder(), _CannedTripleGenerator(), synthetic_chunks)
     wp = WikiPagesSystem(MockEmbedder(), _CannedTripleGenerator(), cr._claims)
@@ -849,7 +849,7 @@ def test_wiki_pages_system_embeds_pages_not_claims(synthetic_chunks: list[Chunk]
 
 def test_wiki_pages_system_refuses_when_no_claims(synthetic_chunks: list[Chunk]) -> None:
     """Empty claim list → refused answer with empty_page_index reason."""
-    from searchtrace.rag_eval.systems.wiki_pages import WikiPagesSystem
+    from retrievalci.rag_eval.systems.wiki_pages import WikiPagesSystem
 
     wp = WikiPagesSystem(MockEmbedder(), MockGenerator(), [])
     ans = wp.answer("anything?")
@@ -872,7 +872,7 @@ class _SynthesisCountingGenerator:
         return self._model_id
 
     def generate(self, req):  # type: ignore[no-untyped-def]
-        from searchtrace.rag_eval.backends.base import GenerationResponse
+        from retrievalci.rag_eval.backends.base import GenerationResponse
 
         if "Wiki summary" in req.prompt:
             self.synthesis_calls += 1
@@ -893,7 +893,7 @@ class _SynthesisCountingGenerator:
 def test_synthesize_pages_one_call_per_page() -> None:
     """The synthesis pass amortizes one LLM call per entity. With 2 entities
     we expect exactly 2 synthesis calls — the load-bearing efficiency claim."""
-    from searchtrace.rag_eval.systems.wiki_pages import project_pages, synthesize_pages
+    from retrievalci.rag_eval.systems.wiki_pages import project_pages, synthesize_pages
 
     claims = [
         _make_claim("payments_service", "depends_on", "postgres",
@@ -914,7 +914,7 @@ def test_synthesize_pages_one_call_per_page() -> None:
 def test_synthesized_prose_appears_in_render_markdown() -> None:
     """Rendered Markdown prefixes the prose, then a `## Sources` header, then
     the structured listing. Embedder + LLM see the prose as primary content."""
-    from searchtrace.rag_eval.systems.wiki_pages import project_pages, synthesize_pages
+    from retrievalci.rag_eval.systems.wiki_pages import project_pages, synthesize_pages
 
     claims = [_make_claim("payments_service", "depends_on", "postgres")]
     pages = project_pages(claims)
@@ -933,7 +933,7 @@ def test_synthesized_prose_appears_in_render_markdown() -> None:
 def test_pages_without_prose_render_unchanged() -> None:
     """Backward compat: render_markdown on a non-synthesized page produces the
     pre-synthesis structured listing only — no `## Sources` header."""
-    from searchtrace.rag_eval.systems.wiki_pages import project_pages
+    from retrievalci.rag_eval.systems.wiki_pages import project_pages
 
     claims = [_make_claim("payments_service", "depends_on", "postgres")]
     pages = project_pages(claims)
@@ -947,7 +947,7 @@ def test_wiki_pages_system_synthesize_false_skips_llm_call(
 ) -> None:
     """`synthesize=False` constructs the system without running the synthesis
     pass — pages have no prose, no synthesis LLM calls were made."""
-    from searchtrace.rag_eval.systems.wiki_pages import WikiPagesSystem
+    from retrievalci.rag_eval.systems.wiki_pages import WikiPagesSystem
 
     cr = ClaimRAGSystem(MockEmbedder(), _CannedTripleGenerator(), synthetic_chunks)
     gen = _SynthesisCountingGenerator()
@@ -961,20 +961,20 @@ def test_wiki_pages_system_synthesize_false_skips_llm_call(
 
 
 def test_normalize_subject_strips_articles_and_punct() -> None:
-    from searchtrace.rag_eval.extraction import normalize_subject
+    from retrievalci.rag_eval.extraction import normalize_subject
 
     assert normalize_subject("The Eval Harness") == "eval harness"
     assert normalize_subject("Eval Harness") == "eval harness"
     assert normalize_subject("eval harness") == "eval harness"
     assert normalize_subject("Right-to-Erasure Cascade") == "right to erasure cascade"
     assert (
-        normalize_subject("searchtrace/rag_eval/schemas/predicates.yml")
-        == "searchtrace rag_eval schemas predicates yml"
+        normalize_subject("retrievalci/rag_eval/schemas/predicates.yml")
+        == "retrievalci rag_eval schemas predicates yml"
     )
 
 
 def test_should_drop_subject_meta_vocab_and_generic() -> None:
-    from searchtrace.rag_eval.extraction import should_drop_subject
+    from retrievalci.rag_eval.extraction import should_drop_subject
 
     # Stopwords (meta-vocabulary leakage)
     assert should_drop_subject("subject")
@@ -1000,7 +1000,7 @@ def test_should_drop_subject_meta_vocab_and_generic() -> None:
 
 
 def test_canonicalize_subject_strips_version_qualifier() -> None:
-    from searchtrace.rag_eval.extraction import canonicalize_subject
+    from retrievalci.rag_eval.extraction import canonicalize_subject
 
     assert canonicalize_subject("Predicate Vocabulary v0.1.0") == "predicate vocabulary"
     assert canonicalize_subject("Predicate Vocabulary") == "predicate vocabulary"
@@ -1011,7 +1011,7 @@ def test_canonicalize_subject_strips_version_qualifier() -> None:
 
 def test_filter_and_relabel_claims_drops_stopwords_and_relabels_types() -> None:
     """Stopword subjects are filtered; remaining claims get new subject_types."""
-    from searchtrace.rag_eval.extraction import filter_and_relabel_claims
+    from retrievalci.rag_eval.extraction import filter_and_relabel_claims
 
     claims = [
         _make_claim("payments_service", "depends_on", "postgres",
@@ -1041,7 +1041,7 @@ def test_filter_and_relabel_claims_drops_stopwords_and_relabels_types() -> None:
 def test_wiki_pages_drops_singletons_from_retrieval_index() -> None:
     """`min_claims_per_indexed_page=2` excludes singleton pages from the retrieval
     index but keeps them in `_pages` (and the underlying KnowledgeBuild)."""
-    from searchtrace.rag_eval.systems.wiki_pages import WikiPagesSystem
+    from retrievalci.rag_eval.systems.wiki_pages import WikiPagesSystem
 
     claims = [
         # Two claims about postgres — page survives the singleton filter.
@@ -1070,12 +1070,12 @@ def test_wiki_pages_drops_singletons_from_retrieval_index() -> None:
 
 
 def test_predicate_vocabulary_loads_from_yaml(repo_root: Path) -> None:
-    """Loader parses searchtrace/rag_eval/schemas/predicates.yml into a PredicateVocabulary
+    """Loader parses retrievalci/rag_eval/schemas/predicates.yml into a PredicateVocabulary
     that recognizes every canonical name from the YAML."""
-    from searchtrace.rag_eval.predicates import PredicateVocabulary
+    from retrievalci.rag_eval.predicates import PredicateVocabulary
 
     vocab = PredicateVocabulary.from_yaml_file(
-        repo_root / "searchtrace" / "rag_eval" / "schemas" / "predicates.yml"
+        repo_root / "retrievalci" / "rag_eval" / "schemas" / "predicates.yml"
     )
     # Spot-check a few canonical names from the schema.
     for name in ("is_deprecated", "depends_on", "owned_by", "autoscales_to"):
@@ -1085,7 +1085,7 @@ def test_predicate_vocabulary_loads_from_yaml(repo_root: Path) -> None:
 
 def test_predicate_vocabulary_canonicalizes_aliases() -> None:
     """Aliases map to the canonical name. Unknown predicates return None."""
-    from searchtrace.rag_eval.predicates import PredicateDef, PredicateVocabulary
+    from retrievalci.rag_eval.predicates import PredicateDef, PredicateVocabulary
 
     vocab = PredicateVocabulary([
         PredicateDef(
@@ -1122,8 +1122,8 @@ def test_predicate_vocabulary_canonicalizes_aliases() -> None:
 def test_project_pages_canonicalizes_with_vocabulary() -> None:
     """When a vocabulary is provided, predicate aliases collapse into one
     canonical section. Without vocabulary, aliases stay as separate sections."""
-    from searchtrace.rag_eval.predicates import PredicateDef, PredicateVocabulary
-    from searchtrace.rag_eval.systems.wiki_pages import project_pages
+    from retrievalci.rag_eval.predicates import PredicateDef, PredicateVocabulary
+    from retrievalci.rag_eval.systems.wiki_pages import project_pages
 
     claims = [
         _make_claim("payments_service", "deprecated", None,
@@ -1165,7 +1165,7 @@ def test_wiki_pages_system_synthesize_default_runs_pass(
 ) -> None:
     """Default `synthesize=True` runs the synthesis pass: synthesis call count
     equals page count, and every page has prose."""
-    from searchtrace.rag_eval.systems.wiki_pages import WikiPagesSystem
+    from retrievalci.rag_eval.systems.wiki_pages import WikiPagesSystem
 
     cr = ClaimRAGSystem(MockEmbedder(), _CannedTripleGenerator(), synthetic_chunks)
     gen = _SynthesisCountingGenerator()
@@ -1178,7 +1178,7 @@ def test_wiki_pages_system_synthesize_default_runs_pass(
 
 def test_knowledge_build_initial_synthesizes_all_pages() -> None:
     """First build (no parent): all pages get synthesized."""
-    from searchtrace.rag_eval.claims.builds import merge_claims_into_build
+    from retrievalci.rag_eval.claims.builds import merge_claims_into_build
 
     claims = [
         _make_claim("payments_service", "depends_on", "postgres",
@@ -1198,7 +1198,7 @@ def test_knowledge_build_initial_synthesizes_all_pages() -> None:
 
 def test_knowledge_build_no_op_merge_returns_prior() -> None:
     """Merging a claim that's already in the build is a no-op."""
-    from searchtrace.rag_eval.claims.builds import merge_claims_into_build
+    from retrievalci.rag_eval.claims.builds import merge_claims_into_build
 
     claims = [_make_claim("payments_service", "depends_on", "postgres")]
     gen = _SynthesisCountingGenerator()
@@ -1217,7 +1217,7 @@ def test_knowledge_build_only_resynthesizes_modified_entities() -> None:
     This is the load-bearing compounding invariant: synthesis cost scales with
     the delta, not the cumulative total.
     """
-    from searchtrace.rag_eval.claims.builds import merge_claims_into_build
+    from retrievalci.rag_eval.claims.builds import merge_claims_into_build
 
     initial_claims = [
         _make_claim("payments_service", "depends_on", "postgres",
@@ -1260,7 +1260,7 @@ def test_knowledge_build_adds_new_entity_without_resynthesizing_old() -> None:
 
     Cross-references on the OLD pages must update if they pointed at the
     just-arrived subject."""
-    from searchtrace.rag_eval.claims.builds import merge_claims_into_build
+    from retrievalci.rag_eval.claims.builds import merge_claims_into_build
 
     initial = [
         _make_claim("payments_service", "depends_on", "postgres",
@@ -1296,8 +1296,8 @@ def test_knowledge_build_adds_new_entity_without_resynthesizing_old() -> None:
 def test_wiki_pages_system_exposes_knowledge_build(synthetic_chunks: list[Chunk]) -> None:
     """When synthesize=True, the system constructs a KnowledgeBuild internally
     and exposes it via _build (build_id, page_count, claim_count populated)."""
-    from searchtrace.rag_eval.claims.builds import KnowledgeBuild
-    from searchtrace.rag_eval.systems.wiki_pages import WikiPagesSystem
+    from retrievalci.rag_eval.claims.builds import KnowledgeBuild
+    from retrievalci.rag_eval.systems.wiki_pages import WikiPagesSystem
 
     cr = ClaimRAGSystem(MockEmbedder(), _CannedTripleGenerator(), synthetic_chunks)
     wp = WikiPagesSystem(
@@ -1313,7 +1313,7 @@ def test_wiki_pages_system_synthesize_false_has_no_build(
     synthetic_chunks: list[Chunk],
 ) -> None:
     """With synthesize=False, no build is constructed (no LLM calls)."""
-    from searchtrace.rag_eval.systems.wiki_pages import WikiPagesSystem
+    from retrievalci.rag_eval.systems.wiki_pages import WikiPagesSystem
 
     cr = ClaimRAGSystem(MockEmbedder(), _CannedTripleGenerator(), synthetic_chunks)
     wp = WikiPagesSystem(
@@ -1328,7 +1328,7 @@ def test_wiki_pages_system_synthesize_false_has_no_build(
 def test_wiki_pages_system_merge_compounds_incrementally() -> None:
     """system.merge(new_claims) re-synthesizes only modified entities and
     re-embeds the index. The new build chains from the prior."""
-    from searchtrace.rag_eval.systems.wiki_pages import WikiPagesSystem
+    from retrievalci.rag_eval.systems.wiki_pages import WikiPagesSystem
 
     initial = [
         _make_claim("payments_service", "depends_on", "postgres",
@@ -1358,7 +1358,7 @@ def test_wiki_pages_system_merge_compounds_incrementally() -> None:
 
 def test_knowledge_build_id_is_content_hash() -> None:
     """Build ID is sha256(parent + sorted_new_claim_ids), deterministic."""
-    from searchtrace.rag_eval.claims.builds import _derive_build_id, merge_claims_into_build
+    from retrievalci.rag_eval.claims.builds import _derive_build_id, merge_claims_into_build
 
     claims = [_make_claim("x", "p", "y")]
     gen = _SynthesisCountingGenerator()
@@ -1371,7 +1371,7 @@ def test_knowledge_build_id_is_content_hash() -> None:
 def test_knowledge_build_round_trip_to_disk(tmp_path: Path) -> None:
     """save_build + load_build round-trip preserves every page field including
     synthesized_prose and cross_references; HEAD points at the saved build."""
-    from searchtrace.rag_eval.claims.builds import (
+    from retrievalci.rag_eval.claims.builds import (
         KnowledgeBuild,
         load_build,
         load_head,
@@ -1415,7 +1415,7 @@ def test_knowledge_build_round_trip_to_disk(tmp_path: Path) -> None:
 
 def test_knowledge_build_chain_traversal(tmp_path: Path) -> None:
     """load_chain walks parent_build_id pointers, returns oldest-first."""
-    from searchtrace.rag_eval.claims.builds import load_chain, merge_claims_into_build, save_build
+    from retrievalci.rag_eval.claims.builds import load_chain, merge_claims_into_build, save_build
 
     gen = _SynthesisCountingGenerator()
     v1 = merge_claims_into_build(
@@ -1444,7 +1444,7 @@ def test_knowledge_build_chain_traversal(tmp_path: Path) -> None:
 
 
 def test_load_head_missing_returns_none(tmp_path: Path) -> None:
-    from searchtrace.rag_eval.claims.builds import load_head
+    from retrievalci.rag_eval.claims.builds import load_head
 
     assert load_head(tmp_path) is None
 
@@ -1452,7 +1452,7 @@ def test_load_head_missing_returns_none(tmp_path: Path) -> None:
 def test_run_eval_with_three_systems_emits_pairwise(synthetic_chunks: list[Chunk]) -> None:
     """End-to-end: RAG + ClaimRAG + WikiPages run on the same questions and the
     report carries pairwise CIs for all 3 system pairs (3 choose 2 = 3 pairs)."""
-    from searchtrace.rag_eval.systems.wiki_pages import WikiPagesSystem
+    from retrievalci.rag_eval.systems.wiki_pages import WikiPagesSystem
 
     qs = [
         QAItem(

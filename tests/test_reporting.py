@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from searchtrace.cli import _report_build_main
-from searchtrace.rag_eval.types import Citation, ComparisonReport, RunResult, SystemAnswer
-from searchtrace.reporting import build_html_report
+from retrievalci.cli import _report_build_main
+from retrievalci.rag_eval.types import Citation, ComparisonReport, RunResult, SystemAnswer
+from retrievalci.reporting import build_html_report
 
 
 def _rag_report(value: float) -> ComparisonReport:
@@ -105,4 +105,4 @@ def test_report_build_cli_writes_html(tmp_path) -> None:
 
     assert rc == 0
     assert out_path.is_file()
-    assert "SearchTrace Report" in out_path.read_text(encoding="utf-8")
+    assert "RetrievalCI Report" in out_path.read_text(encoding="utf-8")

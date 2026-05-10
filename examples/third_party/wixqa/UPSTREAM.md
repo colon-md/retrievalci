@@ -19,7 +19,7 @@ Exact upstream authorship text from the WixQA dataset card:
 See `LICENSE` for the upstream notice and MIT license text carried with this
 fixture.
 
-SearchTrace conversion:
+RetrievalCI conversion:
 
 - Imported rows: 20
 - Imported corpus documents: 30

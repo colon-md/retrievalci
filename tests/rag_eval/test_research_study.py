@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 from types import ModuleType
 
-from searchtrace.rag_eval.runner import load_run_config
+from retrievalci.rag_eval.runner import load_run_config
 
 
 def repo_root() -> Path:

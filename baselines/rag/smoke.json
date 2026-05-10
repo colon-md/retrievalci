@@ -39,7 +39,7 @@
             "span": "# Onboarding Playbook\n\nNew team workspaces receive a guided onboarding session after the first three\nseats are activated. The onboarding owner sends a checklist"
           }
         ],
-        "latency_ms": 0.246032839640975,
+        "latency_ms": 0.2590930089354515,
         "tokens_used": 1360,
         "refused": false,
         "refusal_reason": null
@@ -83,7 +83,7 @@
             "span": "# Retrieval Quality Notes\n\nThe support retriever uses hybrid search: BM25 candidates are fused with dense\nembedding candidates using reciprocal rank fusion. The"
           }
         ],
-        "latency_ms": 0.05525094456970692,
+        "latency_ms": 0.059960875660181046,
         "tokens_used": 1326,
         "refused": false,
         "refusal_reason": null
@@ -127,7 +127,7 @@
             "span": "# Onboarding Playbook\n\nNew team workspaces receive a guided onboarding session after the first three\nseats are activated. The onboarding owner sends a checklist"
           }
         ],
-        "latency_ms": 0.14086184091866016,
+        "latency_ms": 0.14631194062530994,
         "tokens_used": 1326,
         "refused": false,
         "refusal_reason": null
@@ -171,7 +171,7 @@
             "span": "# Onboarding Playbook\n\nNew team workspaces receive a guided onboarding session after the first three\nseats are activated. The onboarding owner sends a checklist"
           }
         ],
-        "latency_ms": 0.08698110468685627,
+        "latency_ms": 0.0928610097616911,
         "tokens_used": 1348,
         "refused": false,
         "refusal_reason": null
@@ -215,7 +215,7 @@
             "span": "# Onboarding Playbook\n\nNew team workspaces receive a guided onboarding session after the first three\nseats are activated. The onboarding owner sends a checklist"
           }
         ],
-        "latency_ms": 0.038579804822802544,
+        "latency_ms": 0.03975001163780689,
         "tokens_used": 1310,
         "refused": false,
         "refusal_reason": null
@@ -259,7 +259,7 @@
             "span": "# Billing Support Notes\n\nThe Atlas Helpdesk starter plan keeps audit log entries for 30 days. The team\nplan keeps audit log entries for 180 days and exports the"
           }
         ],
-        "latency_ms": 0.11801207438111305,
+        "latency_ms": 0.12147193774580956,
         "tokens_used": 1332,
         "refused": false,
         "refusal_reason": null
@@ -295,15 +295,15 @@
             "span": "# Onboarding Playbook\n\nNew team workspaces receive a guided onboarding session after the first three\nseats are activated. The onboarding owner sends a checklist"
           },
           {
-            "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
-          },
-          {
             "source_path": "examples/rag_eval/corpus/billing.md",
             "span": "# Billing Support Notes\n\nThe Atlas Helpdesk starter plan keeps audit log entries for 30 days. The team\nplan keeps audit log entries for 180 days and exports the"
+          },
+          {
+            "source_path": "examples/rag_eval/corpus/security.md",
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           }
         ],
-        "latency_ms": 0.10434095747768879,
+        "latency_ms": 0.10146200656890869,
         "tokens_used": 1273,
         "refused": false,
         "refusal_reason": null
@@ -347,7 +347,7 @@
             "span": "# Onboarding Playbook\n\nNew team workspaces receive a guided onboarding session after the first three\nseats are activated. The onboarding owner sends a checklist"
           }
         ],
-        "latency_ms": 0.040520913898944855,
+        "latency_ms": 0.04864996299147606,
         "tokens_used": 1329,
         "refused": false,
         "refusal_reason": null
@@ -375,24 +375,24 @@
             "span": "# Integration Support Notes\n\nWebhook delivery retries use exponential backoff for 24 hours. If all webhook\ndelivery retries fail, the integration event is parke"
           },
           {
-            "source_path": "examples/rag_eval/corpus/support.md",
-            "span": "# Support Desk Policy\n\nThe support desk answers questions about Atlas Helpdesk accounts. Support agents\ncan cite billing notes, escalation runbooks, and retriev"
-          },
-          {
             "source_path": "examples/rag_eval/corpus/billing.md",
             "span": "# Billing Support Notes\n\nThe Atlas Helpdesk starter plan keeps audit log entries for 30 days. The team\nplan keeps audit log entries for 180 days and exports the"
+          },
+          {
+            "source_path": "examples/rag_eval/corpus/support.md",
+            "span": "# Support Desk Policy\n\nThe support desk answers questions about Atlas Helpdesk accounts. Support agents\ncan cite billing notes, escalation runbooks, and retriev"
           },
           {
             "source_path": "examples/rag_eval/corpus/onboarding.md",
             "span": "# Onboarding Playbook\n\nNew team workspaces receive a guided onboarding session after the first three\nseats are activated. The onboarding owner sends a checklist"
           },
           {
-            "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "source_path": "examples/rag_eval/corpus/retrieval.md",
+            "span": "# Retrieval Quality Notes\n\nThe support retriever uses hybrid search: BM25 candidates are fused with dense\nembedding candidates using reciprocal rank fusion. The"
           }
         ],
-        "latency_ms": 0.12696092016994953,
-        "tokens_used": 1273,
+        "latency_ms": 0.13526203110814095,
+        "tokens_used": 1329,
         "refused": false,
         "refusal_reason": null
       },
@@ -416,7 +416,7 @@
         "citations": [
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
             "source_path": "examples/rag_eval/corpus/billing.md",
@@ -435,7 +435,7 @@
             "span": "# Support Desk Policy\n\nThe support desk answers questions about Atlas Helpdesk accounts. Support agents\ncan cite billing notes, escalation runbooks, and retriev"
           }
         ],
-        "latency_ms": 0.08498085662722588,
+        "latency_ms": 0.08651101961731911,
         "tokens_used": 1323,
         "refused": false,
         "refusal_reason": null
@@ -460,7 +460,7 @@
         "citations": [
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
             "source_path": "examples/rag_eval/corpus/integrations.md",
@@ -479,7 +479,7 @@
             "span": "# Escalation Runbook\n\nSeverity 1 incidents page the on-call engineer immediately. The engineer opens\nthe Retrieval Health dashboard first, then checks the queue"
           }
         ],
-        "latency_ms": 0.033610034734010696,
+        "latency_ms": 0.03411015495657921,
         "tokens_used": 1197,
         "refused": false,
         "refusal_reason": null
@@ -504,7 +504,7 @@
         "citations": [
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
             "source_path": "examples/rag_eval/corpus/billing.md",
@@ -523,7 +523,7 @@
             "span": "# Retrieval Quality Notes\n\nThe support retriever uses hybrid search: BM25 candidates are fused with dense\nembedding candidates using reciprocal rank fusion. The"
           }
         ],
-        "latency_ms": 0.11074100621044636,
+        "latency_ms": 0.11603208258748055,
         "tokens_used": 1233,
         "refused": false,
         "refusal_reason": null
@@ -564,10 +564,10 @@
           },
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           }
         ],
-        "latency_ms": 0.082771060988307,
+        "latency_ms": 0.08541205897927284,
         "tokens_used": 1328,
         "refused": false,
         "refusal_reason": null
@@ -596,7 +596,7 @@
           },
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
             "source_path": "examples/rag_eval/corpus/retrieval.md",
@@ -611,7 +611,7 @@
             "span": "# Support Desk Policy\n\nThe support desk answers questions about Atlas Helpdesk accounts. Support agents\ncan cite billing notes, escalation runbooks, and retriev"
           }
         ],
-        "latency_ms": 0.03498978912830353,
+        "latency_ms": 0.03624102100729942,
         "tokens_used": 1325,
         "refused": false,
         "refusal_reason": null
@@ -644,7 +644,7 @@
           },
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
             "source_path": "examples/rag_eval/corpus/retrieval.md",
@@ -655,7 +655,7 @@
             "span": "# Billing Support Notes\n\nThe Atlas Helpdesk starter plan keeps audit log entries for 30 days. The team\nplan keeps audit log entries for 180 days and exports the"
           }
         ],
-        "latency_ms": 0.10925089009106159,
+        "latency_ms": 0.11849100701510906,
         "tokens_used": 1328,
         "refused": false,
         "refusal_reason": null
@@ -692,14 +692,14 @@
           },
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
             "source_path": "examples/rag_eval/corpus/support.md",
             "span": "# Support Desk Policy\n\nThe support desk answers questions about Atlas Helpdesk accounts. Support agents\ncan cite billing notes, escalation runbooks, and retriev"
           }
         ],
-        "latency_ms": 0.07981108501553535,
+        "latency_ms": 0.08673081174492836,
         "tokens_used": 1308,
         "refused": false,
         "refusal_reason": null
@@ -736,14 +736,14 @@
           },
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
             "source_path": "examples/rag_eval/corpus/escalation.md",
             "span": "# Escalation Runbook\n\nSeverity 1 incidents page the on-call engineer immediately. The engineer opens\nthe Retrieval Health dashboard first, then checks the queue"
           }
         ],
-        "latency_ms": 0.03059091977775097,
+        "latency_ms": 0.032010022550821304,
         "tokens_used": 1198,
         "refused": false,
         "refusal_reason": null
@@ -780,14 +780,14 @@
           },
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
             "source_path": "examples/rag_eval/corpus/onboarding.md",
             "span": "# Onboarding Playbook\n\nNew team workspaces receive a guided onboarding session after the first three\nseats are activated. The onboarding owner sends a checklist"
           }
         ],
-        "latency_ms": 0.10407110676169395,
+        "latency_ms": 0.10614213533699512,
         "tokens_used": 1235,
         "refused": false,
         "refusal_reason": null
@@ -828,10 +828,10 @@
           },
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           }
         ],
-        "latency_ms": 0.0983609352260828,
+        "latency_ms": 0.1010410487651825,
         "tokens_used": 1367,
         "refused": false,
         "refusal_reason": null
@@ -875,7 +875,7 @@
             "span": "# Onboarding Playbook\n\nNew team workspaces receive a guided onboarding session after the first three\nseats are activated. The onboarding owner sends a checklist"
           }
         ],
-        "latency_ms": 0.049181049689650536,
+        "latency_ms": 0.05179992876946926,
         "tokens_used": 1298,
         "refused": false,
         "refusal_reason": null
@@ -919,7 +919,7 @@
             "span": "# Integration Support Notes\n\nWebhook delivery retries use exponential backoff for 24 hours. If all webhook\ndelivery retries fail, the integration event is parke"
           }
         ],
-        "latency_ms": 0.1372110564261675,
+        "latency_ms": 0.14178198762238026,
         "tokens_used": 1353,
         "refused": false,
         "refusal_reason": null
@@ -944,7 +944,7 @@
         "citations": [
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
             "source_path": "examples/rag_eval/corpus/escalation.md",
@@ -963,7 +963,7 @@
             "span": "# Onboarding Playbook\n\nNew team workspaces receive a guided onboarding session after the first three\nseats are activated. The onboarding owner sends a checklist"
           }
         ],
-        "latency_ms": 0.0886409543454647,
+        "latency_ms": 0.09551108814775944,
         "tokens_used": 1292,
         "refused": false,
         "refusal_reason": null
@@ -996,7 +996,7 @@
           },
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
             "source_path": "examples/rag_eval/corpus/billing.md",
@@ -1007,7 +1007,7 @@
             "span": "# Escalation Runbook\n\nSeverity 1 incidents page the on-call engineer immediately. The engineer opens\nthe Retrieval Health dashboard first, then checks the queue"
           }
         ],
-        "latency_ms": 0.03699096851050854,
+        "latency_ms": 0.03908085636794567,
         "tokens_used": 1292,
         "refused": false,
         "refusal_reason": null
@@ -1032,7 +1032,7 @@
         "citations": [
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
             "source_path": "examples/rag_eval/corpus/support.md",
@@ -1051,7 +1051,7 @@
             "span": "# Billing Support Notes\n\nThe Atlas Helpdesk starter plan keeps audit log entries for 30 days. The team\nplan keeps audit log entries for 180 days and exports the"
           }
         ],
-        "latency_ms": 0.11387094855308533,
+        "latency_ms": 0.11836201883852482,
         "tokens_used": 1292,
         "refused": false,
         "refusal_reason": null
@@ -1088,15 +1088,15 @@
           },
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
-            "source_path": "examples/rag_eval/corpus/integrations.md",
-            "span": "# Integration Support Notes\n\nWebhook delivery retries use exponential backoff for 24 hours. If all webhook\ndelivery retries fail, the integration event is parke"
+            "source_path": "examples/rag_eval/corpus/escalation.md",
+            "span": "# Escalation Runbook\n\nSeverity 1 incidents page the on-call engineer immediately. The engineer opens\nthe Retrieval Health dashboard first, then checks the queue"
           }
         ],
-        "latency_ms": 0.10664109140634537,
-        "tokens_used": 1265,
+        "latency_ms": 0.10882108472287655,
+        "tokens_used": 1299,
         "refused": false,
         "refusal_reason": null
       },
@@ -1104,8 +1104,8 @@
       "must_not_include_violations": 0,
       "answer_citation_precision": null,
       "answer_citation_recall": 0.0,
-      "retrieval_source_precision": 0.2,
-      "retrieval_source_recall": 0.5,
+      "retrieval_source_precision": 0.4,
+      "retrieval_source_recall": 1.0,
       "faithfulness": 3.18,
       "relevance": 5.0,
       "answer_length_chars": 276,
@@ -1124,7 +1124,7 @@
           },
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
             "source_path": "examples/rag_eval/corpus/retrieval.md",
@@ -1139,7 +1139,7 @@
             "span": "# Onboarding Playbook\n\nNew team workspaces receive a guided onboarding session after the first three\nseats are activated. The onboarding owner sends a checklist"
           }
         ],
-        "latency_ms": 0.050151022151112556,
+        "latency_ms": 0.05204114131629467,
         "tokens_used": 1352,
         "refused": false,
         "refusal_reason": null
@@ -1167,12 +1167,12 @@
             "span": "# Retrieval Quality Notes\n\nThe support retriever uses hybrid search: BM25 candidates are fused with dense\nembedding candidates using reciprocal rank fusion. The"
           },
           {
-            "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
-          },
-          {
             "source_path": "examples/rag_eval/corpus/escalation.md",
             "span": "# Escalation Runbook\n\nSeverity 1 incidents page the on-call engineer immediately. The engineer opens\nthe Retrieval Health dashboard first, then checks the queue"
+          },
+          {
+            "source_path": "examples/rag_eval/corpus/security.md",
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
             "source_path": "examples/rag_eval/corpus/billing.md",
@@ -1183,7 +1183,7 @@
             "span": "# Onboarding Playbook\n\nNew team workspaces receive a guided onboarding session after the first three\nseats are activated. The onboarding owner sends a checklist"
           }
         ],
-        "latency_ms": 0.14678179286420345,
+        "latency_ms": 0.15181186608970165,
         "tokens_used": 1299,
         "refused": false,
         "refusal_reason": null
@@ -1215,19 +1215,19 @@
             "span": "# Onboarding Playbook\n\nNew team workspaces receive a guided onboarding session after the first three\nseats are activated. The onboarding owner sends a checklist"
           },
           {
-            "source_path": "examples/rag_eval/corpus/retrieval.md",
-            "span": "# Retrieval Quality Notes\n\nThe support retriever uses hybrid search: BM25 candidates are fused with dense\nembedding candidates using reciprocal rank fusion. The"
+            "source_path": "examples/rag_eval/corpus/security.md",
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
-            "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "source_path": "examples/rag_eval/corpus/retrieval.md",
+            "span": "# Retrieval Quality Notes\n\nThe support retriever uses hybrid search: BM25 candidates are fused with dense\nembedding candidates using reciprocal rank fusion. The"
           },
           {
             "source_path": "examples/rag_eval/corpus/integrations.md",
             "span": "# Integration Support Notes\n\nWebhook delivery retries use exponential backoff for 24 hours. If all webhook\ndelivery retries fail, the integration event is parke"
           }
         ],
-        "latency_ms": 0.1080809161067009,
+        "latency_ms": 0.11966214515268803,
         "tokens_used": 1276,
         "refused": false,
         "refusal_reason": null
@@ -1268,10 +1268,10 @@
           },
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           }
         ],
-        "latency_ms": 0.058030011132359505,
+        "latency_ms": 0.06122095510363579,
         "tokens_used": 1316,
         "refused": false,
         "refusal_reason": null
@@ -1303,20 +1303,20 @@
             "span": "# Support Desk Policy\n\nThe support desk answers questions about Atlas Helpdesk accounts. Support agents\ncan cite billing notes, escalation runbooks, and retriev"
           },
           {
+            "source_path": "examples/rag_eval/corpus/security.md",
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
+          },
+          {
             "source_path": "examples/rag_eval/corpus/integrations.md",
             "span": "# Integration Support Notes\n\nWebhook delivery retries use exponential backoff for 24 hours. If all webhook\ndelivery retries fail, the integration event is parke"
           },
           {
             "source_path": "examples/rag_eval/corpus/onboarding.md",
             "span": "# Onboarding Playbook\n\nNew team workspaces receive a guided onboarding session after the first three\nseats are activated. The onboarding owner sends a checklist"
-          },
-          {
-            "source_path": "examples/rag_eval/corpus/retrieval.md",
-            "span": "# Retrieval Quality Notes\n\nThe support retriever uses hybrid search: BM25 candidates are fused with dense\nembedding candidates using reciprocal rank fusion. The"
           }
         ],
-        "latency_ms": 0.15480094589293003,
-        "tokens_used": 1351,
+        "latency_ms": 0.16105198301374912,
+        "tokens_used": 1295,
         "refused": false,
         "refusal_reason": null
       },
@@ -1340,7 +1340,7 @@
         "citations": [
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
             "source_path": "examples/rag_eval/corpus/onboarding.md",
@@ -1359,7 +1359,7 @@
             "span": "# Integration Support Notes\n\nWebhook delivery retries use exponential backoff for 24 hours. If all webhook\ndelivery retries fail, the integration event is parke"
           }
         ],
-        "latency_ms": 0.11471100151538849,
+        "latency_ms": 0.11795107275247574,
         "tokens_used": 1342,
         "refused": false,
         "refusal_reason": null
@@ -1384,7 +1384,7 @@
         "citations": [
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
             "source_path": "examples/rag_eval/corpus/onboarding.md",
@@ -1403,7 +1403,7 @@
             "span": "# Integration Support Notes\n\nWebhook delivery retries use exponential backoff for 24 hours. If all webhook\ndelivery retries fail, the integration event is parke"
           }
         ],
-        "latency_ms": 0.05455012433230877,
+        "latency_ms": 0.057551078498363495,
         "tokens_used": 1306,
         "refused": false,
         "refusal_reason": null
@@ -1428,7 +1428,7 @@
         "citations": [
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
             "source_path": "examples/rag_eval/corpus/onboarding.md",
@@ -1447,7 +1447,7 @@
             "span": "# Integration Support Notes\n\nWebhook delivery retries use exponential backoff for 24 hours. If all webhook\ndelivery retries fail, the integration event is parke"
           }
         ],
-        "latency_ms": 0.16127107664942741,
+        "latency_ms": 0.16512209549546242,
         "tokens_used": 1342,
         "refused": false,
         "refusal_reason": null
@@ -1480,7 +1480,7 @@
           },
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
             "source_path": "examples/rag_eval/corpus/billing.md",
@@ -1491,7 +1491,7 @@
             "span": "# Escalation Runbook\n\nSeverity 1 incidents page the on-call engineer immediately. The engineer opens\nthe Retrieval Health dashboard first, then checks the queue"
           }
         ],
-        "latency_ms": 0.10641082189977169,
+        "latency_ms": 0.11664186604321003,
         "tokens_used": 1316,
         "refused": false,
         "refusal_reason": null
@@ -1524,7 +1524,7 @@
           },
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
             "source_path": "examples/rag_eval/corpus/support.md",
@@ -1535,7 +1535,7 @@
             "span": "# Onboarding Playbook\n\nNew team workspaces receive a guided onboarding session after the first three\nseats are activated. The onboarding owner sends a checklist"
           }
         ],
-        "latency_ms": 0.05440087988972664,
+        "latency_ms": 0.06245984695851803,
         "tokens_used": 1298,
         "refused": false,
         "refusal_reason": null
@@ -1572,14 +1572,14 @@
           },
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
             "source_path": "examples/rag_eval/corpus/escalation.md",
             "span": "# Escalation Runbook\n\nSeverity 1 incidents page the on-call engineer immediately. The engineer opens\nthe Retrieval Health dashboard first, then checks the queue"
           }
         ],
-        "latency_ms": 0.15262211672961712,
+        "latency_ms": 0.1588631421327591,
         "tokens_used": 1316,
         "refused": false,
         "refusal_reason": null
@@ -1619,12 +1619,12 @@
             "span": "# Support Desk Policy\n\nThe support desk answers questions about Atlas Helpdesk accounts. Support agents\ncan cite billing notes, escalation runbooks, and retriev"
           },
           {
-            "source_path": "examples/rag_eval/corpus/onboarding.md",
-            "span": "# Onboarding Playbook\n\nNew team workspaces receive a guided onboarding session after the first three\nseats are activated. The onboarding owner sends a checklist"
+            "source_path": "examples/rag_eval/corpus/escalation.md",
+            "span": "# Escalation Runbook\n\nSeverity 1 incidents page the on-call engineer immediately. The engineer opens\nthe Retrieval Health dashboard first, then checks the queue"
           }
         ],
-        "latency_ms": 0.10959082283079624,
-        "tokens_used": 1368,
+        "latency_ms": 0.11330191045999527,
+        "tokens_used": 1386,
         "refused": false,
         "refusal_reason": null
       },
@@ -1632,8 +1632,8 @@
       "must_not_include_violations": null,
       "answer_citation_precision": null,
       "answer_citation_recall": 0.0,
-      "retrieval_source_precision": 0.4,
-      "retrieval_source_recall": 1.0,
+      "retrieval_source_precision": 0.2,
+      "retrieval_source_recall": 0.5,
       "faithfulness": 2.6,
       "relevance": 5.0,
       "answer_length_chars": 348,
@@ -1664,10 +1664,10 @@
           },
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           }
         ],
-        "latency_ms": 0.04667998291552067,
+        "latency_ms": 0.049730995669960976,
         "tokens_used": 1308,
         "refused": false,
         "refusal_reason": null
@@ -1699,20 +1699,20 @@
             "span": "# Billing Support Notes\n\nThe Atlas Helpdesk starter plan keeps audit log entries for 30 days. The team\nplan keeps audit log entries for 180 days and exports the"
           },
           {
-            "source_path": "examples/rag_eval/corpus/support.md",
-            "span": "# Support Desk Policy\n\nThe support desk answers questions about Atlas Helpdesk accounts. Support agents\ncan cite billing notes, escalation runbooks, and retriev"
-          },
-          {
             "source_path": "examples/rag_eval/corpus/escalation.md",
             "span": "# Escalation Runbook\n\nSeverity 1 incidents page the on-call engineer immediately. The engineer opens\nthe Retrieval Health dashboard first, then checks the queue"
           },
           {
-            "source_path": "examples/rag_eval/corpus/onboarding.md",
-            "span": "# Onboarding Playbook\n\nNew team workspaces receive a guided onboarding session after the first three\nseats are activated. The onboarding owner sends a checklist"
+            "source_path": "examples/rag_eval/corpus/support.md",
+            "span": "# Support Desk Policy\n\nThe support desk answers questions about Atlas Helpdesk accounts. Support agents\ncan cite billing notes, escalation runbooks, and retriev"
+          },
+          {
+            "source_path": "examples/rag_eval/corpus/retrieval.md",
+            "span": "# Retrieval Quality Notes\n\nThe support retriever uses hybrid search: BM25 candidates are fused with dense\nembedding candidates using reciprocal rank fusion. The"
           }
         ],
-        "latency_ms": 0.143890967592597,
-        "tokens_used": 1331,
+        "latency_ms": 0.15028216876089573,
+        "tokens_used": 1386,
         "refused": false,
         "refusal_reason": null
       },
@@ -1720,8 +1720,8 @@
       "must_not_include_violations": null,
       "answer_citation_precision": null,
       "answer_citation_recall": 0.0,
-      "retrieval_source_precision": 0.4,
-      "retrieval_source_recall": 1.0,
+      "retrieval_source_precision": 0.2,
+      "retrieval_source_recall": 0.5,
       "faithfulness": 2.6,
       "relevance": 5.0,
       "answer_length_chars": 348,
@@ -1732,118 +1732,30 @@
       "question_id": "demo-q14",
       "tier": "multi_hop",
       "answer": {
-        "answer": "(mock synthesis for: Before a prompt bundle change deploys, which SearchTrace metric is compared and what drop blocks the change?)\n- inline. If the context doesn't\n- contain the answer, say so.\n- Question: Before a prompt bundle change deploys, which SearchTrace metric is compared and what drop blocks the change?",
+        "answer": "(mock synthesis for: Before a prompt bundle change deploys, which RetrievalCI metric is compared and what drop blocks the change?)\n- inline. If the context doesn't\n- contain the answer, say so.\n- Question: Before a prompt bundle change deploys, which RetrievalCI metric is compared and what drop blocks the change?",
         "citations": [
           {
             "source_path": "examples/rag_eval/corpus/retrieval.md",
             "span": "# Retrieval Quality Notes\n\nThe support retriever uses hybrid search: BM25 candidates are fused with dense\nembedding candidates using reciprocal rank fusion. The"
+          },
+          {
+            "source_path": "examples/rag_eval/corpus/onboarding.md",
+            "span": "# Onboarding Playbook\n\nNew team workspaces receive a guided onboarding session after the first three\nseats are activated. The onboarding owner sends a checklist"
           },
           {
             "source_path": "examples/rag_eval/corpus/support.md",
             "span": "# Support Desk Policy\n\nThe support desk answers questions about Atlas Helpdesk accounts. Support agents\ncan cite billing notes, escalation runbooks, and retriev"
           },
           {
-            "source_path": "examples/rag_eval/corpus/onboarding.md",
-            "span": "# Onboarding Playbook\n\nNew team workspaces receive a guided onboarding session after the first three\nseats are activated. The onboarding owner sends a checklist"
-          },
-          {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
-          },
-          {
-            "source_path": "examples/rag_eval/corpus/integrations.md",
-            "span": "# Integration Support Notes\n\nWebhook delivery retries use exponential backoff for 24 hours. If all webhook\ndelivery retries fail, the integration event is parke"
-          }
-        ],
-        "latency_ms": 0.10418100282549858,
-        "tokens_used": 1332,
-        "refused": false,
-        "refusal_reason": null
-      },
-      "must_include_match": 0.0,
-      "must_not_include_violations": null,
-      "answer_citation_precision": null,
-      "answer_citation_recall": 0.0,
-      "retrieval_source_precision": 0.2,
-      "retrieval_source_recall": 1.0,
-      "faithfulness": 2.0,
-      "relevance": 5.0,
-      "answer_length_chars": 314,
-      "refused": false
-    },
-    {
-      "system": "bm25",
-      "question_id": "demo-q14",
-      "tier": "multi_hop",
-      "answer": {
-        "answer": "(mock synthesis for: Before a prompt bundle change deploys, which SearchTrace metric is compared and what drop blocks the change?)\n- inline. If the context doesn't\n- contain the answer, say so.\n- Question: Before a prompt bundle change deploys, which SearchTrace metric is compared and what drop blocks the change?",
-        "citations": [
-          {
-            "source_path": "examples/rag_eval/corpus/retrieval.md",
-            "span": "# Retrieval Quality Notes\n\nThe support retriever uses hybrid search: BM25 candidates are fused with dense\nembedding candidates using reciprocal rank fusion. The"
-          },
-          {
-            "source_path": "examples/rag_eval/corpus/escalation.md",
-            "span": "# Escalation Runbook\n\nSeverity 1 incidents page the on-call engineer immediately. The engineer opens\nthe Retrieval Health dashboard first, then checks the queue"
-          },
-          {
-            "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
-          },
-          {
-            "source_path": "examples/rag_eval/corpus/onboarding.md",
-            "span": "# Onboarding Playbook\n\nNew team workspaces receive a guided onboarding session after the first three\nseats are activated. The onboarding owner sends a checklist"
-          },
-          {
-            "source_path": "examples/rag_eval/corpus/integrations.md",
-            "span": "# Integration Support Notes\n\nWebhook delivery retries use exponential backoff for 24 hours. If all webhook\ndelivery retries fail, the integration event is parke"
-          }
-        ],
-        "latency_ms": 0.05046091973781586,
-        "tokens_used": 1276,
-        "refused": false,
-        "refusal_reason": null
-      },
-      "must_include_match": 0.0,
-      "must_not_include_violations": null,
-      "answer_citation_precision": null,
-      "answer_citation_recall": 0.0,
-      "retrieval_source_precision": 0.2,
-      "retrieval_source_recall": 1.0,
-      "faithfulness": 2.0,
-      "relevance": 5.0,
-      "answer_length_chars": 314,
-      "refused": false
-    },
-    {
-      "system": "hybrid_rag",
-      "question_id": "demo-q14",
-      "tier": "multi_hop",
-      "answer": {
-        "answer": "(mock synthesis for: Before a prompt bundle change deploys, which SearchTrace metric is compared and what drop blocks the change?)\n- inline. If the context doesn't\n- contain the answer, say so.\n- Question: Before a prompt bundle change deploys, which SearchTrace metric is compared and what drop blocks the change?",
-        "citations": [
-          {
-            "source_path": "examples/rag_eval/corpus/retrieval.md",
-            "span": "# Retrieval Quality Notes\n\nThe support retriever uses hybrid search: BM25 candidates are fused with dense\nembedding candidates using reciprocal rank fusion. The"
-          },
-          {
-            "source_path": "examples/rag_eval/corpus/onboarding.md",
-            "span": "# Onboarding Playbook\n\nNew team workspaces receive a guided onboarding session after the first three\nseats are activated. The onboarding owner sends a checklist"
-          },
-          {
-            "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
-          },
-          {
-            "source_path": "examples/rag_eval/corpus/support.md",
-            "span": "# Support Desk Policy\n\nThe support desk answers questions about Atlas Helpdesk accounts. Support agents\ncan cite billing notes, escalation runbooks, and retriev"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
             "source_path": "examples/rag_eval/corpus/escalation.md",
             "span": "# Escalation Runbook\n\nSeverity 1 incidents page the on-call engineer immediately. The engineer opens\nthe Retrieval Health dashboard first, then checks the queue"
           }
         ],
-        "latency_ms": 0.14504184946417809,
+        "latency_ms": 0.11482206173241138,
         "tokens_used": 1366,
         "refused": false,
         "refusal_reason": null
@@ -1854,7 +1766,95 @@
       "answer_citation_recall": 0.0,
       "retrieval_source_precision": 0.2,
       "retrieval_source_recall": 1.0,
-      "faithfulness": 2.0,
+      "faithfulness": 2.25,
+      "relevance": 5.0,
+      "answer_length_chars": 314,
+      "refused": false
+    },
+    {
+      "system": "bm25",
+      "question_id": "demo-q14",
+      "tier": "multi_hop",
+      "answer": {
+        "answer": "(mock synthesis for: Before a prompt bundle change deploys, which RetrievalCI metric is compared and what drop blocks the change?)\n- inline. If the context doesn't\n- contain the answer, say so.\n- Question: Before a prompt bundle change deploys, which RetrievalCI metric is compared and what drop blocks the change?",
+        "citations": [
+          {
+            "source_path": "examples/rag_eval/corpus/retrieval.md",
+            "span": "# Retrieval Quality Notes\n\nThe support retriever uses hybrid search: BM25 candidates are fused with dense\nembedding candidates using reciprocal rank fusion. The"
+          },
+          {
+            "source_path": "examples/rag_eval/corpus/escalation.md",
+            "span": "# Escalation Runbook\n\nSeverity 1 incidents page the on-call engineer immediately. The engineer opens\nthe Retrieval Health dashboard first, then checks the queue"
+          },
+          {
+            "source_path": "examples/rag_eval/corpus/security.md",
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
+          },
+          {
+            "source_path": "examples/rag_eval/corpus/onboarding.md",
+            "span": "# Onboarding Playbook\n\nNew team workspaces receive a guided onboarding session after the first three\nseats are activated. The onboarding owner sends a checklist"
+          },
+          {
+            "source_path": "examples/rag_eval/corpus/integrations.md",
+            "span": "# Integration Support Notes\n\nWebhook delivery retries use exponential backoff for 24 hours. If all webhook\ndelivery retries fail, the integration event is parke"
+          }
+        ],
+        "latency_ms": 0.05819089710712433,
+        "tokens_used": 1276,
+        "refused": false,
+        "refusal_reason": null
+      },
+      "must_include_match": 0.0,
+      "must_not_include_violations": null,
+      "answer_citation_precision": null,
+      "answer_citation_recall": 0.0,
+      "retrieval_source_precision": 0.2,
+      "retrieval_source_recall": 1.0,
+      "faithfulness": 2.25,
+      "relevance": 5.0,
+      "answer_length_chars": 314,
+      "refused": false
+    },
+    {
+      "system": "hybrid_rag",
+      "question_id": "demo-q14",
+      "tier": "multi_hop",
+      "answer": {
+        "answer": "(mock synthesis for: Before a prompt bundle change deploys, which RetrievalCI metric is compared and what drop blocks the change?)\n- inline. If the context doesn't\n- contain the answer, say so.\n- Question: Before a prompt bundle change deploys, which RetrievalCI metric is compared and what drop blocks the change?",
+        "citations": [
+          {
+            "source_path": "examples/rag_eval/corpus/retrieval.md",
+            "span": "# Retrieval Quality Notes\n\nThe support retriever uses hybrid search: BM25 candidates are fused with dense\nembedding candidates using reciprocal rank fusion. The"
+          },
+          {
+            "source_path": "examples/rag_eval/corpus/onboarding.md",
+            "span": "# Onboarding Playbook\n\nNew team workspaces receive a guided onboarding session after the first three\nseats are activated. The onboarding owner sends a checklist"
+          },
+          {
+            "source_path": "examples/rag_eval/corpus/escalation.md",
+            "span": "# Escalation Runbook\n\nSeverity 1 incidents page the on-call engineer immediately. The engineer opens\nthe Retrieval Health dashboard first, then checks the queue"
+          },
+          {
+            "source_path": "examples/rag_eval/corpus/security.md",
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
+          },
+          {
+            "source_path": "examples/rag_eval/corpus/support.md",
+            "span": "# Support Desk Policy\n\nThe support desk answers questions about Atlas Helpdesk accounts. Support agents\ncan cite billing notes, escalation runbooks, and retriev"
+          }
+        ],
+        "latency_ms": 0.15172199346125126,
+        "tokens_used": 1366,
+        "refused": false,
+        "refusal_reason": null
+      },
+      "must_include_match": 0.0,
+      "must_not_include_violations": null,
+      "answer_citation_precision": null,
+      "answer_citation_recall": 0.0,
+      "retrieval_source_precision": 0.2,
+      "retrieval_source_recall": 1.0,
+      "faithfulness": 2.25,
       "relevance": 5.0,
       "answer_length_chars": 314,
       "refused": false
@@ -1879,15 +1879,15 @@
             "span": "# Support Desk Policy\n\nThe support desk answers questions about Atlas Helpdesk accounts. Support agents\ncan cite billing notes, escalation runbooks, and retriev"
           },
           {
-            "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
-          },
-          {
             "source_path": "examples/rag_eval/corpus/onboarding.md",
             "span": "# Onboarding Playbook\n\nNew team workspaces receive a guided onboarding session after the first three\nseats are activated. The onboarding owner sends a checklist"
+          },
+          {
+            "source_path": "examples/rag_eval/corpus/security.md",
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           }
         ],
-        "latency_ms": 0.10864110663533211,
+        "latency_ms": 0.11188210919499397,
         "tokens_used": 1366,
         "refused": false,
         "refusal_reason": null
@@ -1931,7 +1931,7 @@
             "span": "# Onboarding Playbook\n\nNew team workspaces receive a guided onboarding session after the first three\nseats are activated. The onboarding owner sends a checklist"
           }
         ],
-        "latency_ms": 0.05730101838707924,
+        "latency_ms": 0.059889862313866615,
         "tokens_used": 1352,
         "refused": false,
         "refusal_reason": null
@@ -1971,12 +1971,12 @@
             "span": "# Integration Support Notes\n\nWebhook delivery retries use exponential backoff for 24 hours. If all webhook\ndelivery retries fail, the integration event is parke"
           },
           {
-            "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "source_path": "examples/rag_eval/corpus/onboarding.md",
+            "span": "# Onboarding Playbook\n\nNew team workspaces receive a guided onboarding session after the first three\nseats are activated. The onboarding owner sends a checklist"
           }
         ],
-        "latency_ms": 0.15955185517668724,
-        "tokens_used": 1350,
+        "latency_ms": 0.16551301814615726,
+        "tokens_used": 1352,
         "refused": false,
         "refusal_reason": null
       },
@@ -2000,7 +2000,7 @@
         "citations": [
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
             "source_path": "examples/rag_eval/corpus/integrations.md",
@@ -2019,7 +2019,7 @@
             "span": "# Onboarding Playbook\n\nNew team workspaces receive a guided onboarding session after the first three\nseats are activated. The onboarding owner sends a checklist"
           }
         ],
-        "latency_ms": 0.1156411599367857,
+        "latency_ms": 0.12513110414147377,
         "tokens_used": 1303,
         "refused": false,
         "refusal_reason": null
@@ -2052,7 +2052,7 @@
           },
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
             "source_path": "examples/rag_eval/corpus/support.md",
@@ -2063,7 +2063,7 @@
             "span": "# Billing Support Notes\n\nThe Atlas Helpdesk starter plan keeps audit log entries for 30 days. The team\nplan keeps audit log entries for 180 days and exports the"
           }
         ],
-        "latency_ms": 0.06224098615348339,
+        "latency_ms": 0.06611109711229801,
         "tokens_used": 1325,
         "refused": false,
         "refusal_reason": null
@@ -2088,7 +2088,7 @@
         "citations": [
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
             "source_path": "examples/rag_eval/corpus/integrations.md",
@@ -2107,7 +2107,7 @@
             "span": "# Retrieval Quality Notes\n\nThe support retriever uses hybrid search: BM25 candidates are fused with dense\nembedding candidates using reciprocal rank fusion. The"
           }
         ],
-        "latency_ms": 0.17633195966482162,
+        "latency_ms": 0.17595314420759678,
         "tokens_used": 1303,
         "refused": false,
         "refusal_reason": null
@@ -2147,12 +2147,12 @@
             "span": "# Escalation Runbook\n\nSeverity 1 incidents page the on-call engineer immediately. The engineer opens\nthe Retrieval Health dashboard first, then checks the queue"
           },
           {
-            "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "source_path": "examples/rag_eval/corpus/onboarding.md",
+            "span": "# Onboarding Playbook\n\nNew team workspaces receive a guided onboarding session after the first three\nseats are activated. The onboarding owner sends a checklist"
           }
         ],
-        "latency_ms": 0.09017088450491428,
-        "tokens_used": 1355,
+        "latency_ms": 0.09331200271844864,
+        "tokens_used": 1357,
         "refused": false,
         "refusal_reason": null
       },
@@ -2188,14 +2188,14 @@
           },
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
             "source_path": "examples/rag_eval/corpus/escalation.md",
             "span": "# Escalation Runbook\n\nSeverity 1 incidents page the on-call engineer immediately. The engineer opens\nthe Retrieval Health dashboard first, then checks the queue"
           }
         ],
-        "latency_ms": 0.03657001070678234,
+        "latency_ms": 0.038350000977516174,
         "tokens_used": 1301,
         "refused": false,
         "refusal_reason": null
@@ -2227,19 +2227,19 @@
             "span": "# Support Desk Policy\n\nThe support desk answers questions about Atlas Helpdesk accounts. Support agents\ncan cite billing notes, escalation runbooks, and retriev"
           },
           {
-            "source_path": "examples/rag_eval/corpus/retrieval.md",
-            "span": "# Retrieval Quality Notes\n\nThe support retriever uses hybrid search: BM25 candidates are fused with dense\nembedding candidates using reciprocal rank fusion. The"
-          },
-          {
             "source_path": "examples/rag_eval/corpus/onboarding.md",
             "span": "# Onboarding Playbook\n\nNew team workspaces receive a guided onboarding session after the first three\nseats are activated. The onboarding owner sends a checklist"
+          },
+          {
+            "source_path": "examples/rag_eval/corpus/retrieval.md",
+            "span": "# Retrieval Quality Notes\n\nThe support retriever uses hybrid search: BM25 candidates are fused with dense\nembedding candidates using reciprocal rank fusion. The"
           },
           {
             "source_path": "examples/rag_eval/corpus/escalation.md",
             "span": "# Escalation Runbook\n\nSeverity 1 incidents page the on-call engineer immediately. The engineer opens\nthe Retrieval Health dashboard first, then checks the queue"
           }
         ],
-        "latency_ms": 0.11784094385802746,
+        "latency_ms": 0.12860214337706566,
         "tokens_used": 1357,
         "refused": false,
         "refusal_reason": null
@@ -2280,10 +2280,10 @@
           },
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           }
         ],
-        "latency_ms": 0.11014100164175034,
+        "latency_ms": 0.10562082752585411,
         "tokens_used": 1387,
         "refused": false,
         "refusal_reason": null
@@ -2327,7 +2327,7 @@
             "span": "# Integration Support Notes\n\nWebhook delivery retries use exponential backoff for 24 hours. If all webhook\ndelivery retries fail, the integration event is parke"
           }
         ],
-        "latency_ms": 0.053369905799627304,
+        "latency_ms": 0.054921023547649384,
         "tokens_used": 1352,
         "refused": false,
         "refusal_reason": null
@@ -2371,7 +2371,7 @@
             "span": "# Onboarding Playbook\n\nNew team workspaces receive a guided onboarding session after the first three\nseats are activated. The onboarding owner sends a checklist"
           }
         ],
-        "latency_ms": 0.1484809909015894,
+        "latency_ms": 0.15399185940623283,
         "tokens_used": 1389,
         "refused": false,
         "refusal_reason": null
@@ -2412,10 +2412,10 @@
           },
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           }
         ],
-        "latency_ms": 0.10679103434085846,
+        "latency_ms": 0.10235118679702282,
         "tokens_used": 1370,
         "refused": false,
         "refusal_reason": null
@@ -2452,14 +2452,14 @@
           },
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
             "source_path": "examples/rag_eval/corpus/billing.md",
             "span": "# Billing Support Notes\n\nThe Atlas Helpdesk starter plan keeps audit log entries for 30 days. The team\nplan keeps audit log entries for 180 days and exports the"
           }
         ],
-        "latency_ms": 0.050691189244389534,
+        "latency_ms": 0.05396106280386448,
         "tokens_used": 1336,
         "refused": false,
         "refusal_reason": null
@@ -2496,14 +2496,14 @@
           },
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
             "source_path": "examples/rag_eval/corpus/escalation.md",
             "span": "# Escalation Runbook\n\nSeverity 1 incidents page the on-call engineer immediately. The engineer opens\nthe Retrieval Health dashboard first, then checks the queue"
           }
         ],
-        "latency_ms": 0.14182203449308872,
+        "latency_ms": 0.1645321026444435,
         "tokens_used": 1370,
         "refused": false,
         "refusal_reason": null
@@ -2524,31 +2524,31 @@
       "question_id": "demo-q20",
       "tier": "contradiction",
       "answer": {
-        "answer": "(mock synthesis for: Are API tokens allowed to appear in SearchTrace trace artifacts or RAG evaluation reports?)\n- inline. If the context doesn't\n- contain the answer, say so.\n- Question: Are API tokens allowed to appear in SearchTrace trace artifacts or RAG evaluation reports?",
+        "answer": "(mock synthesis for: Are API tokens allowed to appear in RetrievalCI trace artifacts or RAG evaluation reports?)\n- inline. If the context doesn't\n- contain the answer, say so.\n- Question: Are API tokens allowed to appear in RetrievalCI trace artifacts or RAG evaluation reports?",
         "citations": [
           {
-            "source_path": "examples/rag_eval/corpus/integrations.md",
-            "span": "# Integration Support Notes\n\nWebhook delivery retries use exponential backoff for 24 hours. If all webhook\ndelivery retries fail, the integration event is parke"
-          },
-          {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
             "source_path": "examples/rag_eval/corpus/billing.md",
             "span": "# Billing Support Notes\n\nThe Atlas Helpdesk starter plan keeps audit log entries for 30 days. The team\nplan keeps audit log entries for 180 days and exports the"
           },
           {
+            "source_path": "examples/rag_eval/corpus/integrations.md",
+            "span": "# Integration Support Notes\n\nWebhook delivery retries use exponential backoff for 24 hours. If all webhook\ndelivery retries fail, the integration event is parke"
+          },
+          {
             "source_path": "examples/rag_eval/corpus/retrieval.md",
             "span": "# Retrieval Quality Notes\n\nThe support retriever uses hybrid search: BM25 candidates are fused with dense\nembedding candidates using reciprocal rank fusion. The"
           },
           {
-            "source_path": "examples/rag_eval/corpus/support.md",
-            "span": "# Support Desk Policy\n\nThe support desk answers questions about Atlas Helpdesk accounts. Support agents\ncan cite billing notes, escalation runbooks, and retriev"
+            "source_path": "examples/rag_eval/corpus/escalation.md",
+            "span": "# Escalation Runbook\n\nSeverity 1 incidents page the on-call engineer immediately. The engineer opens\nthe Retrieval Health dashboard first, then checks the queue"
           }
         ],
-        "latency_ms": 0.1001511700451374,
-        "tokens_used": 1340,
+        "latency_ms": 0.10032113641500473,
+        "tokens_used": 1284,
         "refused": false,
         "refusal_reason": null
       },
@@ -2568,11 +2568,11 @@
       "question_id": "demo-q20",
       "tier": "contradiction",
       "answer": {
-        "answer": "(mock synthesis for: Are API tokens allowed to appear in SearchTrace trace artifacts or RAG evaluation reports?)\n- inline. If the context doesn't\n- contain the answer, say so.\n- Question: Are API tokens allowed to appear in SearchTrace trace artifacts or RAG evaluation reports?",
+        "answer": "(mock synthesis for: Are API tokens allowed to appear in RetrievalCI trace artifacts or RAG evaluation reports?)\n- inline. If the context doesn't\n- contain the answer, say so.\n- Question: Are API tokens allowed to appear in RetrievalCI trace artifacts or RAG evaluation reports?",
         "citations": [
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
             "source_path": "examples/rag_eval/corpus/retrieval.md",
@@ -2591,7 +2591,7 @@
             "span": "# Billing Support Notes\n\nThe Atlas Helpdesk starter plan keeps audit log entries for 30 days. The team\nplan keeps audit log entries for 180 days and exports the"
           }
         ],
-        "latency_ms": 0.043389853090047836,
+        "latency_ms": 0.045971013605594635,
         "tokens_used": 1284,
         "refused": false,
         "refusal_reason": null
@@ -2612,19 +2612,19 @@
       "question_id": "demo-q20",
       "tier": "contradiction",
       "answer": {
-        "answer": "(mock synthesis for: Are API tokens allowed to appear in SearchTrace trace artifacts or RAG evaluation reports?)\n- inline. If the context doesn't\n- contain the answer, say so.\n- Question: Are API tokens allowed to appear in SearchTrace trace artifacts or RAG evaluation reports?",
+        "answer": "(mock synthesis for: Are API tokens allowed to appear in RetrievalCI trace artifacts or RAG evaluation reports?)\n- inline. If the context doesn't\n- contain the answer, say so.\n- Question: Are API tokens allowed to appear in RetrievalCI trace artifacts or RAG evaluation reports?",
         "citations": [
           {
             "source_path": "examples/rag_eval/corpus/security.md",
-            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in SearchTrace trace a"
-          },
-          {
-            "source_path": "examples/rag_eval/corpus/integrations.md",
-            "span": "# Integration Support Notes\n\nWebhook delivery retries use exponential backoff for 24 hours. If all webhook\ndelivery retries fail, the integration event is parke"
+            "span": "# Security Operations Notes\n\nAPI tokens must be stored in the customer's secret manager and rotated every 90\ndays. Tokens must not appear in RetrievalCI trace a"
           },
           {
             "source_path": "examples/rag_eval/corpus/retrieval.md",
             "span": "# Retrieval Quality Notes\n\nThe support retriever uses hybrid search: BM25 candidates are fused with dense\nembedding candidates using reciprocal rank fusion. The"
+          },
+          {
+            "source_path": "examples/rag_eval/corpus/integrations.md",
+            "span": "# Integration Support Notes\n\nWebhook delivery retries use exponential backoff for 24 hours. If all webhook\ndelivery retries fail, the integration event is parke"
           },
           {
             "source_path": "examples/rag_eval/corpus/billing.md",
@@ -2635,7 +2635,7 @@
             "span": "# Escalation Runbook\n\nSeverity 1 incidents page the on-call engineer immediately. The engineer opens\nthe Retrieval Health dashboard first, then checks the queue"
           }
         ],
-        "latency_ms": 0.13211090117692947,
+        "latency_ms": 0.13701198622584343,
         "tokens_used": 1284,
         "refused": false,
         "refusal_reason": null
@@ -2658,23 +2658,23 @@
       "answer_citation_recall": 0.0,
       "retrieval_source_precision": 0.28,
       "retrieval_source_recall": 1.0,
-      "faithfulness": 2.872,
+      "faithfulness": 2.8845,
       "relevance": 5.0,
       "answer_length_chars": 271.5,
-      "latency_ms_p50": 0.049666035920381546,
+      "latency_ms_p50": 0.051920535042881966,
       "tokens_used_total": 26081.0,
       "refusal_rate": 0.0
     },
     "hybrid_rag": {
       "must_include_match": 0.11666666666666665,
       "answer_citation_recall": 0.0,
-      "retrieval_source_precision": 0.27,
-      "retrieval_source_recall": 0.975,
-      "faithfulness": 2.872,
+      "retrieval_source_precision": 0.26,
+      "retrieval_source_recall": 0.95,
+      "faithfulness": 2.8845,
       "relevance": 5.0,
       "answer_length_chars": 271.5,
-      "latency_ms_p50": 0.14134193770587444,
-      "tokens_used_total": 26430.0,
+      "latency_ms_p50": 0.14829705469310284,
+      "tokens_used_total": 26487.0,
       "refusal_rate": 0.0
     },
     "rag": {
@@ -2682,11 +2682,11 @@
       "answer_citation_recall": 0.0,
       "retrieval_source_precision": 0.25,
       "retrieval_source_recall": 0.925,
-      "faithfulness": 2.872,
+      "faithfulness": 2.8845,
       "relevance": 5.0,
       "answer_length_chars": 271.5,
-      "latency_ms_p50": 0.10537588968873024,
-      "tokens_used_total": 26619.0,
+      "latency_ms_p50": 0.10398600716143847,
+      "tokens_used_total": 26651.0,
       "refusal_rate": 0.0
     }
   },
@@ -2706,7 +2706,7 @@
         "answer_citation_recall": 0.0,
         "retrieval_source_precision": 0.375,
         "retrieval_source_recall": 1.0,
-        "faithfulness": 2.60875,
+        "faithfulness": 2.64,
         "relevance": 5.0,
         "answer_length_chars": 325.25
       },
@@ -2733,9 +2733,9 @@
       "multi_hop": {
         "must_include_match": 0.041666666666666664,
         "answer_citation_recall": 0.0,
-        "retrieval_source_precision": 0.35000000000000003,
-        "retrieval_source_recall": 0.9375,
-        "faithfulness": 2.60875,
+        "retrieval_source_precision": 0.325,
+        "retrieval_source_recall": 0.875,
+        "faithfulness": 2.64,
         "relevance": 5.0,
         "answer_length_chars": 325.25
       },
@@ -2764,7 +2764,7 @@
         "answer_citation_recall": 0.0,
         "retrieval_source_precision": 0.30000000000000004,
         "retrieval_source_recall": 0.8125,
-        "faithfulness": 2.60875,
+        "faithfulness": 2.64,
         "relevance": 5.0,
         "answer_length_chars": 325.25
       },
@@ -2876,9 +2876,9 @@
       "system_a": "rag",
       "system_b": "hybrid_rag",
       "mean_a": 0.25,
-      "mean_b": 0.27,
-      "mean_diff": -0.020000000000000018,
-      "ci_low": -0.04999999999999999,
+      "mean_b": 0.26,
+      "mean_diff": -0.010000000000000009,
+      "ci_low": -0.030000000000000027,
       "ci_high": 0.0,
       "alpha": 0.05,
       "n": 20,
@@ -2889,10 +2889,10 @@
       "system_a": "bm25",
       "system_b": "hybrid_rag",
       "mean_a": 0.28,
-      "mean_b": 0.27,
-      "mean_diff": 0.010000000000000009,
+      "mean_b": 0.26,
+      "mean_diff": 0.020000000000000018,
       "ci_low": 0.0,
-      "ci_high": 0.030000000000000027,
+      "ci_high": 0.04999999999999999,
       "alpha": 0.05,
       "n": 20,
       "significant": false
@@ -2915,9 +2915,9 @@
       "system_a": "rag",
       "system_b": "hybrid_rag",
       "mean_a": 0.925,
-      "mean_b": 0.975,
-      "mean_diff": -0.04999999999999993,
-      "ci_low": -0.125,
+      "mean_b": 0.95,
+      "mean_diff": -0.02499999999999991,
+      "ci_low": -0.07500000000000007,
       "ci_high": 0.0,
       "alpha": 0.05,
       "n": 20,
@@ -2928,10 +2928,10 @@
       "system_a": "bm25",
       "system_b": "hybrid_rag",
       "mean_a": 1.0,
-      "mean_b": 0.975,
-      "mean_diff": 0.025000000000000022,
+      "mean_b": 0.95,
+      "mean_diff": 0.050000000000000044,
       "ci_low": 0.0,
-      "ci_high": 0.07499999999999996,
+      "ci_high": 0.125,
       "alpha": 0.05,
       "n": 20,
       "significant": false
@@ -2940,8 +2940,8 @@
       "metric": "faithfulness",
       "system_a": "rag",
       "system_b": "bm25",
-      "mean_a": 2.872,
-      "mean_b": 2.872,
+      "mean_a": 2.8845,
+      "mean_b": 2.8845,
       "mean_diff": 0.0,
       "ci_low": 0.0,
       "ci_high": 0.0,
@@ -2953,8 +2953,8 @@
       "metric": "faithfulness",
       "system_a": "rag",
       "system_b": "hybrid_rag",
-      "mean_a": 2.872,
-      "mean_b": 2.872,
+      "mean_a": 2.8845,
+      "mean_b": 2.8845,
       "mean_diff": 0.0,
       "ci_low": 0.0,
       "ci_high": 0.0,
@@ -2966,8 +2966,8 @@
       "metric": "faithfulness",
       "system_a": "bm25",
       "system_b": "hybrid_rag",
-      "mean_a": 2.872,
-      "mean_b": 2.872,
+      "mean_a": 2.8845,
+      "mean_b": 2.8845,
       "mean_diff": 0.0,
       "ci_low": 0.0,
       "ci_high": 0.0,

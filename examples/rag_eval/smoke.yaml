@@ -16,8 +16,8 @@ run:
   max_chunks: 20
 
 reports:
-  json: /tmp/searchtrace-rag-config-smoke.json
-  markdown: /tmp/searchtrace-rag-config-smoke.md
+  json: /tmp/retrievalci-rag-config-smoke.json
+  markdown: /tmp/retrievalci-rag-config-smoke.md
 
 diagnostics:
   primary_metric: retrieval_source_recall

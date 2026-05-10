@@ -1,16 +1,16 @@
 from __future__ import annotations
 
 import yaml
-from searchtrace.project import load_project_config, project_config_to_run_spec
+from retrievalci.project import load_project_config, project_config_to_run_spec
 
 
 def test_project_config_maps_to_run_spec(tmp_path) -> None:
-    config_path = tmp_path / "searchtrace.yaml"
+    config_path = tmp_path / "retrievalci.yaml"
     config_path.write_text(
         yaml.safe_dump(
             {
                 "name": "ci",
-                "registry": ".searchtrace/runs",
+                "registry": ".retrievalci/runs",
                 "repo_root": ".",
                 "rag": {
                     "config": "examples/rag_eval/smoke.yaml",

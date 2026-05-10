@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 
 import pytest
-from searchtrace.rag_eval.claims.hashing import (
+from retrievalci.rag_eval.claims.hashing import (
     derive_claim_id,
     derive_proof_set_id,
     derive_trace_id,
@@ -149,6 +149,6 @@ class TestHashAclLabels:
 class TestHashStr:
     def test_known_digest(self) -> None:
         assert (
-            hash_str("searchtrace")
-            == "58b6ae384cfbc0dc1fad057900366258f9e285c909d47d4515392567653bb120"
+            hash_str("retrievalci")
+            == "4831c7a587423f26b92fc69daba51381766c76f03ee3c9b8c755fc75643f3b10"
         )

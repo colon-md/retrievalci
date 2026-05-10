@@ -1,6 +1,6 @@
 # Third-Party Research Expansion
 
-SearchTrace now has enough public third-party data plumbing to re-run the
+RetrievalCI now has enough public third-party data plumbing to re-run the
 Karpathy-style wiki/RAG study outside the original local corpora. Keep the
 public repository small: bundled fixtures remain demos, while larger imports,
 caches, and reports stay under ignored local paths.
@@ -74,9 +74,9 @@ Curate only a final, reviewed summary for publication.
 
 OmegaWiki frames Karpathy's LLM Wiki as a full research lifecycle platform:
 typed wiki entities, a knowledge graph, experiment records, failed-experiment
-memory, and cross-model review. That is a useful contrast for SearchTrace.
+memory, and cross-model review. That is a useful contrast for RetrievalCI.
 
-SearchTrace should not try to become a research IDE. The actionable takeaway is
+RetrievalCI should not try to become a research IDE. The actionable takeaway is
 to evaluate compounding separately from retrieval quality:
 
 - retrieval quality: did the right sources get retrieved?

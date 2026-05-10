@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import pytest
-from searchtrace.rag_eval.claims.acl import (
+from retrievalci.rag_eval.claims.acl import (
     DEFAULT_REGION_PRECEDENCE,
     compute_proof_set_acl,
     most_stringent_region,

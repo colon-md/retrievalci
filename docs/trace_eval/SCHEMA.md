@@ -1,6 +1,6 @@
 # Trace Input Schema
 
-`searchtrace traces eval` reads one JSON object per line. The schema is small
+`retrievalci traces eval` reads one JSON object per line. The schema is small
 so teams can export it from existing logs without adopting a new runtime.
 
 ## Minimal Row
@@ -70,7 +70,7 @@ chunks before replay.
 
 ## HTTP Retriever Response Schema
 
-When `--retriever-url` is used, SearchTrace sends this JSON body with `POST`:
+When `--retriever-url` is used, RetrievalCI sends this JSON body with `POST`:
 
 ```json
 {"query": "rendered retrieval-state query", "k": 5}
@@ -98,7 +98,7 @@ Recognized id fields are `chunk_id`, `doc_id`, `id`, `document_id`, and
 
 ## Phoenix/OpenTelemetry Normalization
 
-`searchtrace traces normalize --source otel` accepts JSON or JSONL exports
+`retrievalci traces normalize --source otel` accepts JSON or JSONL exports
 containing OpenTelemetry-style span objects or OTLP containers:
 
 - `resourceSpans[].scopeSpans[].spans[]`
@@ -107,7 +107,7 @@ containing OpenTelemetry-style span objects or OTLP containers:
 - `spans[]`
 
 Typed attribute values such as `stringValue`, `arrayValue`, and `kvlistValue`
-are decoded before mapping to the SearchTrace schema. SearchTrace treats spans
+are decoded before mapping to the RetrievalCI schema. RetrievalCI treats spans
 as retriever spans when `openinference.span.kind`, `span.kind`, or `otel.kind`
 is `RETRIEVER`, or when the span name contains `retriev` or `search`.
 
@@ -119,6 +119,6 @@ Useful attributes:
 | `session.id` | Session id. |
 | `retrieval.documents` | JSON/list of retrieved documents. |
 | `retrieval.documents.0.document.id` | Indexed OpenInference document id form. |
-| `searchtrace.gold_doc_ids` | Gold evidence ids for evaluation. |
-| `searchtrace.agent_state.previous_answers` | Prior public answers for state-policy replay. |
-| `searchtrace.agent_state.previous_doc_ids` | Already-read documents for stale-state diagnostics. |
+| `retrievalci.gold_doc_ids` | Gold evidence ids for evaluation. |
+| `retrievalci.agent_state.previous_answers` | Prior public answers for state-policy replay. |
+| `retrievalci.agent_state.previous_doc_ids` | Already-read documents for stale-state diagnostics. |

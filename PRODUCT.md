@@ -2,13 +2,13 @@
 
 ## Users
 
-SearchTrace is for RAG engineers, AI platform teams, and evaluation owners who need to
+RetrievalCI is for RAG engineers, AI platform teams, and evaluation owners who need to
 understand retrieval failures before a change ships. They use it during local
 experiments, pull request review, and CI gate analysis.
 
 ## Product Purpose
 
-SearchTrace is the practical CI layer for retrieval systems. It diagnoses whether
+RetrievalCI is the practical CI layer for retrieval systems. It diagnoses whether
 failures come from architecture choice, retrieval state, corpus shape, answer
 synthesis, citations, or noisy memory. Success means a team can see what regressed,
 inspect concrete failure examples, and choose the next experiment without reading raw
@@ -16,11 +16,11 @@ JSON by hand.
 
 ## Positioning
 
-SearchTrace should be positioned as a trace-state and retriever-regression tool,
+RetrievalCI should be positioned as a trace-state and retriever-regression tool,
 not as a broad replacement for Ragas, TruLens, DeepEval, Phoenix, Langfuse, or
 LangSmith. The strongest differentiated claim is:
 
-> SearchTrace tells a RAG team which agent state should be sent into retrieval,
+> RetrievalCI tells a RAG team which agent state should be sent into retrieval,
 > and whether a change increased zero-recall, drift, stale evidence, or
 > false-lead capture against the team's own retriever.
 
@@ -62,7 +62,7 @@ Precise, calm, evidence-first.
 
 ## Anti-references
 
-SearchTrace should not feel like a marketing landing page, an ornamental analytics
+RetrievalCI should not feel like a marketing landing page, an ornamental analytics
 dashboard, or an opaque judge-score scoreboard. It should avoid decorative chrome,
 oversized hero metrics, vague health scores, and visuals that hide the actual
 question, source, policy, or system that failed.

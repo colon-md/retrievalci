@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 
 import pytest
-from searchtrace.trace_eval import (
+from retrievalci.trace_eval import (
     build_index,
     check_metric_gates,
     check_metric_regressions,
@@ -153,7 +153,7 @@ def test_write_outputs_creates_report(tmp_path) -> None:
     assert (out_dir / "metrics.json").exists()
     assert (out_dir / "per_turn.jsonl").exists()
     report = (out_dir / "report.md").read_text(encoding="utf-8")
-    assert "SearchTrace Trace Evaluation" in report
+    assert "RetrievalCI Trace Evaluation" in report
     assert "Zero-Recall Examples" in report
     assert "doc_prev" in report
     assert "last_answer_x3" in render_markdown_report(metrics)

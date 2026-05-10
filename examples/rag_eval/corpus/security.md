@@ -1,7 +1,7 @@
 # Security Operations Notes
 
 API tokens must be stored in the customer's secret manager and rotated every 90
-days. Tokens must not appear in SearchTrace trace artifacts, support tickets, or
+days. Tokens must not appear in RetrievalCI trace artifacts, support tickets, or
 RAG evaluation reports.
 
 Enterprise workspaces can require SAML SSO. When SAML SSO is required, local

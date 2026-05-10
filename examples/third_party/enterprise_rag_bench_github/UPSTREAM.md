@@ -17,9 +17,9 @@ license text carried with this fixture.
 
 Note: EnterpriseRAG-Bench is synthetic benchmark content. Internal-sounding
 issue IDs, rollout notes, or engineering documents in this fixture are upstream
-test data, not SearchTrace or customer data.
+test data, not RetrievalCI or customer data.
 
-SearchTrace conversion:
+RetrievalCI conversion:
 
 - Imported rows: 20
 - Imported corpus documents: 20

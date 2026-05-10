@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-from searchtrace.rag_eval.claims import (
+from retrievalci.rag_eval.claims import (
     Claim,
     ClaimRows,
     Evidence,

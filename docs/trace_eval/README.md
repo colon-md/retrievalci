@@ -1,10 +1,10 @@
 # Trace-State Eval
 
-SearchTrace has two complementary evaluation modes:
+RetrievalCI has two complementary evaluation modes:
 
-- `searchtrace rag run`: compare RAG architectures such as dense, BM25,
+- `retrievalci rag run`: compare RAG architectures such as dense, BM25,
   hybrid, rerank, ClaimRAG, chunk-summary, and wiki/synthesis.
-- `searchtrace traces eval`: replay retrieval-state policies over agent trace
+- `retrievalci traces eval`: replay retrieval-state policies over agent trace
   logs to identify drift, stale evidence, zero-recall, and false-lead capture.
 
 Use trace-state eval when the question is:
@@ -14,16 +14,16 @@ Use trace-state eval when the question is:
 Example:
 
 ```bash
-searchtrace traces normalize \
+retrievalci traces normalize \
   --source auto \
   --input examples/spans.demo.jsonl \
-  --out /tmp/traces.searchtrace.jsonl \
+  --out /tmp/traces.retrievalci.jsonl \
   --require-gold
 
-searchtrace traces eval \
-  --traces /tmp/traces.searchtrace.jsonl \
+retrievalci traces eval \
+  --traces /tmp/traces.retrievalci.jsonl \
   --corpus examples/corpus.demo.jsonl \
-  --out /tmp/searchtrace-trace-report \
+  --out /tmp/retrievalci-trace-report \
   --k 1 \
   --policies recorded,query_only,last_answer_x3,compact_state,public_trace \
   --gate-policy last_answer_x3 \
@@ -40,16 +40,16 @@ For Phoenix/OpenTelemetry-style exports, `--source otel` flattens OTLP
 OpenInference retrieval document fields:
 
 ```bash
-searchtrace traces normalize \
+retrievalci traces normalize \
   --source otel \
   --input examples/otel.spans.demo.json \
-  --out /tmp/traces.searchtrace.jsonl \
+  --out /tmp/traces.retrievalci.jsonl \
   --require-gold
 ```
 
-When a retriever span lacks the original user question, SearchTrace uses
+When a retriever span lacks the original user question, RetrievalCI uses
 same-trace parent context such as `input.value`, `session.id`, and
-`searchtrace.gold_doc_ids`.
+`retrievalci.gold_doc_ids`.
 
 Outputs:
 
@@ -61,9 +61,9 @@ To evaluate the same policies against a deployed retriever, replace local BM25
 with an HTTP retriever endpoint:
 
 ```bash
-searchtrace traces eval \
-  --traces /tmp/traces.searchtrace.jsonl \
-  --out /tmp/searchtrace-trace-report \
+retrievalci traces eval \
+  --traces /tmp/traces.retrievalci.jsonl \
+  --out /tmp/retrievalci-trace-report \
   --k 5 \
   --policies query_only,last_answer_x3,compact_state \
   --retriever-url https://retriever.example.com/search \
@@ -82,10 +82,10 @@ Request headers, full query text, and full response bodies are not persisted.
 To bridge an architecture report into trace rows:
 
 ```bash
-searchtrace traces from-rag-report \
-  --report-json /tmp/searchtrace-rag-smoke.json \
+retrievalci traces from-rag-report \
+  --report-json /tmp/retrievalci-rag-smoke.json \
   --questions examples/rag_eval/questions.jsonl \
-  --out /tmp/searchtrace-rag-as-traces.jsonl
+  --out /tmp/retrievalci-rag-as-traces.jsonl
 ```
 
 Trace-state eval sits after or beside the RAG architecture pass. A team can

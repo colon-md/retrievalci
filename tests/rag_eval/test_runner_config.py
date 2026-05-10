@@ -3,8 +3,8 @@ from __future__ import annotations
 import sys
 
 import yaml
-from searchtrace.rag_eval.runner import main
-from searchtrace.rag_eval.types import ComparisonReport, QAItem
+from retrievalci.rag_eval.runner import main
+from retrievalci.rag_eval.types import ComparisonReport, QAItem
 
 
 def test_runner_accepts_yaml_config(tmp_path, monkeypatch) -> None:
@@ -42,7 +42,7 @@ def test_runner_accepts_yaml_config(tmp_path, monkeypatch) -> None:
         encoding="utf-8",
     )
 
-    monkeypatch.setattr(sys, "argv", ["searchtrace", "--config", str(config_path)])
+    monkeypatch.setattr(sys, "argv", ["retrievalci", "--config", str(config_path)])
 
     main()
 

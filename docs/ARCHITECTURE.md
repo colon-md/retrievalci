@@ -1,6 +1,6 @@
-# SearchTrace Architecture
+# RetrievalCI Architecture
 
-SearchTrace is a retrieval diagnostics product with two evaluation modes and a
+RetrievalCI is a retrieval diagnostics product with two evaluation modes and a
 canonical run registry.
 
 The product thesis is that trace-state retrieval dynamics are the differentiated
@@ -12,10 +12,10 @@ query state, compact state, bridge-answer state, or logged production IDs.
 
 | Mode | Command | Question Answered |
 | --- | --- | --- |
-| RAG architecture eval | `searchtrace rag run` | Which RAG architecture should I ship? |
-| Trace-state eval | `searchtrace traces eval` | Which agent state should retrieval receive? |
-| Product run artifact | `searchtrace runs create` | What should CI or a reviewer inspect from this run? |
-| Project run | `searchtrace project run` | Can a team run the full workflow from one config? |
+| RAG architecture eval | `retrievalci rag run` | Which RAG architecture should I ship? |
+| Trace-state eval | `retrievalci traces eval` | Which agent state should retrieval receive? |
+| Product run artifact | `retrievalci runs create` | What should CI or a reviewer inspect from this run? |
+| Project run | `retrievalci project run` | Can a team run the full workflow from one config? |
 
 The modes are complementary. RAG eval compares systems such as dense RAG,
 BM25, hybrid retrieval, reranking, ClaimRAG, chunk-summary RAG, and wiki-style
@@ -27,7 +27,7 @@ small static report so teams do not have to chase scattered `/tmp` artifacts.
 ## Package Layout
 
 ```text
-searchtrace/
+retrievalci/
   cli.py                    Product CLI dispatcher.
   project.py                Declarative project config to RunSpec mapping.
   rag_eval/                 RAG architecture evaluation.
@@ -87,7 +87,7 @@ Run registry:
 
 ```text
 RunSpec
-  -> reserve .searchtrace/runs/<run-id>
+  -> reserve .retrievalci/runs/<run-id>
   -> run optional RAG architecture eval
   -> run optional trace-state eval
   -> optional baseline regression gate
@@ -99,7 +99,7 @@ RunSpec
 Project config:
 
 ```text
-searchtrace.project.yaml
+retrievalci.project.yaml
   -> optional RAG config
   -> optional trace source normalization
   -> optional production retriever settings

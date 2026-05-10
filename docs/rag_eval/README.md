@@ -1,10 +1,10 @@
 # RAG Eval
 
-SearchTrace's RAG architecture eval mode helps teams compare retrieval and
+RetrievalCI's RAG architecture eval mode helps teams compare retrieval and
 answering systems before changing production RAG behavior.
 
 It is not a RAG framework. It is a diagnostic harness: bring a corpus, a fixed
-question set, and one or more candidate systems; SearchTrace runs them side by
+question set, and one or more candidate systems; RetrievalCI runs them side by
 side and reports where failures come from.
 
 ## Questions It Answers
@@ -18,7 +18,7 @@ side and reports where failures come from.
 
 ## Current Systems
 
-SearchTrace can compare:
+RetrievalCI can compare:
 
 - dense chunk RAG;
 - BM25;
@@ -40,8 +40,8 @@ For larger local studies using WixQA and EnterpriseRAG-Bench, see
 RAG eval becomes a CI gate through:
 
 ```bash
-searchtrace rag run --config examples/rag_eval/smoke.yaml
-searchtrace rag compare \
+retrievalci rag run --config examples/rag_eval/smoke.yaml
+retrievalci rag compare \
   --baseline baselines/rag/smoke.json \
   --candidate reports/pr.json \
   --metric retrieval_source_recall \
@@ -51,7 +51,7 @@ searchtrace rag compare \
 The project-level command wraps this into one workflow:
 
 ```bash
-searchtrace ci run --config examples/searchtrace.ci.yaml
+retrievalci ci run --config examples/retrievalci.ci.yaml
 ```
 
 The smoke config uses a small public support-desk fixture:

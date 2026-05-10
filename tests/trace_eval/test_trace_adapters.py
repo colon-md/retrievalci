@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 
-from searchtrace.trace_adapters import (
+from retrievalci.trace_adapters import (
     normalize_trace_jsonl,
     normalize_trace_row,
     write_rag_report_traces,
@@ -133,7 +133,7 @@ def test_normalize_trace_jsonl_accepts_otlp_resource_spans_with_parent_context(t
                                                 "value": {"stringValue": "case-123"},
                                             },
                                             {
-                                                "key": "searchtrace.gold_doc_ids",
+                                                "key": "retrievalci.gold_doc_ids",
                                                 "value": {
                                                     "arrayValue": {
                                                         "values": [
@@ -144,7 +144,7 @@ def test_normalize_trace_jsonl_accepts_otlp_resource_spans_with_parent_context(t
                                             },
                                             {
                                                 "key": (
-                                                    "searchtrace.agent_state."
+                                                    "retrievalci.agent_state."
                                                     "previous_answers"
                                                 ),
                                                 "value": {

@@ -1,11 +1,11 @@
-"""Shared fixtures for the SearchTrace test suite."""
+"""Shared fixtures for the RetrievalCI test suite."""
 
 from __future__ import annotations
 
 from datetime import UTC, datetime
 
 import pytest
-from searchtrace.rag_eval.claims import (
+from retrievalci.rag_eval.claims import (
     Claim,
     Evidence,
     ProofSet,
@@ -24,9 +24,9 @@ def fixed_now() -> datetime:
 @pytest.fixture
 def sample_evidence() -> Evidence:
     return Evidence(
-        source_id="src:gs://searchtrace-demo-payments/runbook-v3.pdf",
+        source_id="src:gs://retrievalci-demo-payments/runbook-v3.pdf",
         evidence_type="raw_doc",
-        evidence_uri="gs://searchtrace-demo-payments/runbook-v3.pdf#span=120,180",
+        evidence_uri="gs://retrievalci-demo-payments/runbook-v3.pdf#span=120,180",
         span_start=120,
         span_end=180,
         source_version="v3",
@@ -52,7 +52,7 @@ def sample_claim(sample_proof_set: ProofSet, fixed_now: datetime) -> Claim:
         predicate="autoscales_to",
         object_="10",
         prompt_id="extract-claims-v3",
-        evidence_uris=["gs://searchtrace-demo-payments/runbook-v3.pdf#span=120,180"],
+        evidence_uris=["gs://retrievalci-demo-payments/runbook-v3.pdf#span=120,180"],
     )
     return Claim(
         claim_id=cid,

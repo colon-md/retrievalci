@@ -1,6 +1,6 @@
 # Third-Party RAG Examples
 
-This directory includes compact, ready-to-run SearchTrace fixtures from
+This directory includes compact, ready-to-run RetrievalCI fixtures from
 third-party RAG evaluation datasets. They are bundled so users can try realistic
 public examples without first downloading or converting upstream data.
 
@@ -22,22 +22,22 @@ and is redistributed under the upstream MIT licenses. Keep each fixture's
 
 EnterpriseRAG-Bench is synthetic benchmark content. Internal-sounding issue
 IDs, rollout notes, or engineering documents in that fixture are upstream test
-data, not SearchTrace or customer data.
+data, not RetrievalCI or customer data.
 
 Each fixture includes:
 
-- `corpus/*.md`: SearchTrace corpus documents.
-- `questions.jsonl`: SearchTrace QA items with source citations.
-- `smoke.yaml`: a provider-free mock config for `searchtrace rag run`.
+- `corpus/*.md`: RetrievalCI corpus documents.
+- `questions.jsonl`: RetrievalCI QA items with source citations.
+- `smoke.yaml`: a provider-free mock config for `retrievalci rag run`.
 - `UPSTREAM.md`: source URL, exact upstream notice text, and import notes.
 - `LICENSE`: upstream license/copyright notice carried with the fixture.
 
 Run the bundled examples:
 
 ```bash
-.venv/bin/searchtrace rag run --config examples/third_party/wixqa/smoke.yaml
+.venv/bin/retrievalci rag run --config examples/third_party/wixqa/smoke.yaml
 
-.venv/bin/searchtrace rag run \
+.venv/bin/retrievalci rag run \
   --config examples/third_party/enterprise_rag_bench_github/smoke.yaml
 ```
 

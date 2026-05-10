@@ -16,4 +16,4 @@ Severity 1 incident. When a named incident channel exists, the same update is
 mirrored there after the public status page is updated.
 
 Post-incident reviews are due within three business days. The review must link
-the SearchTrace run artifact that detected or ruled out a retrieval regression.
+the RetrievalCI run artifact that detected or ruled out a retrieval regression.

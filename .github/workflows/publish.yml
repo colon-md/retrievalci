@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/p/searchtrace
+      url: https://pypi.org/p/retrievalci
     permissions:
       id-token: write
 
