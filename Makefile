@@ -1,4 +1,4 @@
-.PHONY: install install-dev install-providers test lint check smoke smoke-rag smoke-rag-config smoke-rag-compare smoke-report smoke-runs smoke-project smoke-traces clean
+.PHONY: install install-dev install-providers test lint check smoke smoke-rag smoke-rag-config smoke-rag-compare smoke-report smoke-runs smoke-project smoke-traces bench-v0 bench-v0-mock bench-v0-rejudge bench-v0-scorecard clean
 
 PYTHON ?= python
 VENV ?= .venv
@@ -34,9 +34,9 @@ smoke-rag:
 	  --corpus-glob 'examples/rag_eval/corpus/*.md' \
 	  --backend mock \
 	  --judge mock \
-	  --system rag \
-	  --system bm25 \
-	  --system hybrid_rag \
+	  --system dense_rag \
+	  --system bm25_lexical \
+	  --system hybrid_rrf \
 	  --max-chunks 20 \
 	  --primary-metric retrieval_source_recall \
 	  --report-json /tmp/retrievalci-rag-smoke.json \
@@ -98,6 +98,42 @@ smoke-traces:
 	  --gate-policy last_answer_x3 \
 	  --min-recall-at-5 0.90 \
 	  --max-stale-at-1 0.05
+
+# bench-v0: the 50-question ERB-derived hosted-RAG benchmark fixture.
+# bench-v0-mock         → all 7 local systems, mock backend (no API keys).
+# bench-v0              → 5 light systems, real Gemini backend, mock judge.
+#                         Requires GEMINI_API_KEY (or GOOGLE_API_KEY) in .env.
+# bench-v0-rejudge      → re-score the real-backend baseline with Claude judge.
+#                         Requires ANTHROPIC_API_KEY in .env.
+# bench-v0-scorecard    → render the README scorecard from a baseline JSON.
+bench-v0-mock:
+	$(BIN)/retrievalci rag run \
+	  --config examples/rag_eval/bench_v0/baseline.yaml \
+	  --repo-root $(CURDIR)
+
+bench-v0:
+	$(BIN)/retrievalci rag run \
+	  --config examples/rag_eval/bench_v0/baseline_gemini.yaml \
+	  --repo-root $(CURDIR)
+
+bench-v0-rejudge:
+	$(BIN)/retrievalci rag rejudge \
+	  --input baselines/rag/bench_v0_gemini.json \
+	  --questions examples/rag_eval/bench_v0/questions.jsonl \
+	  --judge claude \
+	  --output-json baselines/rag/bench_v0_gemini_claude.json \
+	  --output-md baselines/rag/bench_v0_gemini_claude.md
+
+bench-v0-scorecard:
+	$(BIN)/retrievalci report scorecard \
+	  --input $(or $(BENCH_BASELINE),baselines/rag/bench_v0.json) \
+	  --target README.md \
+	  --label "$(or $(BENCH_LABEL),bench-v0)" \
+	  --hosted-placeholder "Google Vertex AI RAG Engine:Needs adapter" \
+	  --hosted-placeholder "Amazon Bedrock Knowledge Bases:Needs adapter" \
+	  --hosted-placeholder "Azure AI Search:Needs adapter" \
+	  --hosted-placeholder "OpenAI File Search:Needs adapter" \
+	  --hosted-placeholder "OmegaWiki /ask:Needs adapter"
 
 clean:
 	find retrievalci tests scripts -type d -name __pycache__ -prune -exec rm -rf {} +

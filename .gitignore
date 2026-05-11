@@ -8,6 +8,13 @@ __pycache__/
 venv/
 .env
 .env.local
+
+# Hosted-adapter manifests contain provider resource names (e.g.
+# projects/<NUM>/locations/.../ragFiles/<id>) — gitignore by default so
+# project identifiers don't get accidentally published. Add specific
+# manifests explicitly when you've reviewed them for sensitive content.
+examples/rag_eval/manifests/
+
 data/rag_eval/cache/
 data/rag_eval/datasets/
 data/rag_eval/studies/
@@ -20,9 +27,12 @@ roadmap.md
 ROADMAP.md
 docs/ROADMAP.md
 
-# Local research archive, kept out of the public repo.
+# Local research archive, kept out of the public repo. Specific docs (e.g.,
+# `hosted-rag-benchmark-plan.md`) are intentionally NOT in this list so the
+# project rationale ships publicly; only the per-run EVAL_RESULTS_* notes
+# stay local.
 docs/rag_eval/GOAL.md
 docs/rag_eval/STATUS.md
 docs/rag_eval/pre_registrations/
-docs/rag_eval/results/
+docs/rag_eval/results/EVAL_RESULTS_*.md
 results/rag_eval/
