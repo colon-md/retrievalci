@@ -28,8 +28,14 @@ def _cosine(a: list[float], b: list[float]) -> float:
 
 _PROMPT_TEMPLATE = """\
 You are answering questions about engineering documentation. Use ONLY the
-retrieved context. Cite sources by [doc:path] inline. If the context doesn't
-contain the answer, say so.
+retrieved context. Cite sources by [doc:path] inline.
+
+If the retrieved context does NOT contain enough information to answer
+the question with specific facts, respond with exactly one line:
+REFUSE: <one short sentence explaining what's missing>
+Do not invent details, do not partial-answer, do not list related topics.
+
+Otherwise, answer the question concisely with citations.
 
 Question: {question}
 
@@ -39,7 +45,7 @@ Context:
 Answer:"""
 
 
-class HybridRAGSystem:
+class HybridRRFSystem:
     """BM25 + dense retrieval with reciprocal-rank-fusion top-k."""
 
     def __init__(
@@ -65,7 +71,7 @@ class HybridRAGSystem:
 
     @property
     def name(self) -> str:
-        return "hybrid_rag"
+        return "hybrid_rrf"
 
     def _dense_rank(self, question: str) -> list[tuple[float, int]]:
         q_vec = self._embedder.embed(question)
@@ -94,16 +100,28 @@ class HybridRAGSystem:
         sparse_ranked = self._bm25.rank(question)
         fused_idxs = self._fuse(dense_ranked, sparse_ranked)
         retrieved = [self._chunks[i] for i in fused_idxs[: self._top_k]]
+        retrieval_latency_ms = (time.perf_counter() - t0) * 1000.0
 
         context = "\n\n".join(f"[doc:{c.chunk_id}]\n{c.text}" for c in retrieved)
         prompt = _PROMPT_TEMPLATE.format(question=question, context=context)
         resp = self._generator.generate(GenerationRequest(prompt=prompt))
 
+        from retrievalci.rag_eval.systems.rag import _detect_refusal
+
         latency_ms = (time.perf_counter() - t0) * 1000.0
         citations = tuple(Citation(source_path=c.source_path, span=c.text[:160]) for c in retrieved)
+        refused, reason = _detect_refusal(resp.text)
         return SystemAnswer(
             answer=resp.text,
             citations=citations,
             latency_ms=latency_ms,
+            retrieval_latency_ms=retrieval_latency_ms,
             tokens_used=resp.tokens_used,
+            refused=refused,
+            refusal_reason=reason,
         )
+
+
+# Back-compat alias — older imports of HybridRAGSystem keep working.
+HybridRAGSystem = HybridRRFSystem
+

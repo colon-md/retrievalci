@@ -225,7 +225,7 @@ def test_write_rag_report_traces_exports_retrieved_and_gold_ids(tmp_path) -> Non
             {
                 "rows": [
                     {
-                        "system": "hybrid_rag",
+                        "system": "hybrid_rrf",
                         "question_id": "q1",
                         "answer": {
                             "answer": "Ada Lab is in Paris.",
@@ -252,6 +252,6 @@ def test_write_rag_report_traces_exports_retrieved_and_gold_ids(tmp_path) -> Non
 
     assert written == 1
     rows = [json.loads(line) for line in output_path.read_text(encoding="utf-8").splitlines()]
-    assert rows[0]["turn_id"] == "hybrid_rag"
+    assert rows[0]["turn_id"] == "hybrid_rrf"
     assert rows[0]["retrieved_doc_ids"] == ["doc_target"]
     assert rows[0]["gold_doc_ids"] == ["doc_target"]

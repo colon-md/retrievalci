@@ -30,7 +30,7 @@ def test_runner_accepts_yaml_config(tmp_path, monkeypatch) -> None:
                 "repo_root": str(tmp_path),
                 "questions": "questions.jsonl",
                 "corpus": {"globs": ["docs/*.md"]},
-                "systems": ["rag", "bm25"],
+                "systems": ["dense_rag", "bm25_lexical"],
                 "run": {"backend": "mock", "judge": "none", "max_chunks": 3},
                 "reports": {
                     "json": "out/report.json",
@@ -48,6 +48,6 @@ def test_runner_accepts_yaml_config(tmp_path, monkeypatch) -> None:
 
     report_path = tmp_path / "out" / "report.json"
     report = ComparisonReport.model_validate_json(report_path.read_text(encoding="utf-8"))
-    assert report.systems == ("rag", "bm25")
+    assert report.systems == ("dense_rag", "bm25_lexical")
     assert report.n_questions == 1
     assert (tmp_path / "out" / "report.md").is_file()

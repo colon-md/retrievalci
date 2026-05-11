@@ -6,9 +6,9 @@ corpus:
     - examples/third_party/enterprise_rag_bench_github/corpus/*.md
 
 systems:
-  - rag
-  - bm25
-  - hybrid_rag
+  - dense_rag
+  - bm25_lexical
+  - hybrid_rrf
 
 run:
   backend: mock

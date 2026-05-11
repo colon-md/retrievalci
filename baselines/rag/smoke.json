@@ -1,8 +1,8 @@
 {
   "systems": [
-    "rag",
-    "bm25",
-    "hybrid_rag"
+    "dense_rag",
+    "bm25_lexical",
+    "hybrid_rrf"
   ],
   "n_questions": 20,
   "n_per_tier": {
@@ -12,7 +12,7 @@
   },
   "rows": [
     {
-      "system": "rag",
+      "system": "dense_rag",
       "question_id": "demo-q01",
       "tier": "single_hop",
       "answer": {
@@ -56,7 +56,7 @@
       "refused": false
     },
     {
-      "system": "bm25",
+      "system": "bm25_lexical",
       "question_id": "demo-q01",
       "tier": "single_hop",
       "answer": {
@@ -100,7 +100,7 @@
       "refused": false
     },
     {
-      "system": "hybrid_rag",
+      "system": "hybrid_rrf",
       "question_id": "demo-q01",
       "tier": "single_hop",
       "answer": {
@@ -144,7 +144,7 @@
       "refused": false
     },
     {
-      "system": "rag",
+      "system": "dense_rag",
       "question_id": "demo-q02",
       "tier": "single_hop",
       "answer": {
@@ -188,7 +188,7 @@
       "refused": false
     },
     {
-      "system": "bm25",
+      "system": "bm25_lexical",
       "question_id": "demo-q02",
       "tier": "single_hop",
       "answer": {
@@ -232,7 +232,7 @@
       "refused": false
     },
     {
-      "system": "hybrid_rag",
+      "system": "hybrid_rrf",
       "question_id": "demo-q02",
       "tier": "single_hop",
       "answer": {
@@ -276,7 +276,7 @@
       "refused": false
     },
     {
-      "system": "rag",
+      "system": "dense_rag",
       "question_id": "demo-q03",
       "tier": "single_hop",
       "answer": {
@@ -320,7 +320,7 @@
       "refused": false
     },
     {
-      "system": "bm25",
+      "system": "bm25_lexical",
       "question_id": "demo-q03",
       "tier": "single_hop",
       "answer": {
@@ -364,7 +364,7 @@
       "refused": false
     },
     {
-      "system": "hybrid_rag",
+      "system": "hybrid_rrf",
       "question_id": "demo-q03",
       "tier": "single_hop",
       "answer": {
@@ -408,7 +408,7 @@
       "refused": false
     },
     {
-      "system": "rag",
+      "system": "dense_rag",
       "question_id": "demo-q04",
       "tier": "single_hop",
       "answer": {
@@ -452,7 +452,7 @@
       "refused": false
     },
     {
-      "system": "bm25",
+      "system": "bm25_lexical",
       "question_id": "demo-q04",
       "tier": "single_hop",
       "answer": {
@@ -496,7 +496,7 @@
       "refused": false
     },
     {
-      "system": "hybrid_rag",
+      "system": "hybrid_rrf",
       "question_id": "demo-q04",
       "tier": "single_hop",
       "answer": {
@@ -540,7 +540,7 @@
       "refused": false
     },
     {
-      "system": "rag",
+      "system": "dense_rag",
       "question_id": "demo-q05",
       "tier": "single_hop",
       "answer": {
@@ -584,7 +584,7 @@
       "refused": false
     },
     {
-      "system": "bm25",
+      "system": "bm25_lexical",
       "question_id": "demo-q05",
       "tier": "single_hop",
       "answer": {
@@ -628,7 +628,7 @@
       "refused": false
     },
     {
-      "system": "hybrid_rag",
+      "system": "hybrid_rrf",
       "question_id": "demo-q05",
       "tier": "single_hop",
       "answer": {
@@ -672,7 +672,7 @@
       "refused": false
     },
     {
-      "system": "rag",
+      "system": "dense_rag",
       "question_id": "demo-q06",
       "tier": "single_hop",
       "answer": {
@@ -716,7 +716,7 @@
       "refused": false
     },
     {
-      "system": "bm25",
+      "system": "bm25_lexical",
       "question_id": "demo-q06",
       "tier": "single_hop",
       "answer": {
@@ -760,7 +760,7 @@
       "refused": false
     },
     {
-      "system": "hybrid_rag",
+      "system": "hybrid_rrf",
       "question_id": "demo-q06",
       "tier": "single_hop",
       "answer": {
@@ -804,7 +804,7 @@
       "refused": false
     },
     {
-      "system": "rag",
+      "system": "dense_rag",
       "question_id": "demo-q07",
       "tier": "single_hop",
       "answer": {
@@ -848,7 +848,7 @@
       "refused": false
     },
     {
-      "system": "bm25",
+      "system": "bm25_lexical",
       "question_id": "demo-q07",
       "tier": "single_hop",
       "answer": {
@@ -892,7 +892,7 @@
       "refused": false
     },
     {
-      "system": "hybrid_rag",
+      "system": "hybrid_rrf",
       "question_id": "demo-q07",
       "tier": "single_hop",
       "answer": {
@@ -936,7 +936,7 @@
       "refused": false
     },
     {
-      "system": "rag",
+      "system": "dense_rag",
       "question_id": "demo-q08",
       "tier": "single_hop",
       "answer": {
@@ -980,7 +980,7 @@
       "refused": false
     },
     {
-      "system": "bm25",
+      "system": "bm25_lexical",
       "question_id": "demo-q08",
       "tier": "single_hop",
       "answer": {
@@ -1024,7 +1024,7 @@
       "refused": false
     },
     {
-      "system": "hybrid_rag",
+      "system": "hybrid_rrf",
       "question_id": "demo-q08",
       "tier": "single_hop",
       "answer": {
@@ -1068,7 +1068,7 @@
       "refused": false
     },
     {
-      "system": "rag",
+      "system": "dense_rag",
       "question_id": "demo-q09",
       "tier": "multi_hop",
       "answer": {
@@ -1112,7 +1112,7 @@
       "refused": false
     },
     {
-      "system": "bm25",
+      "system": "bm25_lexical",
       "question_id": "demo-q09",
       "tier": "multi_hop",
       "answer": {
@@ -1156,7 +1156,7 @@
       "refused": false
     },
     {
-      "system": "hybrid_rag",
+      "system": "hybrid_rrf",
       "question_id": "demo-q09",
       "tier": "multi_hop",
       "answer": {
@@ -1200,7 +1200,7 @@
       "refused": false
     },
     {
-      "system": "rag",
+      "system": "dense_rag",
       "question_id": "demo-q10",
       "tier": "multi_hop",
       "answer": {
@@ -1244,7 +1244,7 @@
       "refused": false
     },
     {
-      "system": "bm25",
+      "system": "bm25_lexical",
       "question_id": "demo-q10",
       "tier": "multi_hop",
       "answer": {
@@ -1288,7 +1288,7 @@
       "refused": false
     },
     {
-      "system": "hybrid_rag",
+      "system": "hybrid_rrf",
       "question_id": "demo-q10",
       "tier": "multi_hop",
       "answer": {
@@ -1332,7 +1332,7 @@
       "refused": false
     },
     {
-      "system": "rag",
+      "system": "dense_rag",
       "question_id": "demo-q11",
       "tier": "multi_hop",
       "answer": {
@@ -1376,7 +1376,7 @@
       "refused": false
     },
     {
-      "system": "bm25",
+      "system": "bm25_lexical",
       "question_id": "demo-q11",
       "tier": "multi_hop",
       "answer": {
@@ -1420,7 +1420,7 @@
       "refused": false
     },
     {
-      "system": "hybrid_rag",
+      "system": "hybrid_rrf",
       "question_id": "demo-q11",
       "tier": "multi_hop",
       "answer": {
@@ -1464,7 +1464,7 @@
       "refused": false
     },
     {
-      "system": "rag",
+      "system": "dense_rag",
       "question_id": "demo-q12",
       "tier": "multi_hop",
       "answer": {
@@ -1508,7 +1508,7 @@
       "refused": false
     },
     {
-      "system": "bm25",
+      "system": "bm25_lexical",
       "question_id": "demo-q12",
       "tier": "multi_hop",
       "answer": {
@@ -1552,7 +1552,7 @@
       "refused": false
     },
     {
-      "system": "hybrid_rag",
+      "system": "hybrid_rrf",
       "question_id": "demo-q12",
       "tier": "multi_hop",
       "answer": {
@@ -1596,7 +1596,7 @@
       "refused": false
     },
     {
-      "system": "rag",
+      "system": "dense_rag",
       "question_id": "demo-q13",
       "tier": "multi_hop",
       "answer": {
@@ -1640,7 +1640,7 @@
       "refused": false
     },
     {
-      "system": "bm25",
+      "system": "bm25_lexical",
       "question_id": "demo-q13",
       "tier": "multi_hop",
       "answer": {
@@ -1684,7 +1684,7 @@
       "refused": false
     },
     {
-      "system": "hybrid_rag",
+      "system": "hybrid_rrf",
       "question_id": "demo-q13",
       "tier": "multi_hop",
       "answer": {
@@ -1728,7 +1728,7 @@
       "refused": false
     },
     {
-      "system": "rag",
+      "system": "dense_rag",
       "question_id": "demo-q14",
       "tier": "multi_hop",
       "answer": {
@@ -1772,7 +1772,7 @@
       "refused": false
     },
     {
-      "system": "bm25",
+      "system": "bm25_lexical",
       "question_id": "demo-q14",
       "tier": "multi_hop",
       "answer": {
@@ -1816,7 +1816,7 @@
       "refused": false
     },
     {
-      "system": "hybrid_rag",
+      "system": "hybrid_rrf",
       "question_id": "demo-q14",
       "tier": "multi_hop",
       "answer": {
@@ -1860,7 +1860,7 @@
       "refused": false
     },
     {
-      "system": "rag",
+      "system": "dense_rag",
       "question_id": "demo-q15",
       "tier": "multi_hop",
       "answer": {
@@ -1904,7 +1904,7 @@
       "refused": false
     },
     {
-      "system": "bm25",
+      "system": "bm25_lexical",
       "question_id": "demo-q15",
       "tier": "multi_hop",
       "answer": {
@@ -1948,7 +1948,7 @@
       "refused": false
     },
     {
-      "system": "hybrid_rag",
+      "system": "hybrid_rrf",
       "question_id": "demo-q15",
       "tier": "multi_hop",
       "answer": {
@@ -1992,7 +1992,7 @@
       "refused": false
     },
     {
-      "system": "rag",
+      "system": "dense_rag",
       "question_id": "demo-q16",
       "tier": "multi_hop",
       "answer": {
@@ -2036,7 +2036,7 @@
       "refused": false
     },
     {
-      "system": "bm25",
+      "system": "bm25_lexical",
       "question_id": "demo-q16",
       "tier": "multi_hop",
       "answer": {
@@ -2080,7 +2080,7 @@
       "refused": false
     },
     {
-      "system": "hybrid_rag",
+      "system": "hybrid_rrf",
       "question_id": "demo-q16",
       "tier": "multi_hop",
       "answer": {
@@ -2124,7 +2124,7 @@
       "refused": false
     },
     {
-      "system": "rag",
+      "system": "dense_rag",
       "question_id": "demo-q17",
       "tier": "contradiction",
       "answer": {
@@ -2168,7 +2168,7 @@
       "refused": false
     },
     {
-      "system": "bm25",
+      "system": "bm25_lexical",
       "question_id": "demo-q17",
       "tier": "contradiction",
       "answer": {
@@ -2212,7 +2212,7 @@
       "refused": false
     },
     {
-      "system": "hybrid_rag",
+      "system": "hybrid_rrf",
       "question_id": "demo-q17",
       "tier": "contradiction",
       "answer": {
@@ -2256,7 +2256,7 @@
       "refused": false
     },
     {
-      "system": "rag",
+      "system": "dense_rag",
       "question_id": "demo-q18",
       "tier": "contradiction",
       "answer": {
@@ -2300,7 +2300,7 @@
       "refused": false
     },
     {
-      "system": "bm25",
+      "system": "bm25_lexical",
       "question_id": "demo-q18",
       "tier": "contradiction",
       "answer": {
@@ -2344,7 +2344,7 @@
       "refused": false
     },
     {
-      "system": "hybrid_rag",
+      "system": "hybrid_rrf",
       "question_id": "demo-q18",
       "tier": "contradiction",
       "answer": {
@@ -2388,7 +2388,7 @@
       "refused": false
     },
     {
-      "system": "rag",
+      "system": "dense_rag",
       "question_id": "demo-q19",
       "tier": "contradiction",
       "answer": {
@@ -2432,7 +2432,7 @@
       "refused": false
     },
     {
-      "system": "bm25",
+      "system": "bm25_lexical",
       "question_id": "demo-q19",
       "tier": "contradiction",
       "answer": {
@@ -2476,7 +2476,7 @@
       "refused": false
     },
     {
-      "system": "hybrid_rag",
+      "system": "hybrid_rrf",
       "question_id": "demo-q19",
       "tier": "contradiction",
       "answer": {
@@ -2520,7 +2520,7 @@
       "refused": false
     },
     {
-      "system": "rag",
+      "system": "dense_rag",
       "question_id": "demo-q20",
       "tier": "contradiction",
       "answer": {
@@ -2564,7 +2564,7 @@
       "refused": false
     },
     {
-      "system": "bm25",
+      "system": "bm25_lexical",
       "question_id": "demo-q20",
       "tier": "contradiction",
       "answer": {
@@ -2608,7 +2608,7 @@
       "refused": false
     },
     {
-      "system": "hybrid_rag",
+      "system": "hybrid_rrf",
       "question_id": "demo-q20",
       "tier": "contradiction",
       "answer": {
@@ -2653,7 +2653,7 @@
     }
   ],
   "by_system_metric": {
-    "bm25": {
+    "bm25_lexical": {
       "must_include_match": 0.11666666666666665,
       "answer_citation_recall": 0.0,
       "retrieval_source_precision": 0.28,
@@ -2665,7 +2665,7 @@
       "tokens_used_total": 26081.0,
       "refusal_rate": 0.0
     },
-    "hybrid_rag": {
+    "hybrid_rrf": {
       "must_include_match": 0.11666666666666665,
       "answer_citation_recall": 0.0,
       "retrieval_source_precision": 0.26,
@@ -2677,7 +2677,7 @@
       "tokens_used_total": 26487.0,
       "refusal_rate": 0.0
     },
-    "rag": {
+    "dense_rag": {
       "must_include_match": 0.11666666666666665,
       "answer_citation_recall": 0.0,
       "retrieval_source_precision": 0.25,
@@ -2691,7 +2691,7 @@
     }
   },
   "by_system_tier_metric": {
-    "bm25": {
+    "bm25_lexical": {
       "contradiction": {
         "must_include_match": 0.29166666666666663,
         "answer_citation_recall": 0.0,
@@ -2720,7 +2720,7 @@
         "answer_length_chars": 217.5
       }
     },
-    "hybrid_rag": {
+    "hybrid_rrf": {
       "contradiction": {
         "must_include_match": 0.29166666666666663,
         "answer_citation_recall": 0.0,
@@ -2749,7 +2749,7 @@
         "answer_length_chars": 217.5
       }
     },
-    "rag": {
+    "dense_rag": {
       "contradiction": {
         "must_include_match": 0.29166666666666663,
         "answer_citation_recall": 0.0,
@@ -2782,8 +2782,8 @@
   "pairwise": [
     {
       "metric": "must_include_match",
-      "system_a": "rag",
-      "system_b": "bm25",
+      "system_a": "dense_rag",
+      "system_b": "bm25_lexical",
       "mean_a": 0.11666666666666665,
       "mean_b": 0.11666666666666665,
       "mean_diff": 0.0,
@@ -2795,8 +2795,8 @@
     },
     {
       "metric": "must_include_match",
-      "system_a": "rag",
-      "system_b": "hybrid_rag",
+      "system_a": "dense_rag",
+      "system_b": "hybrid_rrf",
       "mean_a": 0.11666666666666665,
       "mean_b": 0.11666666666666665,
       "mean_diff": 0.0,
@@ -2808,8 +2808,8 @@
     },
     {
       "metric": "must_include_match",
-      "system_a": "bm25",
-      "system_b": "hybrid_rag",
+      "system_a": "bm25_lexical",
+      "system_b": "hybrid_rrf",
       "mean_a": 0.11666666666666665,
       "mean_b": 0.11666666666666665,
       "mean_diff": 0.0,
@@ -2821,8 +2821,8 @@
     },
     {
       "metric": "answer_citation_recall",
-      "system_a": "rag",
-      "system_b": "bm25",
+      "system_a": "dense_rag",
+      "system_b": "bm25_lexical",
       "mean_a": 0.0,
       "mean_b": 0.0,
       "mean_diff": 0.0,
@@ -2834,8 +2834,8 @@
     },
     {
       "metric": "answer_citation_recall",
-      "system_a": "rag",
-      "system_b": "hybrid_rag",
+      "system_a": "dense_rag",
+      "system_b": "hybrid_rrf",
       "mean_a": 0.0,
       "mean_b": 0.0,
       "mean_diff": 0.0,
@@ -2847,8 +2847,8 @@
     },
     {
       "metric": "answer_citation_recall",
-      "system_a": "bm25",
-      "system_b": "hybrid_rag",
+      "system_a": "bm25_lexical",
+      "system_b": "hybrid_rrf",
       "mean_a": 0.0,
       "mean_b": 0.0,
       "mean_diff": 0.0,
@@ -2860,8 +2860,8 @@
     },
     {
       "metric": "retrieval_source_precision",
-      "system_a": "rag",
-      "system_b": "bm25",
+      "system_a": "dense_rag",
+      "system_b": "bm25_lexical",
       "mean_a": 0.25,
       "mean_b": 0.28,
       "mean_diff": -0.030000000000000027,
@@ -2873,8 +2873,8 @@
     },
     {
       "metric": "retrieval_source_precision",
-      "system_a": "rag",
-      "system_b": "hybrid_rag",
+      "system_a": "dense_rag",
+      "system_b": "hybrid_rrf",
       "mean_a": 0.25,
       "mean_b": 0.26,
       "mean_diff": -0.010000000000000009,
@@ -2886,8 +2886,8 @@
     },
     {
       "metric": "retrieval_source_precision",
-      "system_a": "bm25",
-      "system_b": "hybrid_rag",
+      "system_a": "bm25_lexical",
+      "system_b": "hybrid_rrf",
       "mean_a": 0.28,
       "mean_b": 0.26,
       "mean_diff": 0.020000000000000018,
@@ -2899,8 +2899,8 @@
     },
     {
       "metric": "retrieval_source_recall",
-      "system_a": "rag",
-      "system_b": "bm25",
+      "system_a": "dense_rag",
+      "system_b": "bm25_lexical",
       "mean_a": 0.925,
       "mean_b": 1.0,
       "mean_diff": -0.07499999999999996,
@@ -2912,8 +2912,8 @@
     },
     {
       "metric": "retrieval_source_recall",
-      "system_a": "rag",
-      "system_b": "hybrid_rag",
+      "system_a": "dense_rag",
+      "system_b": "hybrid_rrf",
       "mean_a": 0.925,
       "mean_b": 0.95,
       "mean_diff": -0.02499999999999991,
@@ -2925,8 +2925,8 @@
     },
     {
       "metric": "retrieval_source_recall",
-      "system_a": "bm25",
-      "system_b": "hybrid_rag",
+      "system_a": "bm25_lexical",
+      "system_b": "hybrid_rrf",
       "mean_a": 1.0,
       "mean_b": 0.95,
       "mean_diff": 0.050000000000000044,
@@ -2938,8 +2938,8 @@
     },
     {
       "metric": "faithfulness",
-      "system_a": "rag",
-      "system_b": "bm25",
+      "system_a": "dense_rag",
+      "system_b": "bm25_lexical",
       "mean_a": 2.8845,
       "mean_b": 2.8845,
       "mean_diff": 0.0,
@@ -2951,8 +2951,8 @@
     },
     {
       "metric": "faithfulness",
-      "system_a": "rag",
-      "system_b": "hybrid_rag",
+      "system_a": "dense_rag",
+      "system_b": "hybrid_rrf",
       "mean_a": 2.8845,
       "mean_b": 2.8845,
       "mean_diff": 0.0,
@@ -2964,8 +2964,8 @@
     },
     {
       "metric": "faithfulness",
-      "system_a": "bm25",
-      "system_b": "hybrid_rag",
+      "system_a": "bm25_lexical",
+      "system_b": "hybrid_rrf",
       "mean_a": 2.8845,
       "mean_b": 2.8845,
       "mean_diff": 0.0,
@@ -2977,8 +2977,8 @@
     },
     {
       "metric": "relevance",
-      "system_a": "rag",
-      "system_b": "bm25",
+      "system_a": "dense_rag",
+      "system_b": "bm25_lexical",
       "mean_a": 5.0,
       "mean_b": 5.0,
       "mean_diff": 0.0,
@@ -2990,8 +2990,8 @@
     },
     {
       "metric": "relevance",
-      "system_a": "rag",
-      "system_b": "hybrid_rag",
+      "system_a": "dense_rag",
+      "system_b": "hybrid_rrf",
       "mean_a": 5.0,
       "mean_b": 5.0,
       "mean_diff": 0.0,
@@ -3003,8 +3003,8 @@
     },
     {
       "metric": "relevance",
-      "system_a": "bm25",
-      "system_b": "hybrid_rag",
+      "system_a": "bm25_lexical",
+      "system_b": "hybrid_rrf",
       "mean_a": 5.0,
       "mean_b": 5.0,
       "mean_diff": 0.0,

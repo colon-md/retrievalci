@@ -64,7 +64,7 @@ def test_research_study_generator_writes_configs_and_scripts(tmp_path: Path) -> 
     listing_config = load_run_config(
         out / "configs" / "wixqa_expertwritten__wiki_listing_only.yaml"
     )
-    assert listing_config["systems"] == ["rag", "claim_rag", "wiki_pages"]
+    assert listing_config["systems"] == ["dense_rag", "claim_rag", "wiki_pages"]
     assert listing_config["wiki"]["embed_uses_prose"] == "off"
     assert listing_config["wiki"]["answer_uses_prose"] == "off"
     assert listing_config["reports"]["json"] == (

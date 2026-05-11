@@ -27,6 +27,20 @@ class QAItem(BaseModel):
     must_not_include_terms: tuple[str, ...] = ()
     notes: str = ""
 
+    # Hosted-RAG benchmark facets. Optional and orthogonal to `tier` so we can
+    # mark a question as e.g. multi_hop AND unanswerable without inventing a
+    # fourth tier value. `expected_abstain` distinguishes "this should refuse"
+    # from "this is genuinely unanswerable" (the former is a policy assertion,
+    # the latter is a corpus fact).
+    corpus_id: str | None = None
+    facets: tuple[str, ...] = ()
+    unanswerable: bool = False
+    expected_abstain: bool = False
+    distractor_citations: tuple[str, ...] = ()
+    temporal_anchor: str | None = None
+    authored_by: str | None = None
+    verified_by: str | None = None
+
 
 class Citation(BaseModel):
     """A claim made by a system answer, traced back to source(s)."""
@@ -48,6 +62,26 @@ class SystemAnswer(BaseModel):
     tokens_used: int = Field(ge=0)
     refused: bool = False
     refusal_reason: str | None = None
+
+    # Hosted-RAG benchmark fields. `retrieved_sources` and `answer_citations`
+    # let hosted adapters report the retriever and answerer separately even
+    # when the existing `citations` field would conflate them. Metrics prefer
+    # `retrieved_sources` when set, otherwise fall back to `citations`.
+    retrieved_sources: tuple[Citation, ...] = ()
+    answer_citations: tuple[Citation, ...] = ()
+    cost_usd: float | None = None
+    corpus_version_hash: str | None = None
+    index_build_id: str | None = None
+    generator_model_id: str | None = None
+    meta: dict[str, object] = Field(default_factory=dict)
+
+    # Retrieval-only latency, exclusive of LLM generation. For Mode A hosted
+    # systems (vertex_ai_rag, bedrock_kb, openai_file_search, azure_ai_search)
+    # this equals `latency_ms` because they're retrieve-only. For local
+    # systems that combine retrieval + generation, this records just the
+    # retrieval step so the scorecard can compare retrieval latency apples-
+    # to-apples across both kinds of systems.
+    retrieval_latency_ms: float | None = None
 
 
 class RunResult(BaseModel):
@@ -78,6 +112,13 @@ class RunResult(BaseModel):
     # LLM-judge metrics. None unless a Judge was wired into runner.run_eval().
     faithfulness: float | None = None  # 1-5 scale
     relevance: float | None = None  # 1-5 scale
+
+    # Abstention correctness: 1.0 when the system's refusal matches the
+    # question's expected_abstain flag, 0.0 when it disagrees, None when the
+    # question has no abstention expectation. Without this metric, a system
+    # that correctly refuses an unanswerable question is penalized by
+    # must_include_match=0 and looks worse than a system that hallucinates.
+    abstention_correctness: float | None = None
 
     answer_length_chars: int = 0
     refused: bool = False

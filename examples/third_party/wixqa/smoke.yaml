@@ -6,9 +6,9 @@ corpus:
     - examples/third_party/wixqa/corpus/*.md
 
 systems:
-  - rag
-  - bm25
-  - hybrid_rag
+  - dense_rag
+  - bm25_lexical
+  - hybrid_rrf
 
 run:
   backend: mock

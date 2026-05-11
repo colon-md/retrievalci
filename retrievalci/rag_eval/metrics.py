@@ -80,6 +80,24 @@ def precision_recall(cited: set[str], ground_truth: set[str]) -> tuple[float | N
     return (precision, recall)
 
 
+def abstention_correctness(question: QAItem, answer: SystemAnswer) -> float | None:
+    """Return 1.0 if the system's refusal matches the question's expectation.
+
+    Only defined for questions that carry an abstention expectation
+    (`expected_abstain=True` OR `unanswerable=True`). Returns None for
+    ordinary answerable questions so a "did not refuse" doesn't get scored
+    as either correct or incorrect on the abstention axis.
+
+    For a question that *should* be refused: score 1.0 if refused, 0.0 if not.
+    For a question that should NOT be refused: score 0.0 if refused
+    (over-abstention), None if answered (axis not applicable).
+    """
+    should_abstain = question.expected_abstain or question.unanswerable
+    if not should_abstain:
+        return 0.0 if answer.refused else None
+    return 1.0 if answer.refused else 0.0
+
+
 def paired_bootstrap_ci(
     a: list[float],
     b: list[float],
@@ -142,16 +160,22 @@ def _aligned_metric_values(
 def compute_row(system_name: str, question: QAItem, answer: SystemAnswer) -> RunResult:
     truth = set(question.ground_truth_citations)
 
-    # Answer-citation metrics: parse [doc:...] tokens out of the LLM's actual
-    # answer text. Empty when the LLM didn't cite anything (or mock backends
-    # that don't emit citations).
-    answer_cited = parse_answer_citations(answer.answer)
+    # Answer-citation metrics: prefer the structured `answer_citations` field
+    # (hosted adapters that get structured citation annotations from the
+    # provider populate it directly); otherwise parse [doc:...] tokens out of
+    # the answer text the way local systems emit them.
+    if answer.answer_citations:
+        answer_cited = {c.source_path for c in answer.answer_citations}
+    else:
+        answer_cited = parse_answer_citations(answer.answer)
     ans_p, ans_r = precision_recall(answer_cited, truth)
 
-    # Retrieval-source metrics: the systems' returned `citations` field is
-    # populated with whatever they retrieved before generation. This measures
-    # the retriever, not the answerer.
-    retrieved = {c.source_path for c in answer.citations}
+    # Retrieval-source metrics: prefer `retrieved_sources` when the adapter
+    # populates it (hosted Mode A puts the retriever's ranked sources here
+    # without conflating them with the answer's citations). Fall back to the
+    # legacy `citations` field for existing local systems.
+    retrieved_citations = answer.retrieved_sources or answer.citations
+    retrieved = {c.source_path for c in retrieved_citations}
     ret_p, ret_r = precision_recall(retrieved, truth)
 
     return RunResult(
@@ -165,6 +189,7 @@ def compute_row(system_name: str, question: QAItem, answer: SystemAnswer) -> Run
         ),
         answer_citation_precision=ans_p,
         answer_citation_recall=ans_r,
+        abstention_correctness=abstention_correctness(question, answer),
         retrieval_source_precision=ret_p,
         retrieval_source_recall=ret_r,
         answer_length_chars=len(answer.answer),

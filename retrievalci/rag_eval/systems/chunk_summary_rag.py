@@ -157,6 +157,7 @@ class ChunkSummaryRAGSystem:
         scored = [(_cosine(q_vec, v), i) for i, v in enumerate(self._index)]
         scored.sort(reverse=True)
         retrieved = [self._chunks[i] for _, i in scored[: self._top_k]]
+        retrieval_latency_ms = (time.perf_counter() - t0) * 1000.0
 
         context = "\n\n".join(f"[doc:{c.chunk_id}]\n{c.text}" for c in retrieved)
         prompt = _QUERY_PROMPT.format(question=question, context=context)
@@ -168,5 +169,6 @@ class ChunkSummaryRAGSystem:
             answer=resp.text,
             citations=citations,
             latency_ms=latency_ms,
+            retrieval_latency_ms=retrieval_latency_ms,
             tokens_used=resp.tokens_used,
         )

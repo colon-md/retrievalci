@@ -51,18 +51,18 @@ ENTERPRISE_PRESETS = (
 CONDITIONS = (
     ConditionSpec(
         name="retrieval_baselines",
-        systems=("rag", "bm25", "hybrid_rag", "rerank_rag"),
+        systems=("dense_rag", "bm25_lexical", "hybrid_rrf", "dense_rerank"),
         note="Dense, sparse, hybrid, and reranked RAG retrieval baselines.",
     ),
     ConditionSpec(
         name="wiki_full_prose",
-        systems=("rag", "claim_rag", "wiki_pages"),
+        systems=("dense_rag", "claim_rag", "wiki_pages"),
         note="Wiki pages synthesize prose; prose is used for embedding and answer context.",
         wiki={"synthesize": "on", "embed_uses_prose": "on", "answer_uses_prose": "on"},
     ),
     ConditionSpec(
         name="wiki_embed_prose_answer_listing",
-        systems=("rag", "claim_rag", "wiki_pages"),
+        systems=("dense_rag", "claim_rag", "wiki_pages"),
         note=(
             "Mechanism isolation: synthesized prose enriches embeddings, "
             "but answers see listings."
@@ -71,26 +71,26 @@ CONDITIONS = (
     ),
     ConditionSpec(
         name="wiki_embed_listing_answer_prose",
-        systems=("rag", "claim_rag", "wiki_pages"),
+        systems=("dense_rag", "claim_rag", "wiki_pages"),
         note="Mechanism isolation: embeddings see listings, but answers see synthesized prose.",
         wiki={"synthesize": "on", "embed_uses_prose": "off", "answer_uses_prose": "on"},
     ),
     ConditionSpec(
         name="wiki_listing_only",
-        systems=("rag", "claim_rag", "wiki_pages"),
+        systems=("dense_rag", "claim_rag", "wiki_pages"),
         note="Mechanism isolation: structured entity listings only.",
         wiki={"synthesize": "on", "embed_uses_prose": "off", "answer_uses_prose": "off"},
     ),
     ConditionSpec(
         name="wiki_bge_large",
-        systems=("rag", "claim_rag", "wiki_pages"),
+        systems=("dense_rag", "claim_rag", "wiki_pages"),
         note="Same full-prose wiki condition with the bge-large local embedder.",
         wiki={"synthesize": "on", "embed_uses_prose": "on", "answer_uses_prose": "on"},
         local_embedder_model="BAAI/bge-large-en-v1.5",
     ),
     ConditionSpec(
         name="chunk_summary",
-        systems=("rag", "claim_rag", "chunk_summary_rag"),
+        systems=("dense_rag", "claim_rag", "chunk_summary_rag"),
         note="Tests whether per-chunk synthesis competes with entity-page synthesis.",
     ),
 )

@@ -38,7 +38,7 @@ def _write_project(root: Path) -> None:
                 "repo_root": ".",
                 "questions": "questions.jsonl",
                 "corpus": {"globs": ["docs/*.md"]},
-                "systems": ["rag", "bm25"],
+                "systems": ["dense_rag", "bm25_lexical"],
                 "run": {"backend": "mock", "judge": "none", "max_chunks": 3},
                 "reports": {"json": "ignored.json", "markdown": "ignored.md"},
                 "diagnostics": {"primary_metric": "retrieval_source_recall"},

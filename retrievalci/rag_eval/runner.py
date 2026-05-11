@@ -27,16 +27,23 @@ _DEFAULT_CORPUS_GLOBS = [
     "docs/**/*.md",
     "retrievalci/rag_eval/schemas/*",
 ]
-_TARGET_SYSTEMS = ("wiki_pages", "hybrid_rag", "chunk_summary_rag")
+_TARGET_SYSTEMS = ("wiki_pages", "hybrid_rrf", "chunk_summary_rag")
 _SYSTEMS = (
-    "rag",
+    "dense_rag",
     "claim_rag",
-    "bm25",
-    "hybrid_rag",
-    "rerank_rag",
+    "bm25_lexical",
+    "hybrid_rrf",
+    "dense_rerank",
     "wiki_pages",
     "chunk_summary_rag",
 )
+# Back-compat: accept legacy names in configs/old baselines without erroring.
+_LEGACY_SYSTEM_ALIASES = {
+    "rag": "dense_rag",
+    "bm25": "bm25_lexical",
+    "hybrid_rag": "hybrid_rrf",
+    "rerank_rag": "dense_rerank",
+}
 _MISSING = object()
 
 
@@ -176,9 +183,12 @@ def _resolve_system_names(
         values = _as_string_list(config_value, "systems") if config_value is not _MISSING else None
 
     if values:
+        # Resolve legacy aliases (rag/bm25/hybrid_rag/rerank_rag → new names)
+        # so old configs and baselines keep working through this transition.
+        values = [_LEGACY_SYSTEM_ALIASES.get(v, v) for v in values]
         systems = _dedupe_preserve_order(values)
     else:
-        systems = ("rag", "claim_rag", target_system)
+        systems = ("dense_rag", "claim_rag", target_system)
 
     invalid = sorted(set(systems) - set(_SYSTEMS))
     if invalid:
@@ -285,6 +295,59 @@ def _mean_optional(values: list[float | None]) -> float | None:
     return statistics.fmean(real) if real else None
 
 
+def rejudge_report(
+    report: ComparisonReport,
+    questions: list[QAItem],
+    judge: Judge,
+) -> ComparisonReport:
+    """Re-score an existing ComparisonReport's faithfulness/relevance using a new judge.
+
+    Reuses the answers, citations, and retrieval metrics stored in the report —
+    only the judge-dependent fields (faithfulness, relevance) are recomputed.
+    Skips refused rows the same way the live run loop does. Lets a Claude
+    judge grade Gemini-generated answers (or vice versa) without re-running
+    the underlying generators, which is what makes cross-model judging
+    affordable when the generator's daily quota is constrained.
+
+    The evidence passed to the judge is reconstructed identically to the
+    live `run_eval` loop: `"\\n".join(c.span or c.source_path for c in
+    ans.citations)`. Rows whose question_id is not in `questions` are kept
+    as-is (with a warning printed) rather than dropped.
+    """
+    by_qid = {q.id: q for q in questions}
+    new_rows: list[RunResult] = []
+    missing_qids: set[str] = set()
+    for row in report.rows:
+        q = by_qid.get(row.question_id)
+        if q is None:
+            missing_qids.add(row.question_id)
+            new_rows.append(row)
+            continue
+        if row.refused:
+            new_rows.append(row)
+            continue
+        evidence = "\n".join(c.span or c.source_path for c in row.answer.citations)
+        fa = judge.faithfulness(q.question, row.answer.answer, evidence, q.ground_truth_answer)
+        re_ = judge.relevance(q.question, row.answer.answer)
+        new_rows.append(
+            row.model_copy(update={"faithfulness": fa.score, "relevance": re_.score})
+        )
+    if missing_qids:
+        print(
+            f"rejudge: warning — {len(missing_qids)} row(s) had question_ids not in the "
+            f"supplied questions file (kept as-is): {sorted(missing_qids)[:5]}"
+        )
+
+    by_sys_metric, by_sys_tier_metric = _aggregate(new_rows)
+    return report.model_copy(
+        update={
+            "rows": new_rows,
+            "by_system_metric": by_sys_metric,
+            "by_system_tier_metric": by_sys_tier_metric,
+        }
+    )
+
+
 def _aggregate(
     rows: list[RunResult],
 ) -> tuple[dict[str, dict[str, float]], dict[str, dict[Tier, dict[str, float]]]]:
@@ -297,6 +360,7 @@ def _aggregate(
         "answer_citation_recall",
         "retrieval_source_precision",
         "retrieval_source_recall",
+        "abstention_correctness",
         "faithfulness",
         "relevance",
         "answer_length_chars",
@@ -314,10 +378,19 @@ def _aggregate(
             )
             if mean is not None:
                 by_sys[sys_name][field] = float(mean)
-        # Latency + tokens.
+        # Latency + tokens. `latency_ms_p50` is end-to-end (retrieve +
+        # generate for local systems). `retrieval_latency_ms_p50` is the
+        # retrieve-only portion, which is what the public scorecard uses
+        # so local-vs-hosted comparison is apples-to-apples.
         by_sys[sys_name]["latency_ms_p50"] = statistics.median(
             r.answer.latency_ms for r in sys_rows
         )
+        retrieval_latencies = [
+            r.answer.retrieval_latency_ms for r in sys_rows
+            if r.answer.retrieval_latency_ms is not None
+        ]
+        if retrieval_latencies:
+            by_sys[sys_name]["retrieval_latency_ms_p50"] = statistics.median(retrieval_latencies)
         by_sys[sys_name]["tokens_used_total"] = float(sum(r.answer.tokens_used for r in sys_rows))
         by_sys[sys_name]["refusal_rate"] = sum(1 for r in sys_rows if r.refused) / len(sys_rows)
 
@@ -748,8 +821,8 @@ def main(argv: list[str] | None = None) -> None:
     from retrievalci.rag_eval.systems import (
         ChunkSummaryRAGSystem,
         ClaimRAGSystem,
-        HybridRAGSystem,
-        RAGSystem,
+        DenseRAGSystem,
+        HybridRRFSystem,
         WikiPagesSystem,
     )
 
@@ -757,6 +830,15 @@ def main(argv: list[str] | None = None) -> None:
         from retrievalci.rag_eval.backends.gemini import GeminiEmbedder, GeminiGenerator
 
         embedder, generator = GeminiEmbedder(), GeminiGenerator()
+    elif backend == "vertex":
+        # Vertex AI text-embedding-005 (768-dim) + Vertex publisher-direct
+        # gemini-2.5-flash-lite generation. Both authenticate via
+        # VERTEX_API_KEY — separate quota pool from the public Gemini API.
+        from retrievalci.rag_eval.backends.gemini import GeminiGenerator
+        from retrievalci.rag_eval.backends.vertex import VertexEmbedder
+
+        embedder = VertexEmbedder()
+        generator = GeminiGenerator()  # falls back to GOOGLE_API_KEY / GEMINI_API_KEY
     elif backend == "claude":
         from retrievalci.rag_eval.backends.claude import ClaudeGenerator
         from retrievalci.rag_eval.backends.local import LocalEmbedder
@@ -801,8 +883,8 @@ def main(argv: list[str] | None = None) -> None:
         chunks = chunks[:max_chunks]
 
     built_systems: dict[str, System] = {}
-    if "rag" in systems:
-        built_systems["rag"] = RAGSystem(embedder, generator, chunks)
+    if "dense_rag" in systems:
+        built_systems["dense_rag"] = DenseRAGSystem(embedder, generator, chunks)
 
     claim_rag: ClaimRAGSystem | None = None
     if "claim_rag" in systems or "wiki_pages" in systems:
@@ -816,18 +898,18 @@ def main(argv: list[str] | None = None) -> None:
         if "claim_rag" in systems:
             built_systems["claim_rag"] = claim_rag
 
-    if "bm25" in systems:
+    if "bm25_lexical" in systems:
         from retrievalci.rag_eval.systems import BM25System
 
-        built_systems["bm25"] = BM25System(generator, chunks)
+        built_systems["bm25_lexical"] = BM25System(generator, chunks)
 
-    if "hybrid_rag" in systems:
-        built_systems["hybrid_rag"] = HybridRAGSystem(embedder, generator, chunks)
+    if "hybrid_rrf" in systems:
+        built_systems["hybrid_rrf"] = HybridRRFSystem(embedder, generator, chunks)
 
-    if "rerank_rag" in systems:
-        from retrievalci.rag_eval.systems import RerankRAGSystem
+    if "dense_rerank" in systems:
+        from retrievalci.rag_eval.systems import DenseRerankSystem
 
-        built_systems["rerank_rag"] = RerankRAGSystem(embedder, generator, chunks)
+        built_systems["dense_rerank"] = DenseRerankSystem(embedder, generator, chunks)
 
     if "chunk_summary_rag" in systems:
         built_systems["chunk_summary_rag"] = ChunkSummaryRAGSystem(

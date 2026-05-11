@@ -221,7 +221,7 @@ def test_run_eval_produces_well_shaped_report(
     cr = ClaimRAGSystem(MockEmbedder(), MockGenerator(), synthetic_chunks)
 
     report = run_eval([rag, cr], sample_questions)
-    assert report.systems == ("rag", "claim_rag")
+    assert report.systems == ("dense_rag", "claim_rag")
     assert report.n_questions == 3
     assert sum(report.n_per_tier.values()) == 3
     # Two systems x three questions = 6 rows.
@@ -264,6 +264,168 @@ def test_metrics_compute_row_handles_empty_terms() -> None:
     # Retrieved nothing → retrieval-source precision None, recall 0.
     assert row.retrieval_source_precision is None
     assert row.retrieval_source_recall == 0.0
+
+
+def test_compute_row_prefers_retrieved_sources_when_set() -> None:
+    """Hosted adapters populate `retrieved_sources` separately from `citations`.
+
+    When both fields are present, retrieval metrics must score against
+    `retrieved_sources` and ignore the legacy `citations` field.
+    """
+    from retrievalci.rag_eval.types import Citation, SystemAnswer
+
+    q = QAItem(
+        id="q",
+        tier="single_hop",
+        question="?",
+        ground_truth_answer="x",
+        ground_truth_citations=("good.md",),
+    )
+    # `citations` has the wrong source on purpose; `retrieved_sources` has the
+    # right one. The metric must follow `retrieved_sources`.
+    a = SystemAnswer(
+        answer="anything",
+        citations=(Citation(source_path="wrong.md"),),
+        retrieved_sources=(Citation(source_path="good.md"),),
+        latency_ms=1.0,
+        tokens_used=1,
+    )
+    row = compute_row("test", q, a)
+    assert row.retrieval_source_recall == 1.0
+    assert row.retrieval_source_precision == 1.0
+
+
+def test_compute_row_prefers_answer_citations_when_set() -> None:
+    """Hosted adapters report structured citation annotations directly.
+
+    When `answer_citations` is populated, the answer-citation metric uses it
+    instead of parsing [doc:...] tokens out of the answer text.
+    """
+    from retrievalci.rag_eval.types import Citation, SystemAnswer
+
+    q = QAItem(
+        id="q",
+        tier="single_hop",
+        question="?",
+        ground_truth_answer="x",
+        ground_truth_citations=("good.md",),
+    )
+    # Answer text cites the wrong file; the structured `answer_citations` field
+    # has the right one. The metric must follow `answer_citations`.
+    a = SystemAnswer(
+        answer="[doc:wrong.md] some prose",
+        citations=(),
+        answer_citations=(Citation(source_path="good.md"),),
+        latency_ms=1.0,
+        tokens_used=1,
+    )
+    row = compute_row("test", q, a)
+    assert row.answer_citation_recall == 1.0
+    assert row.answer_citation_precision == 1.0
+
+
+def test_abstention_correctness_rewards_refusing_unanswerable() -> None:
+    """A system that correctly refuses an unanswerable question must score 1.0."""
+    from retrievalci.rag_eval.types import SystemAnswer
+
+    q = QAItem(
+        id="q",
+        tier="single_hop",
+        question="What is the secret API key for the rollout?",
+        ground_truth_answer="(unanswerable from corpus)",
+        ground_truth_citations=(),
+        unanswerable=True,
+        expected_abstain=True,
+    )
+    a = SystemAnswer(
+        answer="",
+        citations=(),
+        latency_ms=1.0,
+        tokens_used=0,
+        refused=True,
+        refusal_reason="not in corpus",
+    )
+    row = compute_row("good_system", q, a)
+    assert row.abstention_correctness == 1.0
+
+
+def test_abstention_correctness_penalizes_answering_unanswerable() -> None:
+    """A system that hallucinates an answer to an unanswerable question scores 0.0."""
+    from retrievalci.rag_eval.types import SystemAnswer
+
+    q = QAItem(
+        id="q",
+        tier="single_hop",
+        question="What is the secret API key for the rollout?",
+        ground_truth_answer="(unanswerable from corpus)",
+        ground_truth_citations=(),
+        unanswerable=True,
+        expected_abstain=True,
+    )
+    a = SystemAnswer(
+        answer="The secret key is sk-1234.",  # hallucinated
+        citations=(),
+        latency_ms=1.0,
+        tokens_used=10,
+        refused=False,
+    )
+    row = compute_row("hallucinating_system", q, a)
+    assert row.abstention_correctness == 0.0
+
+
+def test_abstention_correctness_penalizes_over_abstention() -> None:
+    """Refusing an answerable question is wrong (over-abstention)."""
+    from retrievalci.rag_eval.types import SystemAnswer
+
+    q = QAItem(
+        id="q",
+        tier="single_hop",
+        question="What database does the payments service use?",
+        ground_truth_answer="postgres",
+        ground_truth_citations=("docs/payments.md",),
+        # neither unanswerable nor expected_abstain
+    )
+    a = SystemAnswer(answer="", citations=(), latency_ms=1.0, tokens_used=0, refused=True)
+    row = compute_row("over_abstain_system", q, a)
+    assert row.abstention_correctness == 0.0
+
+
+def test_abstention_correctness_is_none_for_normal_answer() -> None:
+    """Axis is not applicable when neither refusal nor abstention is expected."""
+    from retrievalci.rag_eval.types import SystemAnswer
+
+    q = QAItem(
+        id="q",
+        tier="single_hop",
+        question="?",
+        ground_truth_answer="x",
+        ground_truth_citations=("a.md",),
+    )
+    a = SystemAnswer(answer="x", citations=(), latency_ms=1.0, tokens_used=1)
+    row = compute_row("normal_system", q, a)
+    assert row.abstention_correctness is None
+
+
+def test_qaitem_accepts_hosted_benchmark_facets() -> None:
+    """The new optional facet fields must parse cleanly and round-trip."""
+    q = QAItem(
+        id="q",
+        tier="single_hop",
+        question="?",
+        ground_truth_answer="x",
+        ground_truth_citations=("a.md",),
+        corpus_id="bench-v0",
+        facets=("temporal", "policy"),
+        unanswerable=False,
+        expected_abstain=False,
+        distractor_citations=("noise.md",),
+        temporal_anchor="2026-Q1",
+        authored_by="alice",
+        verified_by="bob",
+    )
+    assert q.corpus_id == "bench-v0"
+    assert q.facets == ("temporal", "policy")
+    assert q.distractor_citations == ("noise.md",)
 
 
 def test_judge_wired_into_runner_populates_faithfulness_relevance(
@@ -324,6 +486,133 @@ def test_claude_judge_protocol_and_no_api_key() -> None:
     finally:
         if saved is not None:
             os.environ["ANTHROPIC_API_KEY"] = saved
+
+
+def test_gemini_judge_prefers_pro_specific_api_key(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Pro-family models route to GEMINI_API_KEY_PRO when set.
+
+    Lets a Pro/Ultra subscription key serve Pro judging while a separate
+    free-tier key serves generator and embedder. Without this routing, all
+    Gemini calls would compete for the same key's daily quota.
+    """
+    from retrievalci.rag_eval.backends import gemini as gem
+
+    monkeypatch.setenv("GEMINI_API_KEY_PRO", "pro-subscription-key")
+    monkeypatch.setenv("GEMINI_API_KEY", "flash-tier-key")
+    monkeypatch.delenv("GOOGLE_API_KEY", raising=False)
+
+    captured: dict = {}
+
+    class _FakeModule:
+        class Client:
+            def __init__(self, api_key: str) -> None:
+                captured["api_key"] = api_key
+
+    monkeypatch.setattr(
+        gem.GeminiEmbedder,
+        "_make_client",
+        staticmethod(lambda api_key=None: _FakeModule.Client(
+            api_key=api_key or "flash-tier-key"
+        )),
+    )
+    gem.GeminiJudge(model="gemini-2.5-pro")
+    assert captured["api_key"] == "pro-subscription-key"
+
+
+def test_gemini_judge_falls_back_when_pro_key_unset(monkeypatch: pytest.MonkeyPatch) -> None:
+    """If GEMINI_API_KEY_PRO is not set, the Judge falls back to the standard chain."""
+    from retrievalci.rag_eval.backends import gemini as gem
+
+    monkeypatch.delenv("GEMINI_API_KEY_PRO", raising=False)
+    monkeypatch.setenv("GEMINI_API_KEY", "fallback-key")
+    monkeypatch.delenv("GOOGLE_API_KEY", raising=False)
+
+    captured: dict = {}
+
+    class _FakeClient:
+        def __init__(self, api_key: str) -> None:
+            captured["api_key"] = api_key
+
+    monkeypatch.setattr(
+        gem.GeminiEmbedder,
+        "_make_client",
+        staticmethod(lambda api_key=None: _FakeClient(
+            api_key=api_key or "fallback-key"
+        )),
+    )
+    gem.GeminiJudge(model="gemini-2.5-pro")
+    assert captured["api_key"] == "fallback-key"
+
+
+def test_gemini_judge_non_pro_model_uses_standard_chain(monkeypatch: pytest.MonkeyPatch) -> None:
+    """For non-Pro judge models, GEMINI_API_KEY_PRO must NOT be consumed."""
+    from retrievalci.rag_eval.backends import gemini as gem
+
+    monkeypatch.setenv("GEMINI_API_KEY_PRO", "pro-key-do-not-use")
+    monkeypatch.setenv("GEMINI_API_KEY", "flash-key")
+    monkeypatch.delenv("GOOGLE_API_KEY", raising=False)
+
+    captured: dict = {}
+
+    class _FakeClient:
+        def __init__(self, api_key: str) -> None:
+            captured["api_key"] = api_key
+
+    monkeypatch.setattr(
+        gem.GeminiEmbedder,
+        "_make_client",
+        staticmethod(lambda api_key=None: _FakeClient(
+            api_key=api_key or "flash-key"
+        )),
+    )
+    gem.GeminiJudge(model="gemini-2.5-flash")
+    assert captured["api_key"] == "flash-key"
+
+
+def test_gemini_defaults_match_free_tier_policy() -> None:
+    """Pin the Gemini backend's default model IDs to the project's policy.
+
+    Policy (as of 2026-05-10):
+      - Generator: flash-tier only. The generator runs many calls per eval
+        and burning a daily cap on a slow model would block iteration.
+      - Embedder: gemini-embedding-* family. The family is uniformly free
+        tier in current pricing; alternative embedders are paid.
+      - Judge: gemini-2.5-pro is allowed (explicit tradeoff — Pro has
+        tighter free-tier quota but better nuance for grading). Cost
+        exposure is bounded at the project level (no billing attached →
+        429 hard block on quota exhaustion), not at the model default.
+    """
+    import inspect
+
+    from retrievalci.rag_eval.backends.gemini import (
+        GeminiEmbedder,
+        GeminiGenerator,
+        GeminiJudge,
+    )
+
+    gen_default = inspect.signature(GeminiGenerator.__init__).parameters["model"].default
+    judge_default = inspect.signature(GeminiJudge.__init__).parameters["model"].default
+    embed_default = inspect.signature(GeminiEmbedder.__init__).parameters["model"].default
+
+    # Generator: must be a flash-tier model. Reject 'pro' substring so the
+    # default can't silently regress to gemini-2.5-pro or gemini-3-pro.
+    assert "pro" not in gen_default.lower(), (
+        f"GeminiGenerator default {gen_default!r} contains 'pro' — would consume "
+        "the much tighter Pro daily quota for every generator call. Pass "
+        "model='gemini-2.5-pro' explicitly when intentional."
+    )
+    assert "flash" in gen_default.lower(), (
+        f"GeminiGenerator default {gen_default!r} is not a flash-tier model."
+    )
+    # Judge: Pro is allowed by policy. Just pin the family so the default
+    # can't silently regress to a non-Gemini model.
+    assert "gemini" in judge_default.lower(), (
+        f"GeminiJudge default {judge_default!r} is not a Gemini model."
+    )
+    # Embedder: gemini-embedding-* family.
+    assert "embedding" in embed_default.lower(), (
+        f"GeminiEmbedder default {embed_default!r} is not the gemini-embedding family."
+    )
 
 
 def test_claude_judge_default_model_id() -> None:
@@ -488,7 +777,7 @@ def test_run_eval_emits_pairwise_when_n_questions_sufficient(
     # Pairwise should be non-empty (at least one metric has all-non-None values).
     assert report.pairwise, "expected pairwise CIs with n=5"
     for d in report.pairwise:
-        assert d.system_a == "rag"
+        assert d.system_a == "dense_rag"
         assert d.system_b == "claim_rag"
         assert d.n == 5
         # CI must contain the mean diff (sanity check: bootstrap is symmetric-ish).
@@ -1470,9 +1759,9 @@ def test_run_eval_with_three_systems_emits_pairwise(synthetic_chunks: list[Chunk
     wp = WikiPagesSystem(MockEmbedder(), _CannedTripleGenerator(), cr._claims)
     report = run_eval([rag, cr, wp], qs)
 
-    assert report.systems == ("rag", "claim_rag", "wiki_pages")
+    assert report.systems == ("dense_rag", "claim_rag", "wiki_pages")
     assert len(report.rows) == 15  # 3 systems x 5 questions
     pairs = {(d.system_a, d.system_b) for d in report.pairwise}
-    assert ("rag", "claim_rag") in pairs
-    assert ("rag", "wiki_pages") in pairs
+    assert ("dense_rag", "claim_rag") in pairs
+    assert ("dense_rag", "wiki_pages") in pairs
     assert ("claim_rag", "wiki_pages") in pairs

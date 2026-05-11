@@ -8,6 +8,7 @@ resolves them against a configurable repo root.
 
 from __future__ import annotations
 
+import hashlib
 from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
@@ -95,3 +96,47 @@ def chunk_corpus(docs: Iterable[Document]) -> list[Chunk]:
     for d in docs:
         out.extend(chunk_by_paragraph(d))
     return out
+
+
+def l2_normalize(v: list[float]) -> list[float]:
+    """Scale a vector to unit length. Used by embedder backends so cosine
+    similarity downstream reduces to a plain dot product."""
+    import math
+    n = math.sqrt(sum(x * x for x in v))
+    if n == 0.0:
+        return v
+    return [x / n for x in v]
+
+
+def compute_corpus_version_hash(chunks: Iterable[Chunk]) -> str:
+    """Deterministic SHA-256 over the chunked corpus.
+
+    Returns the full 64-char hex digest. Identifies what a hosted RAG service
+    was *supposed to* index. The hash is keyed on chunk content + position
+    (not file mtime) so a clean checkout rehashes to the same value
+    regardless of when the files were written.
+
+    For filename / UI rendering, use short_corpus_version_hash() — but
+    persisted manifests and IndexHandles must store the full digest so
+    audit can detect 64-bit collisions that the truncated form can't.
+    """
+    h = hashlib.sha256()
+    for c in sorted(chunks, key=lambda x: (x.source_path, x.chunk_index)):
+        h.update(c.source_path.encode("utf-8"))
+        h.update(b"\x00")
+        h.update(str(c.chunk_index).encode("ascii"))
+        h.update(b"\x00")
+        h.update(c.text.encode("utf-8"))
+        h.update(b"\n")
+    return h.hexdigest()
+
+
+def short_corpus_version_hash(full_hash: str) -> str:
+    """Truncate a corpus version hash for filenames and UI rendering only.
+
+    Never use this form as a comparison key or persisted identifier — it
+    has only ~64 bits of collision resistance vs. 256 bits in the full form.
+    """
+    if len(full_hash) < 16:
+        raise ValueError(f"hash too short to truncate: {full_hash!r}")
+    return full_hash[:16]

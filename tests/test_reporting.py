@@ -7,7 +7,7 @@ from retrievalci.reporting import build_html_report
 
 def _rag_report(value: float) -> ComparisonReport:
     row = RunResult(
-        system="rag",
+        system="dense_rag",
         question_id="q01",
         tier="single_hop",
         answer=SystemAnswer(
@@ -23,12 +23,12 @@ def _rag_report(value: float) -> ComparisonReport:
         answer_length_chars=24,
     )
     return ComparisonReport(
-        systems=("rag",),
+        systems=("dense_rag",),
         n_questions=1,
         n_per_tier={"single_hop": 1, "multi_hop": 0, "contradiction": 0},
         rows=[row],
         by_system_metric={
-            "rag": {
+            "dense_rag": {
                 "must_include_match": value,
                 "answer_citation_recall": value,
                 "retrieval_source_recall": value,
@@ -39,7 +39,7 @@ def _rag_report(value: float) -> ComparisonReport:
             }
         },
         by_system_tier_metric={
-            "rag": {"single_hop": {"retrieval_source_recall": value}}
+            "dense_rag": {"single_hop": {"retrieval_source_recall": value}}
         },
         pairwise=[],
     )
