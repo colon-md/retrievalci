@@ -32,6 +32,112 @@ def load_trace_metrics(path: str | Path) -> dict[str, Any]:
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
 
+# Marker block syntax for `retrievalci report scorecard` injection. The
+# generator finds these markers in a target Markdown file and rewrites
+# everything between them. Outside the markers, the file is untouched.
+SCORECARD_BEGIN_MARKER = "<!-- BEGIN retrievalci scorecard -->"
+SCORECARD_END_MARKER = "<!-- END retrievalci scorecard -->"
+
+
+# Map raw system identifiers to display labels used in the public scorecard.
+# Keep keys aligned with the `name` property values returned by each system
+# class. Unmapped identifiers render as-is.
+_SCORECARD_DISPLAY_NAMES: dict[str, str] = {
+    "bm25_lexical": "BM25 (lexical)",
+    "dense_rag": "Dense (vector RAG)",
+    "hybrid_rrf": "Hybrid (BM25+Dense RRF)",
+    "dense_rerank": "Rerank (Dense+LLM)",
+    "chunk_summary_rag": "Chunk-summary (Dense)",
+    "claim_rag": "ClaimRAG",
+    "wiki_pages": "Wiki pages (Karpathy)",
+    "vertex_ai_rag": "Vertex AI RAG Engine",
+    "bedrock_kb": "Bedrock KB (Cohere embed)",
+    "openai_file_search": "OpenAI File Search",
+    "azure_ai_search": "Azure AI Search (Gemini embed)",
+}
+
+
+def render_scorecard_markdown(
+    report: ComparisonReport,
+    *,
+    label: str | None = None,
+    hosted_placeholders: tuple[tuple[str, str], ...] = (),
+) -> str:
+    """Render a Markdown scorecard table from a ComparisonReport.
+
+    The headline score is `100 * (0.7 * retrieval_source_recall + 0.3 *
+    retrieval_source_precision)` per the plan; missing metrics render as
+    "pending" rather than 0 so a half-finished benchmark doesn't get
+    interpreted as zero-score.
+
+    `hosted_placeholders` is a tuple of (system_name, status_text) for
+    adapters that aren't shipped yet. They render as "pending" rows below
+    the measured rows so the public scorecard tracks intent without
+    fabricating numbers.
+    """
+    lines: list[str] = []
+    if label:
+        lines.append(f"_Generated from `{label}` — do not edit by hand._")
+        lines.append("")
+    lines.append("```text")
+    lines.append("score = 100 * (0.7 * retrieval_source_recall + 0.3 * retrieval_source_precision)")
+    lines.append("```")
+    lines.append("")
+    lines.append("| System | Score | Recall | Precision | p50 retrieve (ms) | Status |")
+    lines.append("| --- | ---: | ---: | ---: | ---: | --- |")
+
+    for system in report.systems:
+        display = _SCORECARD_DISPLAY_NAMES.get(system, system)
+        m = report.by_system_metric.get(system, {})
+        recall = m.get("retrieval_source_recall")
+        precision = m.get("retrieval_source_precision")
+        # Prefer retrieval-only latency for apples-to-apples comparison
+        # between local (retrieve + generate) and hosted (retrieve only)
+        # systems. Fall back to end-to-end latency on older baselines.
+        latency_p50 = m.get("retrieval_latency_ms_p50") or m.get("latency_ms_p50")
+        if recall is None or precision is None:
+            lines.append(
+                f"| {display} | pending | pending | pending | pending | Measured (no retrieval signal) |"
+            )
+            continue
+        score = 100.0 * (0.7 * recall + 0.3 * precision)
+        latency_cell = f"{latency_p50:.1f}" if isinstance(latency_p50, (int, float)) else "pending"
+        lines.append(
+            f"| {display} | {score:.1f} | {recall * 100:.1f}% | {precision * 100:.1f}% "
+            f"| {latency_cell} | Measured |"
+        )
+
+    for system, status in hosted_placeholders:
+        lines.append(f"| {system} | pending | pending | pending | pending | {status} |")
+
+    return "\n".join(lines) + "\n"
+
+
+def inject_scorecard(
+    target_path: Path,
+    scorecard_markdown: str,
+) -> bool:
+    """Replace text between scorecard markers in a Markdown file.
+
+    Returns True if the markers were found and the file was rewritten,
+    False if either marker was missing (in which case the file is
+    untouched and the caller should print the rendered scorecard to
+    stdout instead).
+    """
+    if not target_path.is_file():
+        raise FileNotFoundError(f"scorecard target file not found: {target_path}")
+    original = target_path.read_text(encoding="utf-8")
+    begin = original.find(SCORECARD_BEGIN_MARKER)
+    end = original.find(SCORECARD_END_MARKER)
+    if begin == -1 or end == -1 or end <= begin:
+        return False
+    head = original[: begin + len(SCORECARD_BEGIN_MARKER)]
+    tail = original[end:]
+    new_body = "\n\n" + scorecard_markdown.strip() + "\n\n"
+    target_path.write_text(head + new_body + tail, encoding="utf-8")
+    return True
+
+
 def load_trace_per_turn(path: str | Path) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     for line in Path(path).read_text(encoding="utf-8").splitlines():

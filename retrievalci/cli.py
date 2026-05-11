@@ -464,6 +464,170 @@ def project_run() -> None:
     raise SystemExit(_project_run_main(sys.argv[1:]))
 
 
+def _rag_rejudge_main(argv: list[str]) -> int:
+    """Re-score an existing bench-v0 JSON report with a fresh judge.
+
+    Avoids re-running the generators when only judge metrics need refreshing —
+    e.g. when the original run used `judge: mock` and we now want Claude or
+    Gemini-Pro grades on the same answers.
+    """
+    from retrievalci.rag_eval.runner import (
+        load_dotenv,
+        load_questions,
+        rejudge_report,
+        report_to_markdown,
+    )
+    from retrievalci.reporting import load_rag_report
+
+    # Match the main runner: load .env at the repo root so backends can find
+    # their API keys without requiring the operator to export them in the
+    # shell first.
+    load_dotenv(Path(".env"))
+
+    parser = argparse.ArgumentParser(
+        description=(
+            "Re-score an existing RAG eval report's faithfulness/relevance using a "
+            "new judge backend. Reuses the stored answers + citations + retrieval "
+            "metrics; only the judge-dependent fields are recomputed."
+        )
+    )
+    parser.add_argument(
+        "--input", type=Path, required=True, help="Path to a ComparisonReport JSON."
+    )
+    parser.add_argument(
+        "--questions",
+        type=Path,
+        required=True,
+        help="Path to the QAItem JSONL the report was generated against.",
+    )
+    parser.add_argument(
+        "--judge",
+        required=True,
+        choices=("claude", "gemini", "openai", "groq"),
+        help="Judge backend.",
+    )
+    parser.add_argument(
+        "--judge-model",
+        default=None,
+        help="Optional model override for the judge (e.g. 'claude-haiku-4-5').",
+    )
+    parser.add_argument(
+        "--output-json",
+        type=Path,
+        required=True,
+        help="Where to write the re-judged ComparisonReport JSON.",
+    )
+    parser.add_argument(
+        "--output-md",
+        type=Path,
+        default=None,
+        help="Optional Markdown report path. Skipped if omitted.",
+    )
+    args = parser.parse_args(argv)
+
+    if args.judge == "claude":
+        from retrievalci.rag_eval.backends.claude import ClaudeJudge
+
+        judge = ClaudeJudge(model=args.judge_model or "claude-haiku-4-5")
+    elif args.judge == "gemini":
+        from retrievalci.rag_eval.backends.gemini import GeminiJudge
+
+        judge = GeminiJudge(model=args.judge_model or "gemini-2.5-pro")
+    elif args.judge == "openai":
+        from retrievalci.rag_eval.backends.openai import OpenAIJudge
+
+        judge = OpenAIJudge() if args.judge_model is None else OpenAIJudge(model=args.judge_model)
+    elif args.judge == "groq":
+        from retrievalci.rag_eval.backends.groq import GroqJudge
+
+        judge = GroqJudge() if args.judge_model is None else GroqJudge(model=args.judge_model)
+    else:
+        parser.error(f"unknown judge backend: {args.judge}")
+
+    report = load_rag_report(args.input)
+    questions = load_questions(args.questions)
+    updated = rejudge_report(report, questions, judge)
+
+    args.output_json.parent.mkdir(parents=True, exist_ok=True)
+    args.output_json.write_text(updated.model_dump_json(indent=2), encoding="utf-8")
+    if args.output_md is not None:
+        args.output_md.parent.mkdir(parents=True, exist_ok=True)
+        args.output_md.write_text(report_to_markdown(updated), encoding="utf-8")
+    print(f"Re-judged with {args.judge}; wrote {args.output_json}")
+    return 0
+
+
+def _report_scorecard_main(argv: list[str]) -> int:
+    from retrievalci.reporting import (
+        inject_scorecard,
+        load_rag_report,
+        render_scorecard_markdown,
+    )
+
+    parser = argparse.ArgumentParser(
+        description=(
+            "Render a Markdown scorecard from a RAG eval baseline JSON. "
+            "Optionally inject it into a target file between <!-- BEGIN/END "
+            "retrievalci scorecard --> markers."
+        )
+    )
+    parser.add_argument(
+        "--input", type=Path, required=True, help="Path to a ComparisonReport JSON."
+    )
+    parser.add_argument(
+        "--target",
+        type=Path,
+        default=None,
+        help=(
+            "Optional Markdown file to rewrite between scorecard markers. "
+            "If omitted, the scorecard is printed to stdout."
+        ),
+    )
+    parser.add_argument(
+        "--label",
+        default=None,
+        help=(
+            "Optional caption identifying the baseline (e.g. 'bench-v0 / "
+            "mock backend'). Rendered above the table."
+        ),
+    )
+    parser.add_argument(
+        "--hosted-placeholder",
+        action="append",
+        default=None,
+        metavar="SYSTEM:STATUS",
+        help=(
+            "Add a 'pending' row for a hosted adapter not yet shipped. "
+            "Repeatable. Format: 'Vertex AI:Needs adapter'."
+        ),
+    )
+    args = parser.parse_args(argv)
+
+    report = load_rag_report(args.input)
+    placeholders: list[tuple[str, str]] = []
+    for raw in args.hosted_placeholder or ():
+        name, _, status = raw.partition(":")
+        placeholders.append((name.strip(), status.strip() or "Needs adapter"))
+
+    md = render_scorecard_markdown(
+        report,
+        label=args.label,
+        hosted_placeholders=tuple(placeholders),
+    )
+
+    if args.target is None:
+        sys.stdout.write(md)
+        return 0
+    if not inject_scorecard(args.target, md):
+        parser.error(
+            f"scorecard markers not found in {args.target}; add "
+            "'<!-- BEGIN retrievalci scorecard -->' and "
+            "'<!-- END retrievalci scorecard -->' to the target file."
+        )
+    print(f"Wrote scorecard into {args.target} between markers.")
+    return 0
+
+
 def main() -> None:
     argv = sys.argv[1:]
     if argv[:2] == ["traces", "eval"]:
@@ -474,8 +638,12 @@ def main() -> None:
         raise SystemExit(_rag_report_traces_main(argv[2:]))
     if argv[:2] == ["rag", "compare"]:
         raise SystemExit(_rag_compare_main(argv[2:]))
+    if argv[:2] == ["rag", "rejudge"]:
+        raise SystemExit(_rag_rejudge_main(argv[2:]))
     if argv[:2] == ["report", "build"]:
         raise SystemExit(_report_build_main(argv[2:]))
+    if argv[:2] == ["report", "scorecard"]:
+        raise SystemExit(_report_scorecard_main(argv[2:]))
     if argv[:2] == ["runs", "create"]:
         raise SystemExit(_runs_create_main(argv[2:]))
     if argv[:2] == ["runs", "list"]:
