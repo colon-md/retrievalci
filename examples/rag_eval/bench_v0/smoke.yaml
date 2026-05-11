@@ -1,0 +1,25 @@
+repo_root: .
+questions: examples/rag_eval/bench_v0/questions.jsonl
+
+corpus:
+  globs:
+    - examples/rag_eval/bench_v0/corpus/*.md
+
+systems:
+  - dense_rag
+  - bm25_lexical
+  - hybrid_rrf
+
+run:
+  backend: mock
+  judge: mock
+  max_chunks: 500
+
+reports:
+  json: /tmp/retrievalci-enterprise-rag-bench.json
+  markdown: /tmp/retrievalci-enterprise-rag-bench.md
+
+diagnostics:
+  primary_metric: retrieval_source_recall
+  min_meaningful_delta: 0.03
+  min_questions_for_confidence: 20

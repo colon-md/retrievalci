@@ -1,0 +1,37 @@
+repo_root: .
+questions: examples/rag_eval/bench_v0/questions.jsonl
+
+corpus:
+  globs:
+    - examples/rag_eval/bench_v0/corpus/*.md
+
+# Real-quality bench-v0 baseline. Uses Gemini for embeddings + generation +
+# judging so the LLM-dependent systems (claim_rag, wiki_pages,
+# chunk_summary_rag, rerank_rag) produce meaningful scores instead of
+# refusing under mock-backend short-circuits.
+# Phase 1: retrieval-only + light-LLM systems. claim_rag and wiki_pages
+# do per-chunk LLM extraction at index time (~500 chunks × Gemini rate
+# limits = 30+ min) and are gated to a separate run.
+systems:
+  - bm25_lexical
+  - dense_rag
+  - hybrid_rrf
+  - dense_rerank
+  - chunk_summary_rag
+
+run:
+  backend: gemini
+  # judge: mock keeps wall time under 30 min; faithfulness/relevance need real
+  # judging done separately (the gemini-2.5-pro judge adds ~2 calls/row at
+  # 6.7s throttle = ~55 min for a 5-system × 50-question matrix).
+  judge: mock
+  max_chunks: 500
+
+reports:
+  json: baselines/rag/bench_v0_gemini.json
+  markdown: baselines/rag/bench_v0_gemini.md
+
+diagnostics:
+  primary_metric: retrieval_source_recall
+  min_meaningful_delta: 0.03
+  min_questions_for_confidence: 30

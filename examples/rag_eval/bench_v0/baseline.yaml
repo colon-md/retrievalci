@@ -1,0 +1,32 @@
+repo_root: .
+questions: examples/rag_eval/bench_v0/questions.jsonl
+
+corpus:
+  globs:
+    - examples/rag_eval/bench_v0/corpus/*.md
+
+# Mock-backend baseline across all seven local systems. This is the artifact
+# CI uses for retrieval-source-recall regression detection on the bench-v0
+# fixture. For real-quality numbers, swap backend to gemini and rerun.
+systems:
+  - bm25_lexical
+  - dense_rag
+  - hybrid_rrf
+  - dense_rerank
+  - claim_rag
+  - chunk_summary_rag
+  - wiki_pages
+
+run:
+  backend: mock
+  judge: mock
+  max_chunks: 500
+
+reports:
+  json: baselines/rag/bench_v0.json
+  markdown: baselines/rag/bench_v0.md
+
+diagnostics:
+  primary_metric: retrieval_source_recall
+  min_meaningful_delta: 0.03
+  min_questions_for_confidence: 30

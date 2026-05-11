@@ -1,0 +1,34 @@
+repo_root: .
+questions: examples/rag_eval/bench_v0/questions.jsonl
+
+corpus:
+  globs:
+    - examples/rag_eval/bench_v0/corpus/*.md
+
+# Local systems with Vertex embeddings — bypasses the public-Gemini-API
+# FreeTier 1000-RPD embedding cap that blocked baseline_gemini.yaml. Vertex
+# text-embedding-005 (768-dim) is a different quota pool from Tier 1+ for
+# our purposes. Gemini-2.5-flash-lite via Vertex publisher-direct for gen.
+systems:
+  - bm25_lexical
+  - dense_rag
+  - hybrid_rrf
+  - dense_rerank
+# chunk_summary_rag intentionally excluded: it makes ~770 LLM summary
+# calls at index time which would burn the public Gemini API daily
+# quota for generation. The remaining systems make 50 generation calls
+# each (~200 total) which fits comfortably.
+
+run:
+  backend: vertex
+  judge: mock
+  max_chunks: 500
+
+reports:
+  json: baselines/rag/bench_v0_vertex_local.json
+  markdown: baselines/rag/bench_v0_vertex_local.md
+
+diagnostics:
+  primary_metric: retrieval_source_recall
+  min_meaningful_delta: 0.03
+  min_questions_for_confidence: 30

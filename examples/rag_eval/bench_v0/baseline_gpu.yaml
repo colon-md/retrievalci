@@ -1,0 +1,32 @@
+repo_root: .
+questions: examples/rag_eval/bench_v0/questions.jsonl
+
+corpus:
+  globs:
+    - examples/rag_eval/bench_v0/corpus/*.md
+
+# Local systems with a real GPU-backed embedder. BGE-large is a 1024-dim
+# sentence-transformer that matches or exceeds most hosted embedders on
+# MTEB retrieval benchmarks. Runs on the local NVIDIA GPU via
+# sentence-transformers + torch.
+systems:
+  - bm25_lexical
+  - dense_rag
+  - hybrid_rrf
+  - dense_rerank
+  - chunk_summary_rag
+
+run:
+  backend: claude
+  judge: mock
+  local_embedder_model: BAAI/bge-large-en-v1.5
+  max_chunks: 500
+
+reports:
+  json: baselines/rag/bench_v0_local_gpu.json
+  markdown: baselines/rag/bench_v0_local_gpu.md
+
+diagnostics:
+  primary_metric: retrieval_source_recall
+  min_meaningful_delta: 0.03
+  min_questions_for_confidence: 30

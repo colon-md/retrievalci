@@ -127,6 +127,32 @@ def main(argv: list[str] | None = None) -> int:
         help="Optional cap on downloaded document slices for testing importer behavior.",
     )
 
+    bench = sub.add_parser(
+        "bench-v0",
+        help=(
+            "Build the RetrievalCI bench-v0 fixture from EnterpriseRAG-Bench. "
+            "Stratified sample: 25 single_hop, 15 multi_hop, 5 contradiction, "
+            "5 unanswerable (50 questions total)."
+        ),
+    )
+    bench.add_argument(
+        "--out",
+        type=Path,
+        default=Path("examples/rag_eval/bench_v0"),
+        help="Output directory for the bench-v0 fixture (committed to the repo).",
+    )
+    bench.add_argument(
+        "--release-tag",
+        default="v1.0.0",
+        help="EnterpriseRAG-Bench GitHub release tag containing document slices.",
+    )
+    bench.add_argument(
+        "--max-slices",
+        type=int,
+        default=None,
+        help="Optional cap on downloaded document slices for testing importer behavior.",
+    )
+
     args = parser.parse_args(argv)
     repo_root = args.repo_root.resolve()
 
@@ -147,7 +173,102 @@ def main(argv: list[str] | None = None) -> int:
             release_tag=args.release_tag,
             max_slices=args.max_slices,
         )
+    if args.dataset == "bench-v0":
+        return build_bench_v0(
+            out_dir=args.out,
+            repo_root=repo_root,
+            release_tag=args.release_tag,
+            max_slices=args.max_slices,
+        )
     raise AssertionError(args.dataset)
+
+
+# bench-v0 stratification: ERB question_types sorted by structural role.
+# Empirically-verified doc-citation counts in upstream ERB:
+#   basic / semantic / intra_document_reasoning / miscellaneous: 1 doc cited
+#   project_related: 2-9 docs cited (always multi-doc)
+#   completeness: 2-10 docs cited (always multi-doc)
+#   constrained: 1 or 2 docs cited (mixed; not used here to keep tier clean)
+#   conflicting_info: 2 docs cited (contradiction across sources)
+#   info_not_found: 0 docs cited (unanswerable from corpus)
+#   high_level: 0 docs cited but not marked unanswerable upstream (unclear; excluded)
+BENCH_V0_STRATA: dict[str, tuple[int, tuple[str, ...]]] = {
+    "single_hop": (25, ("basic", "semantic")),
+    "multi_hop": (15, ("project_related", "completeness")),
+    "contradiction": (5, ("conflicting_info",)),
+    "unanswerable": (5, ("info_not_found",)),
+}
+
+
+def build_bench_v0(
+    *,
+    out_dir: Path,
+    repo_root: Path,
+    release_tag: str,
+    max_slices: int | None,
+) -> int:
+    """Build the 50-question bench-v0 fixture by stratified sampling from ERB.
+
+    Deterministic: questions are sorted by question_id and the first N from
+    each stratum are taken. Rerunning the importer against the same upstream
+    release produces the same fixture.
+    """
+    upstream = list(iter_jsonl_url(ENTERPRISE_QUESTIONS_URL))
+    by_qt: dict[str, list[dict]] = {}
+    for row in upstream:
+        qt = normalize_key(str(row.get("question_type") or ""))
+        by_qt.setdefault(qt, []).append(row)
+    for qt in by_qt:
+        by_qt[qt].sort(key=lambda r: str(r.get("question_id") or ""))
+
+    selected: list[dict] = []
+    for stratum_name, (count, qts) in BENCH_V0_STRATA.items():
+        pool: list[dict] = []
+        for qt in qts:
+            pool.extend(by_qt.get(qt, []))
+        pool.sort(key=lambda r: str(r.get("question_id") or ""))
+        if len(pool) < count:
+            raise SystemExit(
+                f"bench-v0 stratum {stratum_name!r} needs {count} questions "
+                f"from {qts} but upstream only has {len(pool)}"
+            )
+        selected.extend(pool[:count])
+
+    wanted_doc_ids = {
+        str(doc_id)
+        for row in selected
+        for doc_id in row.get("expected_doc_ids", [])
+        if str(doc_id)
+    }
+    wanted_source_types = {
+        normalize_key(source_type)
+        for row in selected
+        for source_type in row.get("source_types", [])
+        if str(source_type)
+    }
+    assets = enterprise_release_assets(release_tag)
+    docs = download_enterprise_docs(
+        assets=assets,
+        wanted_doc_ids=wanted_doc_ids,
+        wanted_source_types=wanted_source_types,
+        max_slices=max_slices,
+    )
+    missing = sorted(wanted_doc_ids - set(docs))
+    if missing:
+        raise SystemExit(
+            f"bench-v0 import found {len(docs)}/{len(wanted_doc_ids)} docs; "
+            f"missing examples: {missing[:5]}"
+        )
+    write_enterprise_dataset(
+        questions=selected,
+        docs=docs,
+        out_dir=out_dir,
+        repo_root=repo_root,
+        release_tag=release_tag,
+        source_types=tuple(sorted(wanted_source_types)),
+    )
+    print(f"Wrote bench-v0 fixture (n=50): {out_dir.resolve()}")
+    return 0
 
 
 def import_wixqa(
@@ -367,20 +488,23 @@ def write_enterprise_dataset(
     for row in questions:
         expected_ids = [str(v) for v in row.get("expected_doc_ids", []) if str(v) in doc_paths]
         citations = [repo_relative(doc_paths[doc_id], repo_root) for doc_id in expected_ids]
-        question_rows.append(
-            {
-                "id": str(row.get("question_id") or f"enterprise-{len(question_rows) + 1:04d}"),
-                "tier": enterprise_tier(str(row.get("question_type") or "")),
-                "question": str(row.get("question") or ""),
-                "ground_truth_answer": str(row.get("gold_answer") or ""),
-                "ground_truth_citations": citations,
-                "must_include_terms": [str(v) for v in row.get("answer_facts", [])[:3]],
-                "notes": (
-                    "EnterpriseRAG-Bench "
-                    f"{row.get('question_type')}; upstream_doc_ids={expected_ids}"
-                ),
-            }
-        )
+        question_type = str(row.get("question_type") or "")
+        out: dict = {
+            "id": str(row.get("question_id") or f"enterprise-{len(question_rows) + 1:04d}"),
+            "tier": enterprise_tier(question_type),
+            "question": str(row.get("question") or ""),
+            "ground_truth_answer": str(row.get("gold_answer") or ""),
+            "ground_truth_citations": citations,
+            "must_include_terms": [str(v) for v in row.get("answer_facts", [])[:3]],
+            "notes": (
+                "EnterpriseRAG-Bench "
+                f"{question_type}; upstream_doc_ids={expected_ids}"
+            ),
+        }
+        if enterprise_unanswerable(question_type):
+            out["unanswerable"] = True
+            out["expected_abstain"] = True
+        question_rows.append(out)
 
     write_jsonl(out_dir / "questions.jsonl", question_rows)
     write_smoke_config(out_dir=out_dir, repo_root=repo_root, report_stem="enterprise-rag-bench")
@@ -584,12 +708,27 @@ def first_line(text: str) -> str:
 
 
 def enterprise_tier(question_type: str) -> str:
+    """Map an upstream ERB question_type to a RetrievalCI tier.
+
+    `conflicting_info` is a true contradiction (same fact stated differently
+    across two docs). `info_not_found` is structurally a single-hop question
+    that happens to be unanswerable from the corpus — we map it to single_hop
+    and rely on the `unanswerable=True` facet flag to mark its behavior,
+    rather than pretending it is a contradiction.
+    """
     normalized = normalize_key(question_type)
-    if "conflict" in normalized or "not_found" in normalized:
+    if "conflict" in normalized:
         return "contradiction"
+    if "not_found" in normalized:
+        return "single_hop"
     if normalized in {"basic", "semantic", "misc", "miscellaneous"}:
         return "single_hop"
     return "multi_hop"
+
+
+def enterprise_unanswerable(question_type: str) -> bool:
+    """`info_not_found` questions have no ground-truth source in the corpus."""
+    return "not_found" in normalize_key(question_type)
 
 
 def asset_source_type(asset_name: str) -> str:

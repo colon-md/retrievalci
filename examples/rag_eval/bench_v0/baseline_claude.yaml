@@ -1,0 +1,31 @@
+repo_root: .
+questions: examples/rag_eval/bench_v0/questions.jsonl
+
+corpus:
+  globs:
+    - examples/rag_eval/bench_v0/corpus/*.md
+
+# Local-systems baseline using LocalEmbedder (sentence-transformers,
+# all-MiniLM-L6-v2, 384-dim, normalized) + Claude Haiku 4.5 generator.
+# Avoids Gemini API quotas entirely. The embedder produces unit-length
+# vectors by default, so the local `_cosine` (= dot product) is correct.
+systems:
+  - bm25_lexical
+  - dense_rag
+  - hybrid_rrf
+  - dense_rerank
+  - chunk_summary_rag
+
+run:
+  backend: claude
+  judge: mock
+  max_chunks: 500
+
+reports:
+  json: baselines/rag/bench_v0_local.json
+  markdown: baselines/rag/bench_v0_local.md
+
+diagnostics:
+  primary_metric: retrieval_source_recall
+  min_meaningful_delta: 0.03
+  min_questions_for_confidence: 30
