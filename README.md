@@ -1,50 +1,23 @@
 # RetrievalCI
 
-**Put a number on RAG quality before it reaches users.**
+> **Stage**: `bench-v0` early preview. The methodology, scorecard format, and 9 system adapters are stable. More corpora, more adapters, and per-tier breakdowns coming. MIT licensed, 248 tests, $0.17 to reproduce the public scorecard.
 
-RetrievalCI is a local-first CI tool for retrieval systems. It runs the same
-question set against dense RAG, BM25, hybrid retrieval, hosted RAG services, or
-wiki-style knowledge systems, then turns retrieval quality into a scorecard,
-CI gate, and static review artifact.
+**Hosted RAG services (Vertex AI RAG Engine / Bedrock Knowledge Bases / Azure AI Search / OpenAI File Search) score ~35 points higher than tuned open-source local stacks on the same 50-question enterprise corpus — with $0.17 total cloud spend.**
 
-## RAG scorecard
+That comparison doesn't exist anywhere else in one place. Vendor blogs report numbers on their own benchmarks; open-source RAG papers don't compare against hosted services. RetrievalCI is the harness that produces this scorecard for *your* corpus and questions, in CI, with one command.
 
-Can your RAG beat the baseline? The table below is **generated** from a
-measured benchmark JSON via `retrievalci report scorecard` — do not edit by
-hand. Regenerate after each baseline refresh:
-
-```bash
-BENCH_BASELINE=baselines/rag/bench_v0_gemini.json \
-BENCH_LABEL="bench-v0 / Gemini real backend (judge: mock)" \
-  make bench-v0-scorecard
-```
-
-Three baselines live in `baselines/rag/`:
-
-- `bench_v0.json` — mock backend, all 7 local systems including
-  `claim_rag` and `wiki_pages` (which refuse 100% under mock).
-- `bench_v0_gemini.json` — real Gemini-2.5-flash-lite generator + Gemini
-  embedder, mock judge; 5 systems (claim_rag and wiki_pages excluded due
-  to index-time LLM extraction cost).
-- `bench_v0_gemini_claude.json` — same answers as `bench_v0_gemini`,
-  rejudged with Claude Haiku 4.5 for faithfulness/relevance. Built by
-  `make bench-v0-rejudge` once an `ANTHROPIC_API_KEY` is present.
+## Scorecard
 
 <!-- BEGIN retrievalci scorecard -->
 
-_Generated from `bench-v0 / local (MiniLM+Claude) + 4 hosted RAG services` — do not edit by hand._
+_Generated from `bench-v0 / 4 hosted RAG services, same corpus + questions + citation contract` — do not edit by hand._
 
 ```text
 score = 100 * (0.7 * retrieval_source_recall + 0.3 * retrieval_source_precision)
 ```
 
-| System | Score | Recall | Precision | p50 latency (ms) | Status |
+| System | Score | Recall | Precision | p50 retrieve (ms) | Status |
 | --- | ---: | ---: | ---: | ---: | --- |
-| BM25 (lexical) | 45.7 | 47.7% | 41.0% | 2998.0 | Measured |
-| Dense (vector RAG) | 45.6 | 48.5% | 38.8% | 3059.2 | Measured |
-| Hybrid (BM25+Dense RRF) | 46.2 | 47.7% | 42.9% | 3323.6 | Measured |
-| Rerank (Dense+LLM) | 46.3 | 48.2% | 41.7% | 3000.9 | Measured |
-| Chunk-summary (Dense) | 43.2 | 45.8% | 37.1% | 3200.1 | Measured |
 | Vertex AI RAG Engine | 82.6 | 94.5% | 54.7% | 358.4 | Measured |
 | Bedrock KB (Cohere embed) | 82.5 | 87.9% | 70.1% | 408.1 | Measured |
 | OpenAI File Search | 78.5 | 89.3% | 53.4% | 1358.3 | Measured |
@@ -53,70 +26,63 @@ score = 100 * (0.7 * retrieval_source_recall + 0.3 * retrieval_source_precision)
 
 <!-- END retrievalci scorecard -->
 
-The bench-v0 fixture (50 questions stratified from EnterpriseRAG-Bench v1.0.0)
-exercises retrieval against 81 enterprise-corpus docs across single-hop,
-multi-hop, contradiction, and unanswerable facets.
+Score = `100 × (0.7 × recall + 0.3 × precision)`. All four services index the same 81 docs, are asked the same 50 questions (25 single-hop, 15 multi-hop, 5 contradiction, 5 unanswerable, stratified from [EnterpriseRAG-Bench](https://github.com/onyx-dot-app/EnterpriseRAG-Bench) v1.0.0), and return chunks that we map back to repo-relative paths via a fail-closed manifest. Recall and precision are computed against the same `ground_truth_citations`. The latency column is retrieve-only (no generation).
 
-**Reading the scorecard**: the ~35-point gap between local and hosted is
-dominated by **embedder size**, not architecture. The local rows use
-`sentence-transformers/all-MiniLM-L6-v2` (384-dim, runs free on CPU); the
-hosted services use larger embedders (Gemini 3072-dim, Cohere 1024-dim,
-OpenAI 1536-dim+). Swap the local embedder for a comparable-size model and
-the gap narrows substantially. Architecture differences between local
-systems (BM25 / dense / hybrid / rerank / chunk-summary) are second-order
-at this corpus size — they all cluster within ~3 points.
+## Why this exists
 
-**On unanswerable handling**: under real Gemini, none of the systems
-(local or hosted) refuse on the 5 unanswerable questions — they all
-hallucinate retrievals. `abstention_correctness=0.0` is visible in the
-per-system Markdown reports next to the scorecard. This is the next
-prompt-engineering / retrieval-thresholding target.
+Most RAG eval tooling targets **generation quality**: faithfulness, answer relevance, hallucination grading. RetrievalCI targets **retrieval quality** — and specifically, the apples-to-apples comparison of hosted RAG services that you can't get from anywhere else:
 
-**Why no Tavily row**: [Tavily](https://tavily.com) is a web-search-as-a-service
-API for grounding LLMs against the public web. It has no
-upload-your-corpus endpoint, so a bench-v0 run would score ~0% recall on
-synthetic enterprise documents Tavily's web crawler has never seen. It's
-the wrong category for this benchmark, not the wrong product.
+| Tool | Compares hosted RAG services? | Notes |
+| --- | --- | --- |
+| **RetrievalCI** | ✅ Vertex + Bedrock + Azure + OpenAI File Search on identical inputs | This repo |
+| RAGAS | ❌ Generation-quality framework | Faithfulness / context precision metrics for your own pipeline |
+| Phoenix / Arize | ❌ LLM observability | Runtime tracing, not pre-launch CI |
+| TruLens | ❌ Custom feedback functions | BYO feedback definitions, no hosted comparison |
+| LangSmith | ❌ Hosted experiment tracker | SaaS dependency, no vendor-neutral benchmark |
+| Vendor blogs | ❌ Self-reported | Each vendor on their own benchmark — not directly comparable |
 
-See [`examples/rag_eval/bench_v0/`](examples/rag_eval/bench_v0/) and
-[`docs/rag_eval/results/hosted-rag-benchmark-plan.md`](docs/rag_eval/results/hosted-rag-benchmark-plan.md).
+If you're choosing between Vertex / Bedrock / Azure / OpenAI for an enterprise RAG deployment and want measured numbers on your own corpus before signing the contract, that's the gap this fills.
 
-Hosted and wiki-style systems get scored the same way once they run against the
-same corpus, question IDs, and citation contract. OmegaWiki can be evaluated
-alongside Vertex AI RAG Engine as a concrete implementation of the
-[Karpathy LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)
-idea: export its wiki/graph pages or adapt `/ask` outputs so RetrievalCI can
-compare retrieved sources with `ground_truth_citations`.
+## Quick start
 
-Commercial targets worth wiring in next:
+```bash
+git clone <repo>
+cd searchtrace
+python -m venv .venv && .venv/bin/pip install -e '.[dev,providers,hosted-aws]'
+make bench-v0-mock         # 0 cost, 0 credentials, validates the harness
+```
 
-| Target | What to map into RetrievalCI |
-| --- | --- |
-| [Vertex AI RAG Engine](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/rag-engine/rag-overview) | `retrieveContexts` chunks or `generateContent` grounding chunks |
-| [Amazon Bedrock Knowledge Bases](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html) | `Retrieve` or `RetrieveAndGenerate` source results |
-| [Azure AI Search](https://azure.microsoft.com/en-us/products/ai-services/ai-search/) | search, vector, hybrid, or semantic result documents |
-| [OpenAI File Search](https://developers.openai.com/api/docs/guides/tools-file-search) | `file_search_call.results` and file citations |
-| [OmegaWiki](https://github.com/skyllwt/OmegaWiki) | maintained wiki pages, graph entities, and answer citations |
+Add `GOOGLE_OAUTH_*` / `AWS_*` / `OPENAI_API_KEY` / `AZURE_SEARCH_*` to `.env` (see [API keys](#api-keys)), then:
 
-Amazon Q Business is also RAG-based, but it is closer to a managed enterprise
-assistant than a raw retriever; score it at the application boundary if you can
-export cited sources. [Databricks Mosaic AI Vector Search](https://learn.microsoft.com/en-us/azure/databricks/vector-search/vector-search),
-[Pinecone](https://www.pinecone.io/solutions/rag/), and
-[Weaviate](https://docs.weaviate.io/weaviate/starter-guides/generative) are
-commercial retrieval layers for RAG stacks and can be scored through the same
-citation adapter pattern.
+```bash
+python scripts/run_bench_v0_vertex.py  run --questions ... --corpus-dir ... --output ...
+python scripts/run_bench_v0_bedrock.py run ...
+python scripts/run_bench_v0_openai.py  run ...
+python scripts/run_bench_v0_azure.py   run ...
+make bench-v0-scorecard    # regenerates the table in this README
+```
 
-RetrievalCI runs two complementary checks:
+Each adapter has a `cleanup` subcommand to enumerate and delete any stranded cloud resources. The `RunBudget` cost cap is `$20` by default — pre-flight + in-flight, hard-stops past it.
 
-- **RAG architecture eval:** compare retrieval and answer systems against a
-  fixed corpus and question set.
-- **Trace-state eval:** replay agent trace logs with different retrieval-state
-  policies to expose zero-recall, drift, stale evidence, and false-lead capture.
+## What's in the box
 
-Every run can produce a versioned manifest, machine-readable metrics, and a
-static HTML report that works as a CI artifact.
+- **4 hosted-RAG adapters**, each implementing the `HostedSystem` protocol with cost-capped lifecycle (provision → ingest → query → teardown) — Vertex AI RAG Engine, Bedrock KB on OpenSearch Serverless, OpenAI Vector Stores, Azure AI Search
+- **bench-v0 fixture** under `examples/rag_eval/bench_v0/` — 50 questions, 81 corpus docs, MIT-licensed, fully reproducible
+- **5 local retrieval baselines** (BM25, dense, hybrid-RRF, dense-rerank, chunk-summary) — for CI regression checks against your own stack; not part of the headline scorecard because the gap to hosted is dominated by free-CPU embedder size rather than retrieval architecture
+- **Scorecard generator** that reads `ComparisonReport` JSON and rewrites the README between `<!-- BEGIN/END retrievalci scorecard -->` markers — no hand-edited numbers
+- **Rejudge mode** (`retrievalci rag rejudge`) to re-score existing reports with a different judge backend without re-running generators
+- **Trace-state eval** (separate flow) — replay agent trace logs to expose zero-recall, drift, stale evidence, false-lead capture
 
 ![Inputs, project CLI, checks, and run artifact pipeline](docs/assets/retrievalci-overview.png)
+
+## Methodology + caveats
+
+- **bench-v0 is synthetic enterprise data** from EnterpriseRAG-Bench v1.0.0 (fictional companies like "Streamly AI" across GitHub PRs, Slack threads, Linear issues, Drive docs). It's *not* public web content, so a web-search service like Tavily can't be benchmarked on it without a category mismatch.
+- **All four hosted services hallucinate on every unanswerable question** (`abstention_correctness=0.0` on the 5 `info_not_found` rows). This is the next prompt-engineering / retrieval-thresholding target.
+- **Mode A only**. The current scorecard is retrieve-only — no LLM-generation step. Mode B (native-stack grounded generation) is implemented for hosted adapters but not yet in the headline scorecard.
+- **bench-v0 is 50 questions**. bench-v1 (150) and bench-v2 (full 500-question ERB) are in the plan doc. Take the absolute scores as point-in-time signal, not gospel.
+
+Read the full methodology + rationale in [`docs/rag_eval/results/hosted-rag-benchmark-plan.md`](docs/rag_eval/results/hosted-rag-benchmark-plan.md).
 
 ## Install
 
