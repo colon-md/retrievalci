@@ -1,10 +1,10 @@
 # RetrievalCI
 
-> **Stage**: `bench-v0` early preview. The methodology, scorecard format, and 9 system adapters are stable. More corpora, more adapters, and per-tier breakdowns coming. MIT licensed, 248 tests, $0.17 to reproduce the public scorecard.
+> **Stage**: `bench-v0` early preview. Methodology, scorecard format, and system adapters are stable. More corpora, more adapters, and per-tier breakdowns coming. MIT licensed, 253 tests, $0.17 to reproduce the public scorecard.
 
-**Hosted RAG services (Vertex AI RAG Engine / Bedrock Knowledge Bases / Azure AI Search / OpenAI File Search) score ~35 points higher than tuned open-source local stacks on the same 50-question enterprise corpus — with $0.17 total cloud spend.**
+**RetrievalCI measures retrieval quality across hosted RAG services and local retrieval architectures on a shared corpus and citation contract.** On bench-v0 (50 enterprise questions, 81 docs), the four major hosted services score 78-84 on retrieve-only quality (0.7·recall + 0.3·precision). A free-CPU MiniLM local stack scores 45-50 on the same fixture. **Most of that gap is embedder size, not retrieval architecture** — a stronger local embedder (bge-large-en) closes the bulk of it. Full decomposition under [research findings](#research-findings-so-far).
 
-That comparison doesn't exist anywhere else in one place. Vendor blogs report numbers on their own benchmarks; open-source RAG papers don't compare against hosted services. RetrievalCI is the harness that produces this scorecard for *your* corpus and questions, in CI, with one command.
+This kind of side-by-side measurement doesn't exist anywhere else in one place. Vendor blogs report on their own benchmarks; open-source RAG papers don't compare to hosted services. RetrievalCI is the harness that produces it for *your* corpus, in CI, with one command.
 
 ## Scorecard
 
@@ -41,6 +41,18 @@ Most RAG eval tooling targets **generation quality**: faithfulness, answer relev
 | Vendor blogs | ❌ Self-reported | Each vendor on their own benchmark — not directly comparable |
 
 If you're choosing between Vertex / Bedrock / Azure / OpenAI for an enterprise RAG deployment and want measured numbers on your own corpus before signing the contract, that's the gap this fills.
+
+## Research findings (so far)
+
+We used RetrievalCI's harness to test Karpathy's "LLM Wiki" hypothesis across two corpora and eight rounds of pre-registered ablations. The short version:
+
+- **Wiki+RAG beats vanilla RAG by +0.30** retrieval-source-recall on multi-source corpora (K8s documentation, 174 docs, 10 hand-authored questions).
+- **The win is at retrieval, not generation.** Synthesized prose contributes ~0 at answer time — it works as embedder fuel, not LLM input. Karpathy's framing pointed at the right feature for the wrong reason.
+- **Roughly half the win is lexical**, replicable by appending entity names to chunk text with zero LLM calls. **The other half is genuine synthesis-derived semantic content** in the embedding text.
+- **A stronger embedder beats the architecture per dollar.** Same wiki prose, swap MiniLM-L6-v2 for bge-large-en: +0.05 lift at zero API cost (just a 1.3 GB local model download).
+- **Wiki+RAG loses on single-source corpora** where each fact appears once. The architecture assumes multi-source compounding; without it, page-aggregation drops answer-relevant content into the singleton tail.
+
+Full ablation chain, pre-registrations, and per-condition decomposition are kept in an internal research log. The distillation-cost decomposition — how cheaply each portion of the wiki lift can be captured — is testable end-to-end via `make ablation-distill`.
 
 ## Quick start
 
