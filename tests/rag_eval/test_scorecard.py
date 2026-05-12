@@ -67,7 +67,7 @@ def test_render_scorecard_marks_missing_metrics_as_pending() -> None:
 
 
 def test_render_scorecard_includes_hosted_placeholders() -> None:
-    """Hosted adapters that aren't shipped yet must appear as pending rows
+    """Hosted adapters that aren't measured yet must appear as pending rows
     so the public scorecard tracks intent without fabricating numbers."""
     report = _report_with_metrics(
         {"bm25": {"retrieval_source_recall": 0.5, "retrieval_source_precision": 0.4}}
@@ -79,20 +79,10 @@ def test_render_scorecard_includes_hosted_placeholders() -> None:
             ("Future /ask adapter", "Blocked on credentials"),
         ),
     )
-    assert "| Vertex AI | pending | pending | pending | pending | Needs adapter |" in md
-    assert (
-        "| Future /ask adapter | pending | pending | pending | pending "
-        "| Blocked on credentials |" in md
-    )
-
-
-def test_render_scorecard_includes_label_when_provided() -> None:
-    report = _report_with_metrics(
-        {"bm25": {"retrieval_source_recall": 0.5, "retrieval_source_precision": 0.4}}
-    )
-    md = render_scorecard_markdown(report, label="bench-v0 mock baseline")
-    assert "bench-v0 mock baseline" in md
-    assert "do not edit by hand" in md
+    # The placeholder status text is accepted for API back-compat but is no
+    # longer rendered. Each placeholder shows up as a pending row.
+    assert "| Vertex AI | pending | pending | pending | pending |" in md
+    assert "| Future /ask adapter | pending | pending | pending | pending |" in md
 
 
 def test_inject_scorecard_rewrites_between_markers(tmp_path: Path) -> None:

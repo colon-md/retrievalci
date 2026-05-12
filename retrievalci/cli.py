@@ -584,14 +584,6 @@ def _report_scorecard_main(argv: list[str]) -> int:
         ),
     )
     parser.add_argument(
-        "--label",
-        default=None,
-        help=(
-            "Optional caption identifying the baseline (e.g. 'bench-v0 / "
-            "mock backend'). Rendered above the table."
-        ),
-    )
-    parser.add_argument(
         "--hosted-placeholder",
         action="append",
         default=None,
@@ -611,7 +603,6 @@ def _report_scorecard_main(argv: list[str]) -> int:
 
     md = render_scorecard_markdown(
         report,
-        label=args.label,
         hosted_placeholders=tuple(placeholders),
     )
 

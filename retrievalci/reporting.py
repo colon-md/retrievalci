@@ -60,7 +60,6 @@ _SCORECARD_DISPLAY_NAMES: dict[str, str] = {
 def render_scorecard_markdown(
     report: ComparisonReport,
     *,
-    label: str | None = None,
     hosted_placeholders: tuple[tuple[str, str], ...] = (),
 ) -> str:
     """Render a Markdown scorecard table from a ComparisonReport.
@@ -76,39 +75,37 @@ def render_scorecard_markdown(
     fabricating numbers.
     """
     lines: list[str] = []
-    if label:
-        lines.append(f"_Generated from `{label}` — do not edit by hand._")
-        lines.append("")
     lines.append("```text")
     lines.append("score = 100 * (0.7 * retrieval_source_recall + 0.3 * retrieval_source_precision)")
     lines.append("```")
     lines.append("")
-    lines.append("| System | Score | Recall | Precision | p50 retrieve (ms) | Status |")
-    lines.append("| --- | ---: | ---: | ---: | ---: | --- |")
+    lines.append("| System | Score | Recall | Precision | p50 retrieve (ms) |")
+    lines.append("| --- | ---: | ---: | ---: | ---: |")
 
     for system in report.systems:
         display = _SCORECARD_DISPLAY_NAMES.get(system, system)
         m = report.by_system_metric.get(system, {})
         recall = m.get("retrieval_source_recall")
         precision = m.get("retrieval_source_precision")
-        # Prefer retrieval-only latency for apples-to-apples comparison
-        # between local (retrieve + generate) and hosted (retrieve only)
-        # systems. Fall back to end-to-end latency on older baselines.
+        # Prefer retrieval-only latency for fair comparison between local
+        # (retrieve + generate) and hosted (retrieve only) systems. Fall back
+        # to end-to-end latency on older baselines.
         latency_p50 = m.get("retrieval_latency_ms_p50") or m.get("latency_ms_p50")
         if recall is None or precision is None:
-            lines.append(
-                f"| {display} | pending | pending | pending | pending | Measured (no retrieval signal) |"
-            )
+            lines.append(f"| {display} | pending | pending | pending | pending |")
             continue
         score = 100.0 * (0.7 * recall + 0.3 * precision)
         latency_cell = f"{latency_p50:.1f}" if isinstance(latency_p50, (int, float)) else "pending"
         lines.append(
             f"| {display} | {score:.1f} | {recall * 100:.1f}% | {precision * 100:.1f}% "
-            f"| {latency_cell} | Measured |"
+            f"| {latency_cell} |"
         )
 
-    for system, status in hosted_placeholders:
-        lines.append(f"| {system} | pending | pending | pending | pending | {status} |")
+    # hosted_placeholders still accepts (name, status_text) tuples for caller
+    # back-compat (CLI / Makefile both pass status text), but status text is
+    # no longer rendered — the row's pending cells convey not-yet-measured.
+    for system, _status in hosted_placeholders:
+        lines.append(f"| {system} | pending | pending | pending | pending |")
 
     return "\n".join(lines) + "\n"
 

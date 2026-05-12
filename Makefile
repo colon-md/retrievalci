@@ -126,13 +126,8 @@ bench-v0-rejudge:
 
 bench-v0-scorecard:
 	$(BIN)/retrievalci report scorecard \
-	  --input $(or $(BENCH_BASELINE),baselines/rag/bench_v0.json) \
-	  --target README.md \
-	  --label "$(or $(BENCH_LABEL),bench-v0)" \
-	  --hosted-placeholder "Google Vertex AI RAG Engine:Needs adapter" \
-	  --hosted-placeholder "Amazon Bedrock Knowledge Bases:Needs adapter" \
-	  --hosted-placeholder "Azure AI Search:Needs adapter" \
-	  --hosted-placeholder "OpenAI File Search:Needs adapter"
+	  --input $(or $(BENCH_BASELINE),baselines/rag/bench_v0_hosted_only.json) \
+	  --target README.md
 
 # Distillation-cost ablation. Three runs share corpus + questions + embedder,
 # differ only in how the wiki_pages system enriches its embedding text:
