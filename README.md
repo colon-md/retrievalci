@@ -52,7 +52,7 @@ We used RetrievalCI's harness to test Karpathy's "LLM Wiki" hypothesis across tw
 - **A stronger embedder beats the architecture per dollar.** Same wiki prose, swap MiniLM-L6-v2 for bge-large-en: +0.05 lift at zero API cost (just a 1.3 GB local model download).
 - **Wiki+RAG loses on single-source corpora** where each fact appears once. The architecture assumes multi-source compounding; without it, page-aggregation drops answer-relevant content into the singleton tail.
 
-Full ablation chain, pre-registrations, and per-condition decomposition are kept in an internal research log. The distillation-cost decomposition — how cheaply each portion of the wiki lift can be captured — is testable end-to-end via `make ablation-distill`.
+Full ablation chain, per-condition decomposition tables, and costs: [`docs/rag_eval/STATUS.md`](docs/rag_eval/STATUS.md). The distillation-cost decomposition — how cheaply each portion of the wiki lift can be captured — is testable end-to-end via `make ablation-distill`.
 
 ## Quick start
 
