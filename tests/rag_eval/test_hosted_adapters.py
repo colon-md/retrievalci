@@ -196,6 +196,9 @@ def test_vertex_ai_rag_answer_resolves_source_via_manifest(
 def test_bedrock_kb_answer_maps_s3_uri_via_manifest(
     repo_root: Path, budget: RunBudget
 ) -> None:
+    # boto3 lives in the [hosted-aws] optional extra; skip when CI installs
+    # only [dev] (the default for the lint+test workflow).
+    pytest.importorskip("boto3")
     from retrievalci.rag_eval.systems.bedrock_kb import (
         BedrockKBConfig,
         BedrockKBSystem,
