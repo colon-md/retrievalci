@@ -6,6 +6,15 @@
 
 This kind of side-by-side measurement doesn't exist anywhere else in one place. Vendor blogs report on their own benchmarks; open-source RAG papers don't compare to hosted services. RetrievalCI is the harness that produces it for *your* corpus, in CI, with one command.
 
+## What this is
+
+RetrievalCI is a **retrieval-quality measurement harness**. It supports two workflows that share the same fixture + scoring code:
+
+1. **Hosted-RAG comparison** — index your corpus through Vertex AI RAG Engine, Bedrock Knowledge Bases, Azure AI Search, and OpenAI File Search, then score the retrieved chunks against the same `ground_truth_citations`. This is what the scorecard above is. Use it when you're choosing between hosted services for a deployment.
+2. **Local RAG architecture eval** — compare local retrieval architectures (BM25, dense, hybrid-RRF, dense-rerank, term-padding, claim-RAG, wiki-pages, chunk-summary) on your own corpus, with deterministic diagnoses and CI regression gates. This is what produced the [research findings](#research-findings-so-far) below.
+
+**Not** a generation-quality scorer (use RAGAS), an LLM observability platform (use Phoenix), or a RAG framework. RetrievalCI doesn't run your production stack — it grades whether retrieval-quality changes are improving or regressing relative to a baseline.
+
 ## Scorecard
 
 <!-- BEGIN retrievalci scorecard -->
@@ -82,7 +91,6 @@ Each adapter has a `cleanup` subcommand to enumerate and delete any stranded clo
 - **5 local retrieval baselines** (BM25, dense, hybrid-RRF, dense-rerank, chunk-summary) — for CI regression checks against your own stack; not part of the headline scorecard because the gap to hosted is dominated by free-CPU embedder size rather than retrieval architecture
 - **Scorecard generator** that reads `ComparisonReport` JSON and rewrites the README between `<!-- BEGIN/END retrievalci scorecard -->` markers — no hand-edited numbers
 - **Rejudge mode** (`retrievalci rag rejudge`) to re-score existing reports with a different judge backend without re-running generators
-- **Trace-state eval** (separate flow) — replay agent trace logs to expose zero-recall, drift, stale evidence, false-lead capture
 
 ![Inputs, project CLI, checks, and run artifact pipeline](docs/assets/retrievalci-overview.png)
 
@@ -187,9 +195,9 @@ implemented, operators of hosted adapters must manually delete provisioned
 indexes after each run. The plan tracks this as an open item; see
 [docs/rag_eval/results/hosted-rag-benchmark-plan.md](docs/rag_eval/results/hosted-rag-benchmark-plan.md).
 
-## Quick start
+## Local CI walkthrough
 
-Run the full local check:
+For the second workflow (local RAG architecture eval + regression gates), run the full local check:
 
 ```bash
 make check
@@ -248,10 +256,6 @@ It runs lint, tests, `retrievalci ci run --config examples/retrievalci.ci.yaml`,
 and uploads `.retrievalci/runs` as the review artifact. See
 [docs/CI.md](docs/CI.md) for baseline and artifact conventions.
 
-The two checks below share the same project file and run artifact.
-
-![Project file branching into RAG eval and trace-state eval, then merging into one run artifact](docs/assets/retrievalci-evaluation-modes.png)
-
 ## RAG architecture eval
 
 Run a config-driven mock eval:
@@ -281,39 +285,6 @@ Compare a candidate report against a baseline:
 ```
 
 `rag compare` exits `2` on regression, so it can be used directly in CI.
-
-## Trace-state eval
-
-Trace-state policies control what each replayed retrieval call can see, such as
-the recorded prompt, only the current query, or compacted recent answer state.
-
-![Agent trace, state policy, retriever, and trace metrics flow](docs/assets/retrievalci-trace-state-eval.png)
-
-Normalize a span export:
-
-```bash
-.venv/bin/retrievalci traces normalize \
-  --source otel \
-  --input examples/otel.spans.demo.json \
-  --out /tmp/retrievalci-traces.demo.jsonl \
-  --require-gold
-```
-
-Replay retrieval-state policies:
-
-```bash
-.venv/bin/retrievalci traces eval \
-  --traces /tmp/retrievalci-traces.demo.jsonl \
-  --corpus examples/corpus.demo.jsonl \
-  --out /tmp/retrievalci-trace-report \
-  --k 1 \
-  --policies recorded,query_only,last_answer_x3,compact_state \
-  --gate-policy last_answer_x3 \
-  --min-recall-at-5 0.90
-```
-
-Use `--retriever-url` when you want RetrievalCI to call a deployed retriever
-instead of the local BM25 replay baseline.
 
 ## Project file
 
