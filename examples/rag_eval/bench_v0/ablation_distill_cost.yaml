@@ -1,0 +1,52 @@
+repo_root: .
+questions: examples/rag_eval/bench_v0/questions.jsonl
+
+corpus:
+  globs:
+    - examples/rag_eval/bench_v0/corpus/*.md
+
+# Distillation-cost ablation. Decomposes the wiki retrieval lift into:
+#   - free wins (better embedder, term padding)
+#   - paid wins (LLM-synthesized prose, LLM-synthesized tag-list)
+# Run as 3 invocations sharing this base config plus per-run overrides:
+#
+#   1. Free baseline — better embedder, no LLM enrichment, full system grid.
+#      retrievalci rag run --config examples/rag_eval/bench_v0/ablation_distill_cost.yaml \
+#        --report-json baselines/rag/ablation_bge_baseline.json \
+#        --report-md   baselines/rag/ablation_bge_baseline.md
+#
+#   2. Prose synthesis (existing default for wiki_pages).
+#      retrievalci rag run --config examples/rag_eval/bench_v0/ablation_distill_cost.yaml \
+#        --wiki-synthesis-mode prose \
+#        --report-json baselines/rag/ablation_prose.json \
+#        --report-md   baselines/rag/ablation_prose.md
+#
+#   3. Tag-list synthesis (~5x cheaper output cost per page; same retrieval mechanism).
+#      retrievalci rag run --config examples/rag_eval/bench_v0/ablation_distill_cost.yaml \
+#        --wiki-synthesis-mode tag_list \
+#        --report-json baselines/rag/ablation_tag_list.json \
+#        --report-md   baselines/rag/ablation_tag_list.md
+#
+# All three runs share corpus + questions + embedder + judge, so reports are
+# directly comparable by retrieval_source_recall / precision.
+systems:
+  - dense_rag
+  - dense_rag_termpad
+  - wiki_pages
+
+run:
+  backend: mock
+  judge: mock
+  max_chunks: 500
+  # Free embedder upgrade — same prose, +0.05 lift on K8s vs MiniLM (STATUS.md
+  # round 8). When running with a real backend, swap to gemini/claude/etc.
+  local_embedder_model: BAAI/bge-large-en-v1.5
+
+reports:
+  json: baselines/rag/ablation_distill_cost.json
+  markdown: baselines/rag/ablation_distill_cost.md
+
+diagnostics:
+  primary_metric: retrieval_source_recall
+  min_meaningful_delta: 0.03
+  min_questions_for_confidence: 30

@@ -134,6 +134,32 @@ bench-v0-scorecard:
 	  --hosted-placeholder "Azure AI Search:Needs adapter" \
 	  --hosted-placeholder "OpenAI File Search:Needs adapter"
 
+# Distillation-cost ablation. Three runs share corpus + questions + embedder,
+# differ only in how the wiki_pages system enriches its embedding text:
+#   - ablation-bge      : free baseline (bge-large embedder, no LLM enrichment)
+#   - ablation-prose    : prose synthesis  (default — ~600 output tokens/page)
+#   - ablation-tag-list : tag-list synthesis (~200 output tokens/page; ~5x cheaper)
+# Compare the three JSON reports by retrieval_source_recall / precision to
+# decompose the wiki retrieval lift into free vs paid components.
+ablation-distill:
+	$(BIN)/retrievalci rag run \
+	  --config examples/rag_eval/bench_v0/ablation_distill_cost.yaml \
+	  --repo-root $(CURDIR) \
+	  --report-json baselines/rag/ablation_bge_baseline.json \
+	  --report-md   baselines/rag/ablation_bge_baseline.md
+	$(BIN)/retrievalci rag run \
+	  --config examples/rag_eval/bench_v0/ablation_distill_cost.yaml \
+	  --repo-root $(CURDIR) \
+	  --wiki-synthesis-mode prose \
+	  --report-json baselines/rag/ablation_prose.json \
+	  --report-md   baselines/rag/ablation_prose.md
+	$(BIN)/retrievalci rag run \
+	  --config examples/rag_eval/bench_v0/ablation_distill_cost.yaml \
+	  --repo-root $(CURDIR) \
+	  --wiki-synthesis-mode tag_list \
+	  --report-json baselines/rag/ablation_tag_list.json \
+	  --report-md   baselines/rag/ablation_tag_list.md
+
 clean:
 	find retrievalci tests scripts -type d -name __pycache__ -prune -exec rm -rf {} +
 	rm -rf .pytest_cache .ruff_cache .mypy_cache

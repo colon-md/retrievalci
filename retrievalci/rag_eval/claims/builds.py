@@ -28,6 +28,7 @@ from retrievalci.rag_eval.systems.wiki_pages import (
     EntityPage,
     PredicateSection,
     PredicateValue,
+    SynthesisMode,
     project_pages,
     resolve_cross_references,
     synthesize_pages,
@@ -78,6 +79,7 @@ def merge_claims_into_build(
     generator: Generator,
     *,
     vocabulary: PredicateVocabulary | None = None,
+    synthesis_mode: SynthesisMode = "prose",
 ) -> KnowledgeBuild:
     """Append-only merge — incremental synthesis only for modified entities.
 
@@ -96,7 +98,7 @@ def merge_claims_into_build(
         all_claims = list(new_claims)
         pages = project_pages(all_claims, vocabulary=vocabulary)
         if pages:
-            pages = synthesize_pages(pages, generator)
+            pages = synthesize_pages(pages, generator, synthesis_mode=synthesis_mode)
         return KnowledgeBuild(
             build_id=_derive_build_id(None, [c.claim_id for c in all_claims]),
             parent_build_id=None,
@@ -128,7 +130,7 @@ def merge_claims_into_build(
         projected = project_pages(entity_claims, vocabulary=vocabulary)
         if not projected:
             continue
-        synthesized = synthesize_pages(projected, generator)
+        synthesized = synthesize_pages(projected, generator, synthesis_mode=synthesis_mode)
         re_synthesized[entity] = synthesized[0]
 
     final_pages: list[EntityPage] = []

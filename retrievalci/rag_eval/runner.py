@@ -30,6 +30,7 @@ _DEFAULT_CORPUS_GLOBS = [
 _TARGET_SYSTEMS = ("wiki_pages", "hybrid_rrf", "chunk_summary_rag")
 _SYSTEMS = (
     "dense_rag",
+    "dense_rag_termpad",
     "claim_rag",
     "bm25_lexical",
     "hybrid_rrf",
@@ -622,6 +623,16 @@ def main(argv: list[str] | None = None) -> None:
         help="Whether WikiPagesSystem answer prompts include synthesized prose.",
     )
     parser.add_argument(
+        "--wiki-synthesis-mode",
+        choices=("prose", "tag_list"),
+        default=None,
+        help=(
+            "Synthesis output shape. 'prose' (default) writes 2-4 paragraph wiki "
+            "summaries; 'tag_list' writes 15-25 search terms — same retrieval-time "
+            "mechanism at ~5x cheaper output cost per page."
+        ),
+    )
+    parser.add_argument(
         "--primary-metric",
         default=None,
         help="Primary metric for report diagnosis.",
@@ -767,6 +778,14 @@ def main(argv: list[str] | None = None) -> None:
         ("wiki_answer_uses_prose",),
         default="on",
     )
+    wiki_synthesis_mode = _arg_or_config(
+        args,
+        config,
+        "wiki_synthesis_mode",
+        ("wiki", "synthesis_mode"),
+        ("wiki_synthesis_mode",),
+        default="prose",
+    )
     primary_metric = _arg_or_config(
         args,
         config,
@@ -822,6 +841,7 @@ def main(argv: list[str] | None = None) -> None:
         ChunkSummaryRAGSystem,
         ClaimRAGSystem,
         DenseRAGSystem,
+        DenseRAGTermPadSystem,
         HybridRRFSystem,
         WikiPagesSystem,
     )
@@ -885,6 +905,8 @@ def main(argv: list[str] | None = None) -> None:
     built_systems: dict[str, System] = {}
     if "dense_rag" in systems:
         built_systems["dense_rag"] = DenseRAGSystem(embedder, generator, chunks)
+    if "dense_rag_termpad" in systems:
+        built_systems["dense_rag_termpad"] = DenseRAGTermPadSystem(embedder, generator, chunks)
 
     claim_rag: ClaimRAGSystem | None = None
     if "claim_rag" in systems or "wiki_pages" in systems:
@@ -978,6 +1000,7 @@ def main(argv: list[str] | None = None) -> None:
             synthesize=(wiki_synthesize == "on"),
             embed_uses_prose=(wiki_embed_uses_prose == "on"),
             answer_uses_prose=(wiki_answer_uses_prose == "on"),
+            synthesis_mode=str(wiki_synthesis_mode),  # type: ignore[arg-type]
         )
 
     questions = load_questions(questions_path)

@@ -28,11 +28,14 @@ import time
 from collections import defaultdict
 from collections.abc import Iterable
 from dataclasses import dataclass
+from typing import Literal
 
 from retrievalci.rag_eval.backends.base import Embedder, GenerationRequest, Generator
 from retrievalci.rag_eval.claims import Claim
 from retrievalci.rag_eval.predicates import PredicateVocabulary
 from retrievalci.rag_eval.types import Citation, SystemAnswer
+
+SynthesisMode = Literal["prose", "tag_list"]
 
 
 def _sha256_hex(s: str) -> str:
@@ -296,29 +299,67 @@ Facts:
 
 Wiki summary:"""
 
+# Optimised for embedder fuel, not human prose. Empirically, prior ablations
+# (STATUS.md round 6) showed the LLM doesn't read synthesized prose at answer
+# time; the win is entirely in the embedding text. Tag-list mode trades the
+# 2-4 paragraph form for ~15-25 terms — same retrieval-time mechanism at
+# roughly one-fifth the output token cost per page.
+_TAG_LIST_PROMPT = """\
+List 15-25 distinct terms, phrases, aliases, and related concepts that a
+search query about this entity might use. Include identifier variants,
+synonyms, and key relationships drawn from the facts. One term per line,
+no numbering, no prose, no explanation.
 
-def synthesize_pages(pages: list[EntityPage], generator: Generator) -> list[EntityPage]:
+Entity: {subject_type}: {subject}
+
+Facts:
+{facts}
+
+Terms:"""
+
+
+_PROMPT_BY_MODE: dict[SynthesisMode, str] = {
+    "prose": _SYNTHESIS_PROMPT,
+    "tag_list": _TAG_LIST_PROMPT,
+}
+_MAX_TOKENS_BY_MODE: dict[SynthesisMode, int] = {
+    "prose": 600,
+    "tag_list": 200,
+}
+
+
+def synthesize_pages(
+    pages: list[EntityPage],
+    generator: Generator,
+    *,
+    synthesis_mode: SynthesisMode = "prose",
+) -> list[EntityPage]:
     """One LLM call per page → fill `synthesized_prose`.
 
-    This is the load-bearing efficiency move: all per-entity reasoning happens
-    here at ingest time. Query-time retrieval reads the pre-synthesized prose,
-    not the raw structured listing.
+    `synthesis_mode="prose"` (default, preserves prior behavior) writes a
+    paragraph-form wiki summary. `synthesis_mode="tag_list"` writes a short
+    list of search terms — optimised for embedding-text enrichment without
+    the paragraph-length cost.
 
     Pages with no sections (which `project_pages` shouldn't produce, but guard
     anyway) are returned unchanged.
     """
+    prompt_template = _PROMPT_BY_MODE[synthesis_mode]
+    max_tokens = _MAX_TOKENS_BY_MODE[synthesis_mode]
     out: list[EntityPage] = []
     for page in pages:
         if not page.sections:
             out.append(page)
             continue
         facts = "\n".join(page._structured_lines()).rstrip()
-        prompt = _SYNTHESIS_PROMPT.format(
+        prompt = prompt_template.format(
             subject_type=page.subject_type,
             subject=page.subject,
             facts=facts,
         )
-        resp = generator.generate(GenerationRequest(prompt=prompt, max_output_tokens=600))
+        resp = generator.generate(
+            GenerationRequest(prompt=prompt, max_output_tokens=max_tokens)
+        )
         prose = resp.text.strip()
         out.append(
             EntityPage(
@@ -366,6 +407,7 @@ class WikiPagesSystem:
         min_claims_per_indexed_page: int = 1,
         embed_uses_prose: bool = True,
         answer_uses_prose: bool = True,
+        synthesis_mode: SynthesisMode = "prose",
     ) -> None:
         """`min_claims_per_indexed_page=2` drops singleton pages from the
         retrieval index (per `eval/PRE_REGISTRATION.md` Tier A clause). Pages
@@ -378,6 +420,10 @@ class WikiPagesSystem:
         either to run the mechanism-isolation ablation that decouples synthesis
         contribution to retrieval-quality vs. answer-context-quality.
         Requires `synthesize=True` to have any effect.
+
+        `synthesis_mode="tag_list"` replaces the paragraph-form summary with
+        a 15-25-term list optimised for embedding-text enrichment. Same
+        retrieval-time mechanism, ~5x cheaper per page in output tokens.
         """
         self._embedder = embedder
         self._generator = generator
@@ -386,6 +432,7 @@ class WikiPagesSystem:
         self._min_claims_per_indexed_page = min_claims_per_indexed_page
         self._embed_uses_prose = embed_uses_prose
         self._answer_uses_prose = answer_uses_prose
+        self._synthesis_mode: SynthesisMode = synthesis_mode
         # The synthesis path goes through KnowledgeBuild so future calls to
         # `self.merge(new_claims)` get incremental compounding for free. The
         # synthesize=False path stays cheap (no LLM, no build) — useful in
@@ -394,7 +441,11 @@ class WikiPagesSystem:
             from retrievalci.rag_eval.claims.builds import merge_claims_into_build
 
             self._build = merge_claims_into_build(
-                None, list(claims), generator, vocabulary=vocabulary
+                None,
+                list(claims),
+                generator,
+                vocabulary=vocabulary,
+                synthesis_mode=synthesis_mode,
             )
             self._pages = list(self._build.pages)
         else:
@@ -430,7 +481,11 @@ class WikiPagesSystem:
         from retrievalci.rag_eval.claims.builds import merge_claims_into_build
 
         self._build = merge_claims_into_build(
-            self._build, new_claims, self._generator, vocabulary=self._vocabulary
+            self._build,
+            new_claims,
+            self._generator,
+            vocabulary=self._vocabulary,
+            synthesis_mode=self._synthesis_mode,
         )
         self._pages = list(self._build.pages)
         self._indexed_pages = [
