@@ -76,11 +76,14 @@ def test_render_scorecard_includes_hosted_placeholders() -> None:
         report,
         hosted_placeholders=(
             ("Vertex AI", "Needs adapter"),
-            ("OmegaWiki /ask", "Blocked on credentials"),
+            ("Future /ask adapter", "Blocked on credentials"),
         ),
     )
     assert "| Vertex AI | pending | pending | pending | pending | Needs adapter |" in md
-    assert "| OmegaWiki /ask | pending | pending | pending | pending | Blocked on credentials |" in md
+    assert (
+        "| Future /ask adapter | pending | pending | pending | pending "
+        "| Blocked on credentials |" in md
+    )
 
 
 def test_render_scorecard_includes_label_when_provided() -> None:

@@ -1,6 +1,6 @@
 # RetrievalCI
 
-> **Stage**: `bench-v0` early preview. Methodology, scorecard format, and system adapters are stable. More corpora, more adapters, and per-tier breakdowns coming. MIT licensed, 253 tests.
+> **Stage**: `bench-v0` early preview. Methodology, scorecard format, and system adapters are stable. More corpora, more adapters, and per-tier breakdowns coming. MIT licensed, 257 tests.
 
 **RetrievalCI measures retrieval quality across hosted RAG services and local retrieval architectures on a shared corpus and citation contract.** On bench-v0 (50 enterprise questions, 81 docs), the four major hosted services score 78-84 on retrieve-only quality (0.7·recall + 0.3·precision). A free-CPU MiniLM local stack scores 45-50 on the same fixture. **Most of that gap is embedder size, not retrieval architecture** — a stronger local embedder (bge-large-en) closes the bulk of it. Full decomposition under [research findings](#research-findings-so-far).
 
@@ -68,8 +68,8 @@ Full ablation chain, per-condition decomposition tables, and costs: [`docs/rag_e
 ## Quick start
 
 ```bash
-git clone <repo>
-cd searchtrace
+git clone https://github.com/colon-md/retrievalci.git
+cd retrievalci
 python -m venv .venv && .venv/bin/pip install -e '.[dev,providers,hosted-aws]'
 make bench-v0-mock         # 0 cost, 0 credentials, validates the harness
 ```
