@@ -1,17 +1,20 @@
 """Hosted-RAG adapter scaffolding: manifests + cost caps + protocol.
 
 This module is the shared mechanism every hosted adapter (Vertex AI RAG Engine,
-Bedrock Knowledge Bases, Azure AI Search, OpenAI File Search, OmegaWiki /ask)
-plugs into. It exists so the hosted-RAG benchmark plan's enterprise guarantees
-are enforced once, not re-implemented per provider:
+Bedrock Knowledge Bases, Azure AI Search, OpenAI File Search) plugs into. It
+exists so the hosted-RAG benchmark plan's enterprise guarantees are enforced
+once, not re-implemented per provider:
 
   * Manifests are *written at index time, read at eval time, fail-closed* —
-    a checked-in manifest at examples/rag_eval/manifests/<adapter>/<hash>.json
-    maps provider-internal chunk IDs back to repo-relative source paths. If
-    the manifest is missing or its corpus hash doesn't match the chunks the
-    harness is currently scoring against, evaluation refuses to start. This is
-    what makes hosted Mode A results reproducible and auditable: a reviewer
-    can read the JSON in a PR without needing GCP / AWS access.
+    a per-adapter manifest at examples/rag_eval/manifests/<adapter>/<hash>.json
+    maps provider-internal chunk IDs back to repo-relative source paths. The
+    directory is gitignored by default because manifest entries contain
+    account-tied resource names (e.g. projects/<NUM>/.../ragFiles/<id> or
+    OpenAI file-IDs scoped to the operator's API key). If the manifest is
+    missing or its corpus hash doesn't match the chunks the harness is
+    currently scoring against, evaluation refuses to start. The corpus hash
+    makes runs deterministic: re-running on the same corpus produces an
+    aligned mapping the harness can validate.
 
   * Run budgets are *hard pre-flight + in-flight tally + explicit override*,
     covering BOTH dollar cost AND total query count. estimate_cost() and

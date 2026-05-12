@@ -1,6 +1,6 @@
 # RetrievalCI
 
-> **Stage**: `bench-v0` early preview. Methodology, scorecard format, and system adapters are stable. More corpora, more adapters, and per-tier breakdowns coming. MIT licensed, 253 tests, $0.17 to reproduce the public scorecard.
+> **Stage**: `bench-v0` early preview. Methodology, scorecard format, and system adapters are stable. More corpora, more adapters, and per-tier breakdowns coming. MIT licensed, 253 tests.
 
 **RetrievalCI measures retrieval quality across hosted RAG services and local retrieval architectures on a shared corpus and citation contract.** On bench-v0 (50 enterprise questions, 81 docs), the four major hosted services score 78-84 on retrieve-only quality (0.7·recall + 0.3·precision). A free-CPU MiniLM local stack scores 45-50 on the same fixture. **Most of that gap is embedder size, not retrieval architecture** — a stronger local embedder (bge-large-en) closes the bulk of it. Full decomposition under [research findings](#research-findings-so-far).
 
@@ -34,7 +34,9 @@ score = 100 * (0.7 * retrieval_source_recall + 0.3 * retrieval_source_precision)
 
 <!-- END retrievalci scorecard -->
 
-Score = `100 × (0.7 × recall + 0.3 × precision)`. All four services index the same 81 docs, are asked the same 50 questions (25 single-hop, 15 multi-hop, 5 contradiction, 5 unanswerable, stratified from [EnterpriseRAG-Bench](https://github.com/onyx-dot-app/EnterpriseRAG-Bench) v1.0.0), and return chunks that we map back to repo-relative paths via a fail-closed manifest. Recall and precision are computed against the same `ground_truth_citations`. The latency column is retrieve-only (no generation).
+Score = `100 × (0.7 × recall + 0.3 × precision)`. All four services index the same 81 docs, are asked the same 50 questions (25 single-hop, 15 multi-hop, 5 contradiction, 5 unanswerable, stratified from [EnterpriseRAG-Bench](https://github.com/onyx-dot-app/EnterpriseRAG-Bench) v1.0.0), and return chunks that we map back to repo-relative paths via a fail-closed manifest. Recall and precision are computed against the same `ground_truth_citations`.
+
+The latency column is retrieve-only (no generation), cold-call medians from a single region. OpenAI File Search's 1358 ms is materially higher than the other three (~400 ms); we haven't isolated whether that reflects server-side reranking on `/vector_stores/{id}/search`, larger retrieve traversal, or cold-tier infrastructure. Treat the column as relative-order signal, not strict apples-to-apples.
 
 ## Why this exists
 
@@ -53,13 +55,13 @@ If you're choosing between Vertex / Bedrock / Azure / OpenAI for an enterprise R
 
 ## Research findings (so far)
 
-We used RetrievalCI's harness to test Karpathy's "LLM Wiki" hypothesis across two corpora and eight rounds of pre-registered ablations. The short version:
+We used RetrievalCI's harness to test Karpathy's "LLM Wiki" hypothesis across two corpora and eight rounds of pre-registered ablations. All numbers below are on `must_include_match` from n=10 hand-authored K8s questions with a single judge (Haiku), single-corpus replication. Treat magnitudes as directional, ordering as established; multi-corpus V2 is pending. Full caveats: [STATUS.md § Caveats and limits](docs/rag_eval/STATUS.md#caveats-and-limits).
 
-- **Wiki+RAG beats vanilla RAG by +0.30** retrieval-source-recall on multi-source corpora (K8s documentation, 174 docs, 10 hand-authored questions).
-- **The win is at retrieval, not generation.** Synthesized prose contributes ~0 at answer time — it works as embedder fuel, not LLM input. Karpathy's framing pointed at the right feature for the wrong reason.
-- **Roughly half the win is lexical**, replicable by appending entity names to chunk text with zero LLM calls. **The other half is genuine synthesis-derived semantic content** in the embedding text.
+- **Wiki+RAG beats vanilla RAG by +0.20** on a multi-source corpus (K8s documentation, 174 docs).
+- **The win is at retrieval, not generation.** The Round 6 mechanism-isolation ablation (`embed_uses_prose × answer_uses_prose`) attributes the entire +0.30 prose-embed vs listing-embed gain to embedding text; answer-time prose contributes ~0. Karpathy's framing pointed at the right feature for the wrong reason.
+- **Roughly half the retrieval-time gain is lexical.** Round 7's term-padding (entity names ×10 appended to chunk text, zero LLM calls) captures +0.15 of the +0.30 prose-embed gain. **The other half is genuine synthesis-derived semantic content** in the embedding text.
 - **A stronger embedder beats the architecture per dollar.** Same wiki prose, swap MiniLM-L6-v2 for bge-large-en: +0.05 lift at zero API cost (just a 1.3 GB local model download).
-- **Wiki+RAG loses on single-source corpora** where each fact appears once. The architecture assumes multi-source compounding; without it, page-aggregation drops answer-relevant content into the singleton tail.
+- **Wiki+RAG loses on single-source corpora** where each fact appears once. On the internal docs corpus, wiki dropped to 0.295 vs vanilla RAG's 0.630 (Round 3). The architecture assumes multi-source compounding.
 
 Full ablation chain, per-condition decomposition tables, and costs: [`docs/rag_eval/STATUS.md`](docs/rag_eval/STATUS.md). The distillation-cost decomposition — how cheaply each portion of the wiki lift can be captured — is testable end-to-end via `make ablation-distill`.
 
