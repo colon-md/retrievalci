@@ -22,7 +22,6 @@ score = 100 * (0.7 * retrieval_source_recall + 0.3 * retrieval_source_precision)
 | Bedrock KB (Cohere embed) | 82.5 | 87.9% | 70.1% | 408.1 | Measured |
 | OpenAI File Search | 78.5 | 89.3% | 53.4% | 1358.3 | Measured |
 | Azure AI Search (Gemini embed) | 84.0 | 90.9% | 67.8% | 408.4 | Measured |
-| OmegaWiki /ask | pending | pending | pending | pending | Needs adapter |
 
 <!-- END retrievalci scorecard -->
 
@@ -152,7 +151,6 @@ will require when added.
 | Amazon Bedrock Knowledge Bases | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION` (or an IAM role on the host machine) | IAM principal needs `bedrock:Retrieve` and `bedrock:RetrieveAndGenerate`. |
 | Azure AI Search | `AZURE_SEARCH_ENDPOINT`, `AZURE_SEARCH_ADMIN_KEY` | Admin key for index management at adapter `index()` time; query key works for `answer()` only. |
 | OpenAI File Search | `OPENAI_API_KEY` | Same key as the OpenAI judge above. |
-| [OmegaWiki](https://github.com/skyllwt/OmegaWiki) `/ask` | Depends on deployment | OmegaWiki is self-hosted; supply the `/ask` endpoint URL and any auth header per your OmegaWiki instance. |
 
 Hosted-RAG runs are gated by a tight default budget cap (currently $20 and 50
 questions per run). Larger runs require explicit operator override; see

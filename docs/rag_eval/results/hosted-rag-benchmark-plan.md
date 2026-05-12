@@ -17,8 +17,6 @@ Key critique:
 - Use retriever-only mode for the public headline score.
 - Require source-ID manifests for hosted systems, or hosted chunk IDs will not
   match `ground_truth_citations`.
-- Score OmegaWiki as a compiled wiki/knowledge layer, not as a plain vector
-  retriever.
 - Use relative regression gates first; absolute quality floors need calibration.
 
 ## Evaluation Modes
@@ -37,7 +35,6 @@ Each service uses its native answering path:
 - Vertex AI RAG Engine generation and grounding.
 - Bedrock `RetrieveAndGenerate`.
 - OpenAI File Search with Responses API generation.
-- OmegaWiki `/ask`.
 
 Report this separately as product behavior, not as the headline retrieval score.
 
@@ -185,11 +182,6 @@ Implement adapters in this order.
    - Mode B: use generated answer plus file citation annotations.
    - Record vector store ID and OpenAI chunking caveat.
 
-5. OmegaWiki
-   - `omegawiki_ask`: call `/ask` and capture answer citations.
-   - Require wiki page to source-document mapping.
-   - Track side metrics: staleness, contradiction handling, update cost.
-
 ## Scoring
 
 Headline retrieval score:
@@ -244,7 +236,7 @@ on a schedule with a hard cost cap.
 5. Implement Vertex AI RAG Engine adapter. ⛔ Blocked on GCP service account.
 6. Publish first hosted Mode A row. ⛔ Blocked on step 5.
 7. Expand to `bench-v1` (150 questions, ERB sampling continued).
-8. Add Bedrock, Azure, OpenAI File Search, OmegaWiki `/ask` adapters. ⛔
+8. Add Bedrock, Azure, OpenAI File Search adapters. ⛔
    Mostly blocked on credentials.
 9. Generate README scorecard from baseline JSON. ✓ (`retrievalci report
    scorecard --input ... --target README.md`; marker-based injection at
@@ -271,7 +263,7 @@ Bonus shipped (not in original plan):
 5. Implement Vertex AI RAG Engine adapter.
 6. Publish the first real hosted Mode A row only after Vertex runs on `bench-v0`.
 7. Expand to `bench-v1` before adding broad commercial claims.
-8. Add Bedrock, Azure, OpenAI File Search, then OmegaWiki.
+8. Add Bedrock, Azure, OpenAI File Search.
 9. Generate README scorecard from benchmark JSON rather than hand-editing
    hosted scores.
 
@@ -302,8 +294,6 @@ Bonus shipped (not in original plan):
 - Source manifests map hosted service IDs to `ground_truth_citations`.
 - One hosted adapter produces a comparable Mode A row before public hosted
   scores are shown.
-- OmegaWiki is published only when wiki pages or `/ask` citations map back to
-  source documents.
 - README headline scorecard is generated from measured benchmark output.
 
 ## Assumptions

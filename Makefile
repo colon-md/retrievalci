@@ -132,8 +132,7 @@ bench-v0-scorecard:
 	  --hosted-placeholder "Google Vertex AI RAG Engine:Needs adapter" \
 	  --hosted-placeholder "Amazon Bedrock Knowledge Bases:Needs adapter" \
 	  --hosted-placeholder "Azure AI Search:Needs adapter" \
-	  --hosted-placeholder "OpenAI File Search:Needs adapter" \
-	  --hosted-placeholder "OmegaWiki /ask:Needs adapter"
+	  --hosted-placeholder "OpenAI File Search:Needs adapter"
 
 clean:
 	find retrievalci tests scripts -type d -name __pycache__ -prune -exec rm -rf {} +

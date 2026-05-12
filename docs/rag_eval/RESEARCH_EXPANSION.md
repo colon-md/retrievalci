@@ -70,24 +70,6 @@ bash data/rag_eval/studies/karpathy_third_party_expansion/run.sh
 Reports are written under `results/rag_eval/`, which is also ignored by git.
 Curate only a final, reviewed summary for publication.
 
-## OmegaWiki Lens
-
-OmegaWiki frames Karpathy's LLM Wiki as a full research lifecycle platform:
-typed wiki entities, a knowledge graph, experiment records, failed-experiment
-memory, and cross-model review. That is a useful contrast for RetrievalCI.
-
-RetrievalCI should not try to become a research IDE. The actionable takeaway is
-to evaluate compounding separately from retrieval quality:
-
-- retrieval quality: did the right sources get retrieved?
-- answer quality: did the answer model use retrieved evidence correctly?
-- compounding quality: did an incremental wiki update improve future retrieval
-  without introducing stale or contradictory pages?
-
-The current third-party expansion addresses the first two. A later study should
-add an incremental-ingest protocol if we want to test the stronger OmegaWiki
-claim that a maintained wiki improves over time.
-
 ## Interpretation Rules
 
 Treat a result as publishable only if:
